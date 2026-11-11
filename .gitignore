@@ -20,4 +20,6 @@ export_credentials.cfg
 .DS_Store
 Thumbs.db
 *.tmp
-tools/art/menu_city_preview.png
+tools/art/*_preview.png
+__pycache__/
+override.cfg

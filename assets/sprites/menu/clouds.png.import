@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dhfw4w5ha6rl6"
-path="res://.godot/imported/city_far.png-13ef79f1997a07549a8d00c009e90007.ctex"
+uid="uid://xj1fdpv5rljl"
+path="res://.godot/imported/clouds.png-53002242e0e80716a2ea613d8e428950.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/menu/city_far.png"
-dest_files=["res://.godot/imported/city_far.png-13ef79f1997a07549a8d00c009e90007.ctex"]
+source_file="res://assets/sprites/menu/clouds.png"
+dest_files=["res://.godot/imported/clouds.png-53002242e0e80716a2ea613d8e428950.ctex"]
 
 [params]
 

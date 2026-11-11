@@ -14,7 +14,10 @@ script = ExtResource("1_script")
 
 [node name="CityBackdrop" parent="." instance=ExtResource("2_backdrop")]
 
-[node name="BackButton" type="Button" parent="."]
+[node name="Ui" type="CanvasLayer" parent="."]
+layer = 2
+
+[node name="BackButton" type="Button" parent="Ui"]
 unique_name_in_owner = true
 layout_mode = 0
 offset_left = 12.0
@@ -23,7 +26,7 @@ offset_right = 92.0
 offset_bottom = 40.0
 text = "< НАЗАД"
 
-[node name="Panel" type="PanelContainer" parent="."]
+[node name="Panel" type="PanelContainer" parent="Ui"]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -37,21 +40,21 @@ offset_bottom = 150.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Columns" type="HBoxContainer" parent="Panel"]
+[node name="Columns" type="HBoxContainer" parent="Ui/Panel"]
 layout_mode = 2
 theme_override_constants/separation = 16
 
-[node name="Left" type="VBoxContainer" parent="Panel/Columns"]
+[node name="Left" type="VBoxContainer" parent="Ui/Panel/Columns"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 10
 
-[node name="CodeTitle" type="Label" parent="Panel/Columns/Left"]
+[node name="CodeTitle" type="Label" parent="Ui/Panel/Columns/Left"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.949, 0.757, 0.306, 1)
 text = "КОД КІМНАТИ"
 
-[node name="CodeEdit" type="LineEdit" parent="Panel/Columns/Left"]
+[node name="CodeEdit" type="LineEdit" parent="Ui/Panel/Columns/Left"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 44)
 layout_mode = 2
@@ -61,7 +64,7 @@ alignment = 1
 max_length = 4
 virtual_keyboard_type = 2
 
-[node name="StatusLabel" type="Label" parent="Panel/Columns/Left"]
+[node name="StatusLabel" type="Label" parent="Ui/Panel/Columns/Left"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
@@ -69,46 +72,46 @@ theme_override_colors/font_color = Color(0.451, 0.431, 0.549, 1)
 text = "Введи код з екрана хоста"
 autowrap_mode = 3
 
-[node name="Spacer" type="Control" parent="Panel/Columns/Left"]
+[node name="Spacer" type="Control" parent="Ui/Panel/Columns/Left"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="IpTitle" type="Label" parent="Panel/Columns/Left"]
+[node name="IpTitle" type="Label" parent="Ui/Panel/Columns/Left"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.451, 0.431, 0.549, 1)
 text = "не знаходить? IP хоста:"
 
-[node name="IpRow" type="HBoxContainer" parent="Panel/Columns/Left"]
+[node name="IpRow" type="HBoxContainer" parent="Ui/Panel/Columns/Left"]
 layout_mode = 2
 
-[node name="IpEdit" type="LineEdit" parent="Panel/Columns/Left/IpRow"]
+[node name="IpEdit" type="LineEdit" parent="Ui/Panel/Columns/Left/IpRow"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "192.168.0.10"
 virtual_keyboard_type = 3
 
-[node name="IpButton" type="Button" parent="Panel/Columns/Left/IpRow"]
+[node name="IpButton" type="Button" parent="Ui/Panel/Columns/Left/IpRow"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "OK"
 
-[node name="Right" type="VBoxContainer" parent="Panel/Columns"]
+[node name="Right" type="VBoxContainer" parent="Ui/Panel/Columns"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 10
 
-[node name="RoomsTitle" type="Label" parent="Panel/Columns/Right"]
+[node name="RoomsTitle" type="Label" parent="Ui/Panel/Columns/Right"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.949, 0.757, 0.306, 1)
 text = "КІМНАТИ ПОРУЧ"
 
-[node name="Scroll" type="ScrollContainer" parent="Panel/Columns/Right"]
+[node name="Scroll" type="ScrollContainer" parent="Ui/Panel/Columns/Right"]
 layout_mode = 2
 size_flags_vertical = 3
 horizontal_scroll_mode = 0
 
-[node name="RoomsBox" type="VBoxContainer" parent="Panel/Columns/Right/Scroll"]
+[node name="RoomsBox" type="VBoxContainer" parent="Ui/Panel/Columns/Right/Scroll"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3

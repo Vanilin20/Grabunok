@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://d1mhlk82j1bqs"
-path="res://.godot/imported/city_near.png-60beb7c02d8acde831dff117aae325fe.ctex"
+uid="uid://bvbnqn030whbf"
+path="res://.godot/imported/gang_phone.png-cbcf51ab781c896f77517f2685feb29b.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/menu/city_near.png"
-dest_files=["res://.godot/imported/city_near.png-60beb7c02d8acde831dff117aae325fe.ctex"]
+source_file="res://assets/sprites/menu/gang_phone.png"
+dest_files=["res://.godot/imported/gang_phone.png-cbcf51ab781c896f77517f2685feb29b.ctex"]
 
 [params]
 
