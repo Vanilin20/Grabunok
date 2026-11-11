@@ -20,6 +20,7 @@
 from __future__ import annotations
 
 import json
+import math
 import os
 import random
 
@@ -36,6 +37,11 @@ FONT = os.path.join(os.path.dirname(__file__), "..", "fonts", "press_start_2p.tt
 
 PARAPET_TOP = 296
 ROOF_Y = 314
+# Хлопець сидить на парапеті (низ спрайта = верх парапету), двоє стоять на даху перед ним.
+# Двоє на передньому плані ближче до камери (більші, ноги обрізані краєм кадру), третій сидить на парапеті.
+GANG_POS = {"runner": [150 + CX, PARAPET_TOP - 75], "hacker": [198 + CX, 360 - 100], "leader": [246 + CX, 360 - 106]}
+MID_GLOW = None # світні вікна й вивіски будинків — джерело відображень у калюжах
+GANG_FRAMES = {"runner": [48, 76], "hacker": [67, 106], "leader": [72, 114]}
 layout: dict = {"size": [W, H], "blinkers": [], "tvs": [], "lights": [], "steam": [], "letters": []}
 
 
@@ -59,7 +65,6 @@ def make_sky() -> Canvas:
 def make_clouds(rng: random.Random) -> Canvas:
 	"""Хмари безшовні по x: малюємо з перенесенням через край."""
 	cv = Canvas(W, H)
-	import math
 	bands = [(70, 9, (2, 3)), (118, 12, (3, 4)), (168, 14, (4, 5)), (214, 12, (5, 6))]
 	for band_y, thick, (body, lit) in bands:
 		x = rng.randrange(0, 80)
@@ -192,6 +197,18 @@ def window(cv: Canvas, glow: Canvas, x: int, y: int, w: int, h: int, state: str,
 		for yy in range(y, y + h, 2):
 			glow.hline(x, yy, w, 19)
 		return
+	if state == "cold":
+		glow.rect(x, y, w, h, 16)
+		glow.hline(x, y, w, 29)
+		glow.vline(x + w // 2, y, h, 15)
+		if rng.random() < 0.4:
+			glow.rect(x + 1, y + h - 4, 2, 4, 14) # силует
+		return
+	if state == "red":
+		glow.rect(x, y, w, h, 23)
+		glow.rect(x, y + h - 2, w, 2, 22)
+		glow.vline(x + w // 2, y, h, 22)
+		return
 	if state == "curtain": # фіранка засунута наполовину — світло лише з одного боку
 		glow.rect(x, y, w, h, 18)
 		glow.rect(x + w // 2, y, w - w // 2, h, 20)
@@ -247,19 +264,27 @@ def building(cv: Canvas, glow: Canvas, rng: random.Random, x: int, top: int, w: 
 	cols = max(1, (w - 8) // (win_w + 5))
 	gap = (w - 4 - cols * win_w) / (cols + 1)
 	for fy in range(top + 5, bottom - win_h - 2, floor_h):
+		# Поверхи живуть по-різному: офісний поверх темний, на «гуртожитку» світиться майже все.
+		floor_kind = rng.random()
+		floor_lit = lit * (0.15 if floor_kind < 0.25 else (1.9 if floor_kind > 0.85 else 1.0))
 		for c in range(cols):
 			wx = int(x + 2 + gap * (c + 1) + c * win_w)
+			ww = win_w + (1 if rng.random() < 0.15 else 0) # трохи різні прорізи — не ідеальна сітка
 			roll = rng.random()
 			state = "dark"
-			if roll < lit * 0.4:
+			if roll < floor_lit * 0.35:
 				state = "warm"
-			elif roll < lit * 0.65:
+			elif roll < floor_lit * 0.55:
 				state = "dim"
-			elif roll < lit:
+			elif roll < floor_lit * 0.68:
+				state = "cold" # денне світло, лампа без абажура
+			elif roll < floor_lit * 0.74:
+				state = "red" # червона лампа / відсвіт вивіски
+			elif roll < floor_lit:
 				state = rng.choice(["curtain", "curtain", "blind", "plant"])
 			if force_tv and fy > top + floor_h * 2 and c == cols // 2 and not tv_done:
 				state, tv_done = "tv", True # одне вікно з телевізором, що мерехтить
-			window(cv, glow, wx, fy, win_w, win_h, state, rng)
+			window(cv, glow, wx, fy, ww, win_h, state, rng)
 			if rng.random() < 0.1 and fy + win_h + 8 < bottom - 10:
 				# Кондиціонер під вікном: корпус, решітка, патьок від води.
 				ax = wx + rng.randrange(-1, 2)
@@ -277,7 +302,10 @@ def building(cv: Canvas, glow: Canvas, rng: random.Random, x: int, top: int, w: 
 				for xx in range(wx - 2, wx + win_w + 3, 2):
 					cv.vline(xx, fy + win_h - 2, 4, 13)
 	# Серпанок для дальших будинків і темрява біля землі (світло від неба падає згори).
-	if haze > 0:
+	if haze > 0 and material == "brick" and x == 214:
+		# Головний будинок — середній план: притемнюємо до кольору ночі, а не до неба.
+		cv.dither_rect(x, top - 4, w, bottom - top + 4, 1, haze)
+	elif haze > 0:
 		cv.dither_rect(x, top - 4, w, bottom - top + 4, 4, haze)
 	for i, yy in enumerate(range(bottom - 60, bottom)):
 		cv.dither_rect(x, yy, w, 1, 1, i / 60 * 0.75)
@@ -309,12 +337,12 @@ def make_mid(rng: random.Random) -> tuple[Canvas, Canvas]:
 	spec = [
 		(-CX - 4, 132, 92, "redbrick", 0.22, 0.25, (5, 8, 16), False),
 		(-26, 108, 90, "brick", 0.2, 0.0, (4, 9, 15), False),
-		(64, 160, 78, "plaster", 0.16, 0.3, (6, 6, 14), True),
+		(86, 160, 56, "plaster", 0.16, 0.3, (6, 6, 14), True), # провулок 64..86 — видно вулицю внизу
 		# Прогалина 142..214 — видно естакаду й потяг.
-		(214, 118, 214, "brick", 0.2, 0.0, (5, 8, 17), False), # будинок з вивіскою
-		(428, 146, 96, "plaster", 0.06, 0.45, (6, 6, 14), True), # за меню — далі й темніший
-		(524, 96, 96, "redbrick", 0.14, 0.3, (4, 10, 18), False),
-		(620, 128, 140, "brick", 0.16, 0.35, (7, 7, 16), False),
+		(214, 118, 214, "brick", 0.24, 0.22, (5, 8, 17), True), # будинок з вивіскою
+		(428, 146, 96, "plaster", 0.04, 0.6, (6, 6, 14), True), # за меню — далі й темніший
+		(524, 96, 96, "redbrick", 0.06, 0.6, (4, 10, 18), False),
+		(620, 128, 140, "brick", 0.08, 0.55, (7, 7, 16), False),
 	]
 	for x, top, w, mat, lit, haze, (ww, wh, fh), balc in spec:
 		building(cv, glow, rng, x, top, w, mat, win_w=ww, win_h=wh, floor_h=fh, lit=lit, haze=haze, balconies=balc, force_tv=(x == 214))
@@ -330,9 +358,10 @@ def make_mid(rng: random.Random) -> tuple[Canvas, Canvas]:
 			cv.put(536 + i, fy + 2 + i, 14)
 			cv.put(537 + i, fy + 2 + i, 0)
 	# Вертикальна неонова вивіска «БАР» на правому будинку (блакитна).
-	vertical_sign(cv, glow, 30, 150, ["Б", "А", "Р"], neon=(26, 27, 28, 29), name="bar")
-	billboard(cv, glow, 80, 246, 132, 44)
+	vertical_sign(cv, glow, 106, 168, ["Б", "А", "Р"], neon=(26, 27, 28, 29), name="bar")
+	billboard(cv, glow, 146, 232, 180, 62)
 	return cv, glow
+
 
 
 def billboard(cv: Canvas, glow: Canvas, x: int, y: int, w: int, h: int) -> None:
@@ -350,19 +379,21 @@ def billboard(cv: Canvas, glow: Canvas, x: int, y: int, w: int, h: int) -> None:
 	cv.hline(x - 2, y + h + 2, w + 4, 0)
 	metal_panel(cv, x - 3, y - 3, w + 6, h + 6, (0, 13, 14, 15))
 	# Панель освітлена прожекторами згори: яскравий верх → темніший низ (3 тони з дизерингом).
-	ramp = [29, 28, 27]
+	# Світло найсильніше в центрі (там, де стоїть банда) і спадає до країв; LED-сітка екрана —
+	# кожен третій рядок і стовпчик на тон темніший, щоб це читалося як екран, а не пласка заливка.
+	ramp = [29, 28, 27, 26]
+	cx0, cy0 = x + w * 0.5, y + h * 0.45
 	for yy in range(y, y + h):
-		t = (yy - y) / (h - 1) * (len(ramp) - 1)
-		i = int(t)
 		for xx in range(x, x + w):
-			# Плями від трьох прожекторів: ближче до лампи — світліше.
-			lamp_d = min(abs(xx - (x + w * k // 6)) for k in (1, 3, 5)) / (w / 6)
-			tt = t + lamp_d * 0.5
-			i = min(int(tt), len(ramp) - 1)
-			up = BAYER4[yy % 4][xx % 4] < (tt - int(tt)) * 16
-			glow.put(xx, yy, ramp[min(i + (1 if up else 0), len(ramp) - 1)])
+			d = math.sqrt(((xx - cx0) / (w * 0.55)) ** 2 + ((yy - cy0) / (h * 0.9)) ** 2)
+			tt = min(d * 2.6, len(ramp) - 1.001)
+			i = int(tt)
+			up = BAYER4[yy % 4][xx % 4] < (tt - i) * 16
+			k = min(i + (1 if up else 0), len(ramp) - 1)
+			if (xx - x) % 3 == 2 or (yy - y) % 3 == 2:
+				k = min(k + 1, len(ramp) - 1)
+			glow.put(xx, yy, ramp[k])
 	# Реклама тон-на-тон: контур телефона й хвилі сигналу — тло для силуетів, не окремий акцент.
-	import math
 	px, py = x + w // 2 - 7, y + 8
 	for xx in range(px, px + 14):
 		glow.put(xx, py, 27)
@@ -451,11 +482,9 @@ def make_sign() -> tuple[Canvas, list[tuple[Canvas, int, int]]]:
 				p = (xx, yy)
 				if p in mask:
 					edge = any((xx + dx, yy + dy) not in mask for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)))
-					lc.put(xx + 6, yy + 6, 23 if edge else 24)
+					lc.put(xx + 6, yy + 6, 24 if edge else 25) # трубка: світле ядро, насичений край
 				elif near(p, 1):
-					lc.put(xx + 6, yy + 6, 22)
-				elif near(p, 3) and BAYER4[yy % 4][xx % 4] < 6:
-					lc.put(xx + 6, yy + 6, 22)
+					lc.put(xx + 6, yy + 6, 23)
 		lx = sx + i * (letter_w + gap) - 6 + CX
 		letters.append((lc, lx, sy - 6 - 2))
 		layout["letters"].append({"file": f"sign_letter_{i}.png", "x": lx, "y": sy - 8})
@@ -469,7 +498,7 @@ def make_roof(rng: random.Random, letters) -> tuple[Canvas, Canvas]:
 	cv = Canvas(W, H)
 	glow = Canvas(W, H)
 	# Парапет: цегла, бетонне покриття з виносом, тінь під ним.
-	brick_wall(cv, 0, PARAPET_TOP + 5, W, ROOF_Y - PARAPET_TOP - 5, rng, (8, 9, 10, 11))
+	brick_wall(cv, 0, PARAPET_TOP + 5, W, ROOF_Y - PARAPET_TOP - 5, rng, (0, 8, 8, 9)) # у власній тіні: світло з-за парапету
 	cv.rect(0, PARAPET_TOP, W, 5, 14)
 	cv.hline(0, PARAPET_TOP, W, 16)
 	cv.hline(0, PARAPET_TOP + 1, W, 15)
@@ -503,9 +532,14 @@ def make_roof(rng: random.Random, letters) -> tuple[Canvas, Canvas]:
 				cv.put(tx + rng.randrange(3, 13), ty + rng.randrange(3, 13), rng.choice([16, 19, 12]))
 	for i in range(8):
 		cv.dither_rect(0, ROOF_Y + i, W, 1, 0, 0.9 - i * 0.11) # тінь від парапету
+	for i, yy in enumerate(range(ROOF_Y + 22, H)):
+		cv.dither_rect(0, yy, W, 1, 1, i / (H - ROOF_Y - 22) * 0.7) # ближче до камери — темніше
 	# Калюжі віддзеркалюють лише те, що над ними: небо й найближче джерело світла.
 	# Рожевий — це не відображення літер, а відблиск неонового світла на мокрій воді (дизеринг).
-	for px, py, pw, ph, refl in [(210, 336, 120, 12, "neon"), (40, 348, 54, 9, "sky"), (520, 324, 44, 7, "lamp"), (400, 352, 70, 7, "sky")]:
+	# Калюжа перед бандою: глядач бачить у ній перевернутий білборд, що стоїть за нею, —
+	# рване брижами блакитне світло з темними «вирізами» там, де стоять ноги банди.
+	billboard_puddle(cv, glow, 326 + CX, 328, 110, 14, rng)
+	for px, py, pw, ph, refl in [(340, 334, 90, 10, "neon"), (40, 348, 54, 9, "sky"), (520, 324, 44, 7, "lamp"), (440, 352, 70, 7, "sky")]:
 		puddle(cv, glow, px + CX, py, pw, ph, refl, rng)
 	# Будка виходу на дах праворуч.
 	hx, hy, hw = 604 + CX, 222, 150
@@ -544,7 +578,7 @@ def make_roof(rng: random.Random, letters) -> tuple[Canvas, Canvas]:
 	glow.hline(lx - 1, ly + 3, 3, 21)
 	layout["lights"].append({"name": "bulb", "x": lx, "y": ly + 3, "color": pal.HEX[20], "scale": 2.6, "flicker": True, "shadow": True})
 	# Вентиляційний «гриб» з парою біля банди.
-	vx, vy = 396 + CX, ROOF_Y + 4
+	vx, vy = 330 + CX, ROOF_Y + 4
 	metal_panel(cv, vx, vy - 14, 12, 16, (0, 13, 14, 15), rivets=False)
 	cv.rect(vx - 3, vy - 18, 18, 4, 14)
 	cv.hline(vx - 3, vy - 18, 18, 16)
@@ -554,8 +588,44 @@ def make_roof(rng: random.Random, letters) -> tuple[Canvas, Canvas]:
 	return cv, glow
 
 
+def billboard_puddle(cv: Canvas, glow: Canvas, x: int, y: int, w: int, h: int, rng: random.Random) -> None:
+	"""Калюжа перед бандою. Глядач бачить у ній дзеркально перевернутий білборд і силуети банди,
+	що стоять між калюжею й білбордом. Брижі від дощу: кожен третій рядок порожній, рядки зсунуті."""
+	gang_img = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+	for key, file in (("runner", "gang_runner.png"), ("hacker", "gang_hacker.png"), ("leader", "gang_leader.png")):
+		path = os.path.join(OUT, file)
+		if os.path.exists(path):
+			fw, fh = GANG_FRAMES[key]
+			spr = Image.open(path).convert("RGBA").crop((0, 0, fw, fh))
+			gx, gy = GANG_POS[key]
+			gang_img.alpha_composite(spr, (gx, gy))
+	gp = gang_img.load()
+	axis = PARAPET_TOP # лінія дзеркала: основа білборда / банди
+	for yy in range(h):
+		k = (yy - h / 2) / (h / 2)
+		half = int(w / 2 * math.sqrt(max(0.0, 1 - k * k)) * (0.9 + 0.1 * math.sin(yy * 1.3)))
+		shift = rng.randrange(-1, 2)
+		for xx in range(-half, half):
+			px = x + w // 2 + xx
+			cv.put(px, y + yy, 1)
+			if abs(xx) >= half - 1:
+				cv.put(px, y + yy, 4)
+				continue
+			if yy % 3 == 2:
+				continue # брижі
+			# Дзеркальна точка: рядок калюжі → висота над лінією дзеркала (стиснуто вдвічі — перспектива).
+			src_y = axis - 1 - int(yy * 2.6)
+			sx = px + shift
+			if gp[sx, src_y][3] > 0 or gp[sx, src_y + 1][3] > 0:
+				continue # силует банди в калюжі — темний
+			src = MID_GLOW.getpixel((sx, src_y)) if MID_GLOW is not None and 0 <= src_y < H else (0, 0, 0, 0)
+			if src[3] > 0 and rng.random() < 0.8:
+				glow.px[px, y + yy] = src # відображення вікна чи білборда над калюжею
+			elif rng.random() < 0.12:
+				cv.put(px, y + yy, 5) # хмари
+
+
 def puddle(cv: Canvas, glow: Canvas, x: int, y: int, w: int, h: int, refl: str, rng: random.Random) -> None:
-	import math
 	for yy in range(h):
 		half = int(w / 2 * math.sqrt(max(0.0, 1 - ((yy - h / 2) / (h / 2)) ** 2)))
 		for xx in range(-half, half):
@@ -580,18 +650,16 @@ CABLE = None # (x0, y0, x1, y1, провисання) — задає make_fg
 
 
 def cable_y(x: float) -> float:
-	import math
 	x0, y0, x1, y1, sag = CABLE
 	t = (x - x0) / (x1 - x0)
 	return y0 + (y1 - y0) * t + sag * math.sin(math.pi * t)
 
 
-def make_fg(rng: random.Random) -> Canvas:
+def make_fg(rng: random.Random) -> Canvas:  # noqa: C901
 	"""Впритул до камери: дерев'яний бак для води на сталевих ногах (зліва, обрізаний кадром)
 	і кабель, що провисає через кадр. Майже силует — найтемніший план, лише кант світла."""
-	import math
 	cv = Canvas(W, H)
-	tx, tw, ty, th = CX - 132, 150, 34, 150 # бак: майже весь за межами кадру 16:9 — рамка для широких екранів
+	tx, tw, ty, th = CX - 112, 150, 30, 160 # бак: темний передній план у лівому краї кадру
 	# Ноги й розкоси.
 	for lx in (tx + 14, tx + tw - 18):
 		cv.rect(lx, ty + th, 6, H - ty - th, 1)
@@ -636,15 +704,47 @@ def make_fg(rng: random.Random) -> Canvas:
 		cv.put(tx + tw // 2 - hw, ty - 4 - i, 6)
 	# Темніє донизу — передній план найтемніший.
 	for i, y in enumerate(range(ty + 40, ty + th)):
-		cv.dither_rect(tx, y, tw, 1, 0, i / (th - 40) * 0.55)
+		cv.dither_rect(tx, y, tw, 1, 0, 0.45 + i / (th - 40) * 0.45)
 	# Кабель від бака до будки з провисанням (ланцюгова лінія).
 	global CABLE
-	x0, y0, x1, y1 = tx + tw, ty + 30, 604 + CX + 20, 220
-	CABLE = (x0, y0, x1, y1, 44)
+	# Короткий кабель від бака до щогли на парапеті — не ріже вивіску й фасад.
+	x0, y0, x1, y1 = tx + tw, ty + 40, CX + 130, PARAPET_TOP - 30
+	CABLE = (x0, y0, x1, y1, 16)
 	for x in range(x0, x1):
 		y = cable_y(x)
 		cv.put(x, int(y), 0)
 		cv.put(x, int(y) + 1, 1)
+	cv.rect(x1 - 1, y1, 3, PARAPET_TOP - y1, 13) # щогла
+	cv.vline(x1 - 1, y1, PARAPET_TOP - y1, 15)
+	# Труба-коліно витяжки в лівому нижньому куті, упритул до камери: найтемніший план,
+	# холодний кант зверху-зліва (світло з одного напрямку) і бірюзовий відблиск білборда справа.
+	px0 = CX - 10
+	for y in range(300, H):
+		for i in range(26):
+			c = 0 if i > 3 else (5 if i == 1 else (4 if i in (2, 3) else 0))
+			if i == 25:
+				c = 26
+			cv.put(px0 + i, y, c)
+	for x in range(px0, px0 + 74):
+		t = (x - px0) / 74
+		yt = 300 - int(18 * math.sin(t * math.pi / 2))
+		for k in range(24):
+			cv.put(x, yt + k, 0 if k > 2 else (5 if k == 0 else 4))
+	for y in range(278, 304): # фланець
+		cv.put(px0 + 74, y, 3)
+		cv.put(px0 + 75, y, 0)
+	# Товстий кабель упритул до камери в лівому верхньому куті — передній план у будь-якому форматі
+	# (найбільший паралакс, майже чорний силует з холодним кантом зверху).
+	for x in range(0, CX + 150):
+		t = x / (CX + 150)
+		y = int(-6 + 56 * t * t)
+		for k in range(4):
+			cv.put(x, y + k, 0 if k else 5)
+	for x in range(CX + 20, CX + 100):
+		t = (x - CX - 20) / 80
+		y = int(4 + 20 * t * t + 3 * t)
+		cv.put(x, y, 1)
+		cv.put(x, y + 1, 0)
 	return cv
 
 
@@ -745,6 +845,16 @@ def save(cv: Canvas, name: str) -> None:
 	cv.save(os.path.join(OUT, name))
 
 
+def save_layer(cv: Canvas, name: str, keep_width: bool = False) -> None:
+	"""Повноекранний шар обрізаємо до непрозорої частини й записуємо зсув у menu_layout.json.
+	Прозорі пікселі GPU однаково малює й змішує — обрізання прямо зменшує перемальовування (fill rate)."""
+	box = cv.img.getbbox() or (0, 0, 1, 1)
+	if keep_width:
+		box = (0, box[1], cv.w, box[3])
+	cv.img.crop(box).save(os.path.join(OUT, name))
+	layout.setdefault("layers", {})[name.replace(".png", "")] = [box[0], box[1]]
+
+
 def save_normal(name: str, strength: float = 2.5) -> None:
 	"""Карта нормалей для шару: висота = яскравість (цегла вища за розчин, рама вища за скло).
 	Дає об'єм під PointLight2D: світло неону й лампи «чіпляє» краї цеглин і карнизів.
@@ -767,31 +877,35 @@ def main() -> None:
 	os.makedirs(OUT, exist_ok=True)
 	rng = random.Random(11)
 	save(make_sky(), "sky.png")
-	save(make_clouds(random.Random(3)), "clouds.png")
-	save(make_far(random.Random(5)), "far.png")
+	save_layer(make_clouds(random.Random(3)), "clouds.png", keep_width=True)
+	save_layer(make_far(random.Random(5)), "far.png")
 	viaduct, train = make_viaduct(random.Random(7))
-	save(viaduct, "viaduct.png")
+	save_layer(viaduct, "viaduct.png")
 	save(train, "train.png")
 	save(make_train_glow(), "train_glow.png")
 	mid, mid_glow = make_mid(random.Random(9))
-	save(mid, "mid.png")
-	save(mid_glow, "mid_glow.png")
+	global MID_GLOW
+	MID_GLOW = mid_glow.img.copy()
+	save_layer(mid, "mid.png")
+	save_layer(mid_glow, "mid_glow.png")
 	frame, letters = make_sign()
-	save(frame, "sign_frame.png")
+	save_layer(frame, "sign_frame.png")
 	for i, (lc, _x, _y) in enumerate(letters):
 		save(lc, f"sign_letter_{i}.png")
 	roof, roof_glow = make_roof(random.Random(13), letters)
-	save(roof, "roof.png")
-	save(roof_glow, "roof_glow.png")
-	save(make_fg(rng), "fg.png")
+	save_layer(roof, "roof.png")
+	save_layer(roof_glow, "roof_glow.png")
+	save_layer(make_fg(rng), "fg.png")
 	for name in ("mid.png", "roof.png", "fg.png", "sign_frame.png", "viaduct.png"):
 		save_normal(name)
 	layout["viaduct_y"] = 214 - 16
-	layout["street"] = {"lanes": [288, 292], "y_steam": [178 + CX, 296]}
-	layout["crow"] = [300 + CX, int(cable_y(300 + CX)) - 7]
+	layout["street"] = {"lanes": [288, 292], "y_steam": [74 + CX, 296]}
+	layout["crow"] = [CX + 70, int(cable_y(CX + 70)) - 7]
 	layout["heli_y"] = 64
 	# Банда: ліва-центральна частина кадру, ноги на даху, голови й плечі — на тлі освітленого міста.
-	layout["gang"] = {"runner": [92 + CX, 348 - 73], "hacker": [130 + CX, 344 - 71], "leader": [170 + CX, 346 - 73]}
+	# Хлопець сидить на парапеті (низ спрайта = верх парапету), двоє стоять на даху перед ним.
+	layout["gang"] = GANG_POS
+	layout["gang_frames"] = GANG_FRAMES
 	make_fx()
 	with open(os.path.join(OUT, "menu_layout.json"), "w", encoding="utf-8") as f:
 		json.dump(layout, f, ensure_ascii=False, indent=1)

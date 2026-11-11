@@ -94,6 +94,7 @@ script = ExtResource("center")
 unique_name_in_owner = true
 
 [node name="SkySprite" type="Sprite2D" parent="World/Sky"]
+unique_name_in_owner = true
 material = SubResource("unshaded")
 position = Vector2(-432, -180)
 texture = ExtResource("sky")
@@ -121,6 +122,7 @@ centered = false
 unique_name_in_owner = true
 
 [node name="Far" type="Sprite2D" parent="World/FarLayer"]
+unique_name_in_owner = true
 material = SubResource("unshaded")
 position = Vector2(-432, -180)
 texture = ExtResource("far")

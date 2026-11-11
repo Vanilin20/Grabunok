@@ -8,6 +8,7 @@ const HEIST_SCENE: String = "res://scenes/main/heist.tscn"
 const RESULT_SCENE: String = "res://scenes/ui/result.tscn"
 const JOIN_SCENE: String = "res://scenes/ui/join_room.tscn"
 const SENSOR_TEST_SCENE: String = "res://scenes/ui/sensor_test.tscn"
+const BENCHMARK_SCENE: String = "res://scenes/ui/benchmark.tscn"
 const TOAST_TIME: float = 2.8
 
 ## Автотести вимикають перемикання екранів, щоб їхня сцена не замінювалась.
@@ -41,6 +42,10 @@ func show_join() -> void:
 
 func show_sensor_test() -> void:
 	go(SENSOR_TEST_SCENE)
+
+
+func show_benchmark() -> void:
+	go(BENCHMARK_SCENE)
 
 
 func show_menu() -> void:

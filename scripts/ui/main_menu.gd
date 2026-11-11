@@ -6,7 +6,7 @@ extends Control
 @onready var _join_button: Button = %JoinButton
 @onready var _sensors_button: Button = %SensorsButton
 @onready var _version_label: Label = %VersionLabel
-@onready var _hint_label: Label = %HintLabel
+@onready var _name_title: Label = %NameTitle
 
 
 func _ready() -> void:
@@ -30,7 +30,9 @@ func _update_buttons() -> void:
 	_host_button.disabled = not has_name
 	_join_button.disabled = not has_name
 	# Вимкнені кнопки пояснюють себе: чого бракує, щоб почати.
-	_hint_label.visible = not has_name
+	# Підказка — у заголовку поля: панель не змінює розмір між станами.
+	_name_title.text = "ТВОЄ ІМ'Я" if has_name else "! БРАКУЄ ІМЕНІ"
+	_name_title.add_theme_color_override("font_color", Palette.STEEL_2 if has_name else Palette.NEON_3)
 
 
 func _commit_name() -> void:

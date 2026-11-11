@@ -50,6 +50,16 @@ func _init() -> void:
 	theme.set_color("font_outline_color", "Button", NIGHT_0)
 	theme.set_constant("outline_size", "Button", 2)
 
+	# Другорядна кнопка (тест датчиків тощо): сталева рамка без світіння.
+	theme.add_type("SecondaryButton")
+	theme.set_type_variation("SecondaryButton", "Button")
+	theme.set_stylebox("normal", "SecondaryButton", _box("button_secondary", Vector4(10, 7, 10, 8), GLOW))
+	theme.set_stylebox("hover", "SecondaryButton", _box("button_secondary_hover", Vector4(10, 7, 10, 8), GLOW))
+	theme.set_stylebox("pressed", "SecondaryButton", _box("button_secondary_hover", Vector4(10, 8, 10, 7), GLOW))
+	theme.set_color("font_color", "SecondaryButton", CYAN_2)
+	theme.set_color("font_hover_color", "SecondaryButton", Color("ffffff"))
+	theme.set_color("font_pressed_color", "SecondaryButton", Color("ffffff"))
+
 	theme.set_color("font_color", "Label", STEEL_3)
 	theme.set_constant("line_spacing", "Label", 4)
 

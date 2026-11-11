@@ -40,7 +40,8 @@ def main() -> int:
 	mask = np.zeros((H, W), bool)
 	for key, file in GANG.items():
 		sx, sy = layout["gang"][key]
-		spr = np.asarray(Image.open(os.path.join(ROOT, "assets", "sprites", "menu", file)).convert("RGBA"))[:, :FRAME[0]]
+		fw = layout.get("gang_frames", {}).get(key, FRAME)[0]
+		spr = np.asarray(Image.open(os.path.join(ROOT, "assets", "sprites", "menu", file)).convert("RGBA"))[:, :fw]
 		alpha = spr[..., 3] > 0
 		big = np.kron(alpha, np.ones((int(scale), int(scale)), bool))
 		x0 = int(round((sx - 432 + vw / 2) * scale))
@@ -74,9 +75,17 @@ def main() -> int:
 				best = (v, ox, oy)
 	# Довідково: локальний RMS-контраст під маскою.
 	k = max(1, int(8 * scale))
-	pad = np.pad(L, k // 2, mode="edge")
-	win = np.lib.stride_tricks.sliding_window_view(pad, (k, k))[:H, :W]
-	local = win.std(axis=(-1, -2))
+	def box(a):
+		# Середнє у вікні k×k через сумарну таблицю — без величезних масивів на 2400×1080.
+		c = np.pad(np.cumsum(np.cumsum(a, 0), 1), ((1, 0), (1, 0)))
+		y0 = np.clip(np.arange(H) - k // 2, 0, H)
+		y1 = np.clip(np.arange(H) + k // 2 + 1, 0, H)
+		x0 = np.clip(np.arange(W) - k // 2, 0, W)
+		x1 = np.clip(np.arange(W) + k // 2 + 1, 0, W)
+		area = (y1 - y0)[:, None] * (x1 - x0)[None, :]
+		return (c[y1][:, x1] - c[y0][:, x1] - c[y1][:, x0] + c[y0][:, x0]) / area
+	m = box(L)
+	local = np.sqrt(np.maximum(box(L * L) - m * m, 0))
 	print(f"[focus] {os.path.basename(shot)}: банда проти оточення {sep:.2f}:1 (фігури L={lf:.3f}, кільце L={lr:.3f})")
 	print(f"[focus] найкраща інша область тієї ж форми: {best[0]:.2f}:1, зсув ({best[1] / scale:+.0f}, {best[2] / scale:+.0f}) базових px")
 	print(f"[focus] довідково: локальний RMS під бандою {local[mask].mean():.4f}, середній по кадру {local.mean():.4f}")

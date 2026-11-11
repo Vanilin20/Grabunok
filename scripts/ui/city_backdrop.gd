@@ -22,7 +22,7 @@ const GANG_ORDER: Array[String] = ["runner", "leader", "hacker"]
 const GANG_FPS: Array[float] = [3.2, 2.8, 3.6]
 const LIGHT_LAYER_WORLD: int = 1 # місто й дах
 const LIGHT_LAYER_GANG: int = 2 # банда: її освітлюють лише близькі джерела (лампа, ліхтарик, телефон)
-const NEON_HDR: float = 1.25 # неон яскравіший за білий → його підхоплює glow
+const NEON_HDR: float = 1.3 # неон яскравіший за білий → його підхоплює glow
 ## Максимальний зсув кожного плану при паралаксі (px): що ближче, то більше.
 const PARALLAX: Dictionary = {"Sky": 0.0, "FarLayer": 1.0, "MidLayer": 2.0, "RoofLayer": 4.0, "FgLayer": 7.0}
 ## Ліхтарик світить уперед — на дах перед бандою й на парапет (вгору по екрану, праворуч).
@@ -32,6 +32,8 @@ const NIGHT_COLOR: Color = Color(0.56, 0.54, 0.74, 1)
 @onready var _world: Node2D = %World
 @onready var _night: CanvasModulate = %Night
 @onready var _clouds: Node2D = %Clouds
+@onready var _sky_sprite: Sprite2D = %SkySprite
+@onready var _far_sprite: Sprite2D = %Far
 @onready var _sky_fx: Node2D = %SkyFx
 @onready var _far_fx: Node2D = %FarFx
 @onready var _mid_layer: Node2D = %MidLayer
@@ -76,7 +78,7 @@ var _lightning_wait: float = 0.0
 var _lightning_t: float = -1.0
 var _parallax: Vector2 = Vector2.ZERO
 var _layers: Dictionary = {} # Node2D -> базова позиція
-var _still_camera: bool = OS.get_cmdline_args().has("--write-movie") or OS.get_cmdline_user_args().has("--still")
+var _still_camera: bool = OS.has_feature("movie") or OS.get_cmdline_user_args().has("--still")
 
 
 func _ready() -> void:
@@ -90,6 +92,11 @@ func _ready() -> void:
 	_additive.light_mode = CanvasItemMaterial.LIGHT_MODE_UNSHADED
 	_layout = _load_layout()
 	_lightning_wait = _rng.randf_range(20.0, 30.0)
+	if _still_camera:
+		_lightning_wait = 4.0 # запис демонстрації: блискавка потрапляє в короткий ролик
+		_heli_wait = 0.5
+		_train_wait = 1.0
+	_apply_layer_offsets(_layout.get("layers", {}))
 	for layer_name: String in PARALLAX:
 		var layer: Node2D = _world.get_node(layer_name)
 		_layers[layer] = layer.position
@@ -137,6 +144,24 @@ func _load_layout() -> Dictionary:
 ## Координати з генератора (полотно 864×360) → локальні координати World (центр полотна = 0,0).
 func _to_world(p: Array) -> Vector2:
 	return Vector2(float(p[0]), float(p[1])) - CANVAS_SIZE / 2.0
+
+
+## Шари обрізані генератором до непрозорої частини (менше перемальовування на GPU) —
+## ставимо кожен спрайт туди, де ця частина лежала на повному полотні 864×360.
+func _apply_layer_offsets(layers: Dictionary) -> void:
+	var nodes: Dictionary = {
+		"far": "FarLayer/Far", "viaduct": "MidLayer/Viaduct", "mid": "MidLayer/Mid", "mid_glow": "MidLayer/MidGlow",
+		"sign_frame": "MidLayer/SignFrame", "roof": "RoofLayer/Roof", "roof_glow": "RoofLayer/RoofGlow", "fg": "FgLayer/Fg",
+		"clouds": "Sky/Clouds/CloudsA",
+	}
+	for key: String in layers:
+		if not nodes.has(key):
+			continue
+		var offset := Vector2(float(layers[key][0]), float(layers[key][1]))
+		var sprite: Sprite2D = _world.get_node(nodes[key])
+		sprite.position = offset - CANVAS_SIZE / 2.0
+		if key == "clouds":
+			(_world.get_node("Sky/Clouds/CloudsB") as Sprite2D).position = offset - CANVAS_SIZE / 2.0 + Vector2(CANVAS_SIZE.x, 0)
 
 
 func _make_light_texture() -> GradientTexture2D:
@@ -295,31 +320,35 @@ func _build_lights(lights: Array) -> void:
 		match str(info["name"]):
 			"sign":
 				# Неон світить на каркас і будинок; банду не заливає — зі спини вони силуети з рожевим кантом.
-				_sign_light = _make_light(pos, color, 5.0, 2.0)
+				_sign_light = _make_light(pos, color, 3.6, 2.0)
 				_sign_light.height = 60.0
 				_sign_light.range_item_cull_mask = LIGHT_LAYER_WORLD
 				_mid_layer.add_child(_sign_light)
 				_sign_halo = Sprite2D.new()
 				_sign_halo.texture = _light_texture
 				_sign_halo.material = _additive
-				_sign_halo.modulate = Color(color, 0.18)
-				_sign_halo.scale = Vector2(2.4, 0.9)
+				_sign_halo.modulate = Color(color, 0.32)
+				_sign_halo.scale = Vector2(3.0, 1.2)
 				_sign_halo.position = pos
 				_mid_layer.add_child(_sign_halo)
 				# Рожевий відсвіт на мокрому даху й парапеті нашої будівлі.
-				_bounce_light = _make_light(_to_world([380, 330]), color, 3.4, 1.0)
+				# Рожевий відсвіт — лише на каркасі й верхніх поверхах під вивіскою (той самий будинок).
+				_bounce_light = _make_light(pos + Vector2(0, 70), color, 2.4, 1.1)
 				_bounce_light.range_item_cull_mask = LIGHT_LAYER_WORLD
-				_roof_layer.add_child(_bounce_light)
+				_mid_layer.add_child(_bounce_light)
 			"bulb":
-				var bulb := _make_light(pos, color, 6.0, 2.2)
+				var bulb := _make_light(pos, color, 2.8, 2.2) # радіус лише на будку й дах біля неї: дешевше для GPU
 				bulb.range_item_cull_mask = LIGHT_LAYER_WORLD
 				_roof_layer.add_child(bulb)
 				_flicker_lights.append({"node": bulb, "base": bulb.energy, "kind": "buzz"})
 			"billboard":
 				# Холодне світло реклами за бандою: контрове світло на банду й відсвіт на парапет.
-				var box := _make_light(pos, color, 3.2, 1.4)
-				box.height = 40.0
-				_mid_layer.add_child(box)
+				# Реклама світить униз і вперед: на парапет, на дах перед бандою, на калюжу.
+				# Банду не заливає спереду — для неї це контрове світло (кант намальований у спрайтах).
+				var box := _make_light(pos + Vector2(0, 46), color, 2.6, 2.4)
+				box.range_item_cull_mask = LIGHT_LAYER_WORLD
+				box.height = 30.0
+				_roof_layer.add_child(box)
 			"bar":
 				var bar := _make_light(pos, color, 1.3, 1.0)
 				bar.range_item_cull_mask = LIGHT_LAYER_WORLD
@@ -333,7 +362,9 @@ func _build_gang(gang: Dictionary) -> void:
 		if not gang.has(key):
 			continue
 		var sprite := AnimatedSprite2D.new()
-		sprite.sprite_frames = _sheet_frames("res://assets/sprites/menu/gang_%s.png" % key, GANG_FRAME, GANG_FPS[i])
+		var frame_size: Array = _layout.get("gang_frames", {}).get(key, [GANG_FRAME.x, GANG_FRAME.y])
+		var fs := Vector2i(int(frame_size[0]), int(frame_size[1]))
+		sprite.sprite_frames = _sheet_frames("res://assets/sprites/menu/gang_%s.png" % key, fs, GANG_FPS[i])
 		sprite.centered = false
 		sprite.position = _to_world(gang[key])
 		sprite.light_mask = LIGHT_LAYER_GANG
@@ -342,7 +373,8 @@ func _build_gang(gang: Dictionary) -> void:
 		_gang_root.add_child(sprite)
 		var occluder := LightOccluder2D.new()
 		var poly := OccluderPolygon2D.new()
-		poly.polygon = PackedVector2Array([Vector2(13, 22), Vector2(33, 22), Vector2(31, 72), Vector2(15, 72)])
+		var k: float = fs.y / 76.0
+		poly.polygon = PackedVector2Array([Vector2(13, 22) * k, Vector2(33, 22) * k, Vector2(31, 72) * k, Vector2(15, 72) * k])
 		occluder.occluder = poly
 		occluder.occluder_light_mask = LIGHT_LAYER_GANG
 		sprite.add_child(occluder)
@@ -355,7 +387,7 @@ func _build_gang(gang: Dictionary) -> void:
 				_flashlight.energy = 3.2
 				_flashlight.texture_scale = 1.6
 				_flashlight.height = 70.0
-				_flashlight.position = Vector2(48, 44)
+				_flashlight.position = Vector2(51, 44) * k
 				_flashlight.rotation = deg_to_rad(FLASH_ANGLE)
 				_flashlight.range_item_cull_mask = LIGHT_LAYER_WORLD | LIGHT_LAYER_GANG
 				_flashlight.shadow_enabled = true
@@ -364,16 +396,16 @@ func _build_gang(gang: Dictionary) -> void:
 				_flashlight.shadow_item_cull_mask = LIGHT_LAYER_GANG
 				sprite.add_child(_flashlight)
 				_flash_beam = _beam_polygon(64.0, 16.0, Color(Palette.LAMP_4, 0.16))
-				_flash_beam.position = Vector2(48, 44)
+				_flash_beam.position = Vector2(51, 44) * k
 				_flash_beam.rotation = deg_to_rad(FLASH_ANGLE - 90.0)
 				sprite.add_child(_flash_beam)
 			"hacker":
-				var phone_light := _make_light(Vector2(39, 34), Palette.CYAN_2, 0.7, 2.0)
+				var phone_light := _make_light(Vector2(7, 31) * k, Palette.CYAN_2, 0.8, 2.0)
 				sprite.add_child(phone_light)
 			"runner":
-				_ember_light = _make_light(Vector2(6, 49), Palette.LAMP_2, 0.14, 0.8)
+				_ember_light = _make_light(Vector2(5, 54), Palette.LAMP_2, 0.14, 0.8)
 				sprite.add_child(_ember_light)
-				sprite.add_child(_make_steam(Vector2(6, 48), 10, Vector2(0, 0), 0.5, 2.6, 0.5))
+				sprite.add_child(_make_steam(Vector2(5, 53), 10, Vector2(0, 0), 0.5, 2.6, 0.5))
 
 
 func _make_steam(pos: Vector2, amount: int, extents: Vector2, scale_min: float, lifetime: float, alpha: float) -> CPUParticles2D:
@@ -505,7 +537,7 @@ func _update_letters(delta: float) -> void:
 	if _sign_light != null:
 		_sign_light.energy = 2.0 * (0.55 + 0.45 * level)
 		_bounce_light.energy = 1.0 * (0.5 + 0.5 * level)
-		_sign_halo.modulate.a = 0.18 * level
+		_sign_halo.modulate.a = 0.32 * level
 
 
 func _update_lights(delta: float) -> void:
@@ -591,7 +623,7 @@ func _update_lightning(delta: float) -> void:
 		_lightning_wait -= delta
 		if _lightning_wait <= 0.0:
 			_lightning_t = 0.0
-			_bolt.position = Vector2(_rng.randf_range(-380.0, 300.0), -180.0)
+			_bolt.position = Vector2(_rng.randf_range(-380.0, -60.0), -180.0) # ліва половина неба — не за панеллю меню
 			lightning_struck.emit(_rng.randf_range(1.0, 3.0))
 		return
 	# Подвійний спалах, потім повільне згасання (R10 у refs.md).
@@ -603,8 +635,15 @@ func _update_lightning(delta: float) -> void:
 	elif t >= 0.2:
 		flash = maxf(0.0, 1.0 - (t - 0.2) / 0.6)
 	_bolt.visible = t < 0.2
-	_night.color = NIGHT_COLOR.lerp(Color(1.05, 1.05, 1.25), flash * 0.75)
+	# Спалах освітлює все місто й дах (холодне біле), банда стає чорними силуетами.
+	_night.color = NIGHT_COLOR.lerp(Color(1.5, 1.5, 1.8), flash)
+	# Небо й далеке місто не реагують на CanvasModulate (світяться самі) — підсвічуємо їх окремо.
+	var sky_flash := Color(1.0 + flash * 1.6, 1.0 + flash * 1.6, 1.0 + flash * 2.0)
+	for node: CanvasItem in [_sky_sprite, _clouds, _far_sprite]:
+		node.modulate = sky_flash
 	if t > 0.8:
 		_lightning_t = -1.0
 		_night.color = NIGHT_COLOR
+		for node: CanvasItem in [_sky_sprite, _clouds, _far_sprite]:
+			node.modulate = Color.WHITE
 		_lightning_wait = _rng.randf_range(20.0, 30.0)

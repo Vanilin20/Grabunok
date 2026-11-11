@@ -11,7 +11,7 @@ import sys
 from PIL import Image
 
 ROOT = os.path.join(os.path.dirname(__file__), "..", "..")
-SPRITES = {"assets/sprites/menu/gang_leader.png": 48, "assets/sprites/menu/gang_hacker.png": 48, "assets/sprites/menu/gang_runner.png": 48}
+SPRITES = {"assets/sprites/menu/gang_leader.png": 72, "assets/sprites/menu/gang_hacker.png": 67, "assets/sprites/menu/gang_runner.png": 48}
 MIN_HEIGHT = 16
 
 
