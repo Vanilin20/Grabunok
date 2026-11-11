@@ -1,0 +1,180 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/sensor_test.gd" id="1_script"]
+
+[sub_resource type="StyleBoxFlat" id="fill_warn"]
+bg_color = Color(1, 0.29, 0.239, 1)
+anti_aliasing = false
+
+[sub_resource type="StyleBoxFlat" id="fill_mic"]
+bg_color = Color(0.239, 0.878, 1, 1)
+anti_aliasing = false
+
+[node name="SensorTest" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_script")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.039, 0.035, 0.071, 1)
+
+[node name="Margin" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 12
+
+[node name="Root" type="VBoxContainer" parent="Margin"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Top" type="HBoxContainer" parent="Margin/Root"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="BackButton" type="Button" parent="Margin/Root/Top"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "< НАЗАД"
+
+[node name="Title" type="Label" parent="Margin/Root/Top"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.949, 0.757, 0.306, 1)
+text = "ТЕСТ ДАТЧИКІВ"
+vertical_alignment = 1
+
+[node name="InfoLabel" type="Label" parent="Margin/Root/Top"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.451, 0.431, 0.549, 1)
+vertical_alignment = 1
+
+[node name="Columns" type="HBoxContainer" parent="Margin/Root"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 16
+
+[node name="Left" type="VBoxContainer" parent="Margin/Root/Columns"]
+custom_minimum_size = Vector2(220, 0)
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="VibTitle" type="Label" parent="Margin/Root/Columns/Left"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.451, 0.431, 0.549, 1)
+text = "ВІБРАЦІЯ"
+
+[node name="VibGrid" type="GridContainer" parent="Margin/Root/Columns/Left"]
+layout_mode = 2
+theme_override_constants/h_separation = 6
+theme_override_constants/v_separation = 6
+columns = 2
+
+[node name="VibShort" type="Button" parent="Margin/Root/Columns/Left/VibGrid"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "КОРОТКА"
+
+[node name="VibLong" type="Button" parent="Margin/Root/Columns/Left/VibGrid"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "ДОВГА"
+
+[node name="VibWeak" type="Button" parent="Margin/Root/Columns/Left/VibGrid"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "СЛАБКА"
+
+[node name="VibPattern" type="Button" parent="Margin/Root/Columns/Left/VibGrid"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "СЕЙФ"
+
+[node name="Spacer" type="Control" parent="Margin/Root/Columns/Left"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="OrientationButton" type="Button" parent="Margin/Root/Columns/Left"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+text = "ПОВЕРНУТИ ЕКРАН"
+
+[node name="Right" type="VBoxContainer" parent="Margin/Root/Columns"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+
+[node name="GyroLabel" type="Label" parent="Margin/Root/Columns/Right"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "ГІРОСКОП"
+
+[node name="AccelLabel" type="Label" parent="Margin/Root/Columns/Right"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "АКСЕЛЕР."
+
+[node name="StillTitle" type="Label" parent="Margin/Root/Columns/Right"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.451, 0.431, 0.549, 1)
+text = "«ЗАВМРИ!» — тримай телефон нерухомо"
+
+[node name="StillBar" type="ProgressBar" parent="Margin/Root/Columns/Right"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 12)
+layout_mode = 2
+theme_override_styles/fill = SubResource("fill_warn")
+show_percentage = false
+
+[node name="StillLabel" type="Label" parent="Margin/Root/Columns/Right"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "—"
+
+[node name="MicTitle" type="Label" parent="Margin/Root/Columns/Right"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.451, 0.431, 0.549, 1)
+text = "МІКРОФОН — рівень шуму в кімнаті"
+
+[node name="MicButton" type="Button" parent="Margin/Root/Columns/Right"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "УВІМКНУТИ МІКРОФОН"
+
+[node name="MicBar" type="ProgressBar" parent="Margin/Root/Columns/Right"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 12)
+layout_mode = 2
+theme_override_styles/fill = SubResource("fill_mic")
+show_percentage = false
+
+[node name="MicLabel" type="Label" parent="Margin/Root/Columns/Right"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "вимкнено"

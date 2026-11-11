@@ -1,0 +1,109 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/lobby.gd" id="1_script"]
+[ext_resource type="PackedScene" path="res://scenes/ui/city_backdrop.tscn" id="2_backdrop"]
+
+[node name="Lobby" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_script")
+
+[node name="CityBackdrop" parent="." instance=ExtResource("2_backdrop")]
+
+[node name="Ui" type="CanvasLayer" parent="."]
+layer = 2
+
+[node name="Panel" type="PanelContainer" parent="Ui"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -300.0
+offset_top = -164.0
+offset_right = 300.0
+offset_bottom = 164.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Columns" type="HBoxContainer" parent="Ui/Panel"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="Left" type="VBoxContainer" parent="Ui/Panel/Columns"]
+custom_minimum_size = Vector2(230, 0)
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="CodeTitle" type="Label" parent="Ui/Panel/Columns/Left"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.451, 0.431, 0.549, 1)
+text = "КОД КІМНАТИ"
+
+[node name="CodeLabel" type="Label" parent="Ui/Panel/Columns/Left"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.949, 0.757, 0.306, 1)
+theme_override_colors/font_outline_color = Color(0.42, 0.29, 0.06, 1)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 32
+text = "····"
+
+[node name="IpLabel" type="Label" parent="Ui/Panel/Columns/Left"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.451, 0.431, 0.549, 1)
+text = "IP"
+autowrap_mode = 3
+
+[node name="BandTitle" type="Label" parent="Ui/Panel/Columns/Left"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.949, 0.757, 0.306, 1)
+text = "БАНДА"
+
+[node name="PlayersBox" type="VBoxContainer" parent="Ui/Panel/Columns/Left"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 8
+
+[node name="LeaveButton" type="Button" parent="Ui/Panel/Columns/Left"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "ВИЙТИ"
+
+[node name="Right" type="VBoxContainer" parent="Ui/Panel/Columns"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 6
+
+[node name="RoleTitle" type="Label" parent="Ui/Panel/Columns/Right"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.949, 0.757, 0.306, 1)
+text = "ТВОЯ РОЛЬ"
+
+[node name="RolesBox" type="VBoxContainer" parent="Ui/Panel/Columns/Right"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 6
+
+[node name="HintLabel" type="Label" parent="Ui/Panel/Columns/Right"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.451, 0.431, 0.549, 1)
+text = ""
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="StartButton" type="Button" parent="Ui/Panel/Columns/Right"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.36, 0.941, 0.541, 1)
+text = "ПОЧАТИ СПРАВУ"

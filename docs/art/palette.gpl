@@ -1,0 +1,36 @@
+GIMP Palette
+Name: Banda
+Columns: 8
+#
+  7   6  13	night_0
+ 14  12  26	night_1
+ 23  20  40	night_2
+ 34  29  56	night_3
+ 47  40  73	night_4
+ 64  55  94	night_5
+ 87  75 120	night_6
+120 107 152	night_7
+ 42  23  23	brick_0
+ 69  34  31	brick_1
+ 99  48  42	brick_2
+135  69  57	brick_3
+176  99  74	brick_4
+ 58  63  79	steel_0
+ 90  97 117	steel_1
+139 147 168	steel_2
+199 206 222	steel_3
+ 74  46  26	lamp_0
+138  90  36	lamp_1
+216 150  47	lamp_2
+247 201  90	lamp_3
+255 242 196	lamp_4
+ 92  16  54	neon_0
+163  25  91	neon_1
+255  61 127	neon_2
+255 179 207	neon_3
+ 15  58  77	cyan_0
+ 26 127 153	cyan_1
+ 61 224 255	cyan_2
+194 246 255	cyan_3
+232  67  58	alarm
+ 92 240 138	ok
