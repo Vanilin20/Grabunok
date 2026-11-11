@@ -1,25 +1,50 @@
-[gd_scene load_steps=23 format=3]
+[gd_scene load_steps=34 format=3]
 
-[ext_resource type="Script" path="res://scripts/ui/city_backdrop.gd" id="1_script"]
-[ext_resource type="Script" path="res://scripts/ui/center_on_viewport.gd" id="2_center"]
-[ext_resource type="Texture2D" path="res://assets/sprites/menu/sky.png" id="3_sky"]
-[ext_resource type="Texture2D" path="res://assets/sprites/menu/clouds.png" id="4_clouds"]
-[ext_resource type="Texture2D" path="res://assets/sprites/menu/far.png" id="5_far"]
-[ext_resource type="Texture2D" path="res://assets/sprites/menu/viaduct.png" id="6_viaduct"]
-[ext_resource type="Texture2D" path="res://assets/sprites/menu/train.png" id="7_train"]
-[ext_resource type="Texture2D" path="res://assets/sprites/menu/train_glow.png" id="8_train_glow"]
-[ext_resource type="Texture2D" path="res://assets/sprites/menu/mid.png" id="9_mid"]
-[ext_resource type="Texture2D" path="res://assets/sprites/menu/mid_glow.png" id="10_mid_glow"]
-[ext_resource type="Texture2D" path="res://assets/sprites/menu/sign_frame.png" id="11_sign_frame"]
-[ext_resource type="Texture2D" path="res://assets/sprites/menu/roof.png" id="12_roof"]
-[ext_resource type="Texture2D" path="res://assets/sprites/menu/roof_glow.png" id="13_roof_glow"]
-[ext_resource type="Texture2D" path="res://assets/sprites/menu/fg.png" id="14_fg"]
-[ext_resource type="Texture2D" path="res://assets/sprites/fx/rain_far.png" id="15_rain_far"]
-[ext_resource type="Texture2D" path="res://assets/sprites/fx/rain_near.png" id="16_rain_near"]
-[ext_resource type="Texture2D" path="res://assets/sprites/fx/splash.png" id="17_splash"]
+[ext_resource type="Script" path="res://scripts/ui/city_backdrop.gd" id="script"]
+[ext_resource type="Script" path="res://scripts/ui/center_on_viewport.gd" id="center"]
+[ext_resource type="Texture2D" path="res://assets/sprites/menu/sky.png" id="sky"]
+[ext_resource type="Texture2D" path="res://assets/sprites/menu/clouds.png" id="clouds"]
+[ext_resource type="Texture2D" path="res://assets/sprites/menu/far.png" id="far"]
+[ext_resource type="Texture2D" path="res://assets/sprites/menu/viaduct.png" id="viaduct"]
+[ext_resource type="Texture2D" path="res://assets/sprites/menu/viaduct_n.png" id="viaduct_n"]
+[ext_resource type="Texture2D" path="res://assets/sprites/menu/train.png" id="train"]
+[ext_resource type="Texture2D" path="res://assets/sprites/menu/train_glow.png" id="train_glow"]
+[ext_resource type="Texture2D" path="res://assets/sprites/menu/mid.png" id="mid"]
+[ext_resource type="Texture2D" path="res://assets/sprites/menu/mid_n.png" id="mid_n"]
+[ext_resource type="Texture2D" path="res://assets/sprites/menu/mid_glow.png" id="mid_glow"]
+[ext_resource type="Texture2D" path="res://assets/sprites/menu/sign_frame.png" id="sign_frame"]
+[ext_resource type="Texture2D" path="res://assets/sprites/menu/sign_frame_n.png" id="sign_frame_n"]
+[ext_resource type="Texture2D" path="res://assets/sprites/menu/roof.png" id="roof"]
+[ext_resource type="Texture2D" path="res://assets/sprites/menu/roof_n.png" id="roof_n"]
+[ext_resource type="Texture2D" path="res://assets/sprites/menu/roof_glow.png" id="roof_glow"]
+[ext_resource type="Texture2D" path="res://assets/sprites/menu/fg.png" id="fg"]
+[ext_resource type="Texture2D" path="res://assets/sprites/menu/fg_n.png" id="fg_n"]
+[ext_resource type="Texture2D" path="res://assets/sprites/fx/rain_far.png" id="rain_far"]
+[ext_resource type="Texture2D" path="res://assets/sprites/fx/rain_near.png" id="rain_near"]
+[ext_resource type="Texture2D" path="res://assets/sprites/fx/splash.png" id="splash"]
 
 [sub_resource type="CanvasItemMaterial" id="unshaded"]
 light_mode = 1
+
+[sub_resource type="CanvasTexture" id="viaduct_ct"]
+diffuse_texture = ExtResource("viaduct")
+normal_texture = ExtResource("viaduct_n")
+
+[sub_resource type="CanvasTexture" id="mid_ct"]
+diffuse_texture = ExtResource("mid")
+normal_texture = ExtResource("mid_n")
+
+[sub_resource type="CanvasTexture" id="sign_ct"]
+diffuse_texture = ExtResource("sign_frame")
+normal_texture = ExtResource("sign_frame_n")
+
+[sub_resource type="CanvasTexture" id="roof_ct"]
+diffuse_texture = ExtResource("roof")
+normal_texture = ExtResource("roof_n")
+
+[sub_resource type="CanvasTexture" id="fg_ct"]
+diffuse_texture = ExtResource("fg")
+normal_texture = ExtResource("fg_n")
 
 [sub_resource type="Gradient" id="rain_fade"]
 offsets = PackedFloat32Array(0, 0.1, 0.85, 1)
@@ -41,74 +66,100 @@ fill = 1
 fill_from = Vector2(0.5, 0.45)
 fill_to = Vector2(0.5, -0.2)
 
+[sub_resource type="Environment" id="glow_env"]
+background_mode = 3
+glow_enabled = true
+glow_intensity = 0.4
+glow_strength = 0.9
+glow_bloom = 0.0
+glow_blend_mode = 0
+glow_hdr_threshold = 0.9
+glow_hdr_scale = 1.0
+
 [node name="CityBackdrop" type="Node2D"]
-script = ExtResource("1_script")
+script = ExtResource("script")
+
+[node name="Glow" type="WorldEnvironment" parent="."]
+environment = SubResource("glow_env")
 
 [node name="Night" type="CanvasModulate" parent="."]
+unique_name_in_owner = true
 color = Color(0.56, 0.54, 0.74, 1)
 
 [node name="World" type="Node2D" parent="."]
 unique_name_in_owner = true
-script = ExtResource("2_center")
+script = ExtResource("center")
 
-[node name="Sky" type="Sprite2D" parent="World"]
-material = SubResource("unshaded")
-position = Vector2(-432, -180)
-texture = ExtResource("3_sky")
-centered = false
-
-[node name="SkyFx" type="Node2D" parent="World"]
+[node name="Sky" type="Node2D" parent="World"]
 unique_name_in_owner = true
 
-[node name="Clouds" type="Node2D" parent="World"]
-unique_name_in_owner = true
-
-[node name="CloudsA" type="Sprite2D" parent="World/Clouds"]
+[node name="SkySprite" type="Sprite2D" parent="World/Sky"]
 material = SubResource("unshaded")
 position = Vector2(-432, -180)
-texture = ExtResource("4_clouds")
+texture = ExtResource("sky")
 centered = false
 
-[node name="CloudsB" type="Sprite2D" parent="World/Clouds"]
+[node name="SkyFx" type="Node2D" parent="World/Sky"]
+unique_name_in_owner = true
+
+[node name="Clouds" type="Node2D" parent="World/Sky"]
+unique_name_in_owner = true
+
+[node name="CloudsA" type="Sprite2D" parent="World/Sky/Clouds"]
+material = SubResource("unshaded")
+position = Vector2(-432, -180)
+texture = ExtResource("clouds")
+centered = false
+
+[node name="CloudsB" type="Sprite2D" parent="World/Sky/Clouds"]
 material = SubResource("unshaded")
 position = Vector2(432, -180)
-texture = ExtResource("4_clouds")
+texture = ExtResource("clouds")
 centered = false
 
-[node name="Far" type="Sprite2D" parent="World"]
-material = SubResource("unshaded")
-position = Vector2(-432, -180)
-texture = ExtResource("5_far")
-centered = false
-
-[node name="FarFx" type="Node2D" parent="World"]
+[node name="FarLayer" type="Node2D" parent="World"]
 unique_name_in_owner = true
 
-[node name="Viaduct" type="Sprite2D" parent="World"]
+[node name="Far" type="Sprite2D" parent="World/FarLayer"]
+material = SubResource("unshaded")
 position = Vector2(-432, -180)
-texture = ExtResource("6_viaduct")
+texture = ExtResource("far")
 centered = false
 
-[node name="Train" type="Node2D" parent="World"]
+[node name="FarFx" type="Node2D" parent="World/FarLayer"]
 unique_name_in_owner = true
 
-[node name="Body" type="Sprite2D" parent="World/Train"]
-position = Vector2(-105, 0)
-texture = ExtResource("7_train")
+[node name="MidLayer" type="Node2D" parent="World"]
+unique_name_in_owner = true
+
+[node name="Viaduct" type="Sprite2D" parent="World/MidLayer"]
+position = Vector2(-432, -180)
+texture = SubResource("viaduct_ct")
 centered = false
 
-[node name="Glow" type="Sprite2D" parent="World/Train"]
+[node name="Train" type="Node2D" parent="World/MidLayer"]
+unique_name_in_owner = true
+
+[node name="Body" type="Sprite2D" parent="World/MidLayer/Train"]
+position = Vector2(-105, 0)
+texture = ExtResource("train")
+centered = false
+
+[node name="TrainGlow" type="Sprite2D" parent="World/MidLayer/Train"]
 material = SubResource("unshaded")
 position = Vector2(-105, 0)
-texture = ExtResource("8_train_glow")
+texture = ExtResource("train_glow")
 centered = false
 
-[node name="RainFar" type="CPUParticles2D" parent="World"]
+[node name="StreetFx" type="Node2D" parent="World/MidLayer"]
+unique_name_in_owner = true
+
+[node name="RainFar" type="CPUParticles2D" parent="World/MidLayer"]
 position = Vector2(0, -200)
 amount = 240
 lifetime = 0.9
 preprocess = 1.0
-texture = ExtResource("15_rain_far")
+texture = ExtResource("rain_far")
 emission_shape = 3
 emission_rect_extents = Vector2(470, 1)
 particle_flag_align_y = true
@@ -120,73 +171,79 @@ initial_velocity_max = 440.0
 color = Color(1, 1, 1, 0.4)
 color_ramp = SubResource("rain_fade")
 
-[node name="Mid" type="Sprite2D" parent="World"]
+[node name="Mid" type="Sprite2D" parent="World/MidLayer"]
 position = Vector2(-432, -180)
-texture = ExtResource("9_mid")
+texture = SubResource("mid_ct")
 centered = false
 
-[node name="MidGlow" type="Sprite2D" parent="World"]
+[node name="MidGlow" type="Sprite2D" parent="World/MidLayer"]
 material = SubResource("unshaded")
 position = Vector2(-432, -180)
-texture = ExtResource("10_mid_glow")
+texture = ExtResource("mid_glow")
 centered = false
 
-[node name="MidFx" type="Node2D" parent="World"]
+[node name="MidFx" type="Node2D" parent="World/MidLayer"]
 unique_name_in_owner = true
 
-[node name="SignFrame" type="Sprite2D" parent="World"]
+[node name="SignFrame" type="Sprite2D" parent="World/MidLayer"]
 position = Vector2(-432, -180)
-texture = ExtResource("11_sign_frame")
+texture = SubResource("sign_ct")
 centered = false
 
-[node name="SignLetters" type="Node2D" parent="World"]
+[node name="SignLetters" type="Node2D" parent="World/MidLayer"]
 unique_name_in_owner = true
 
-[node name="Roof" type="Sprite2D" parent="World"]
+[node name="RoofLayer" type="Node2D" parent="World"]
+unique_name_in_owner = true
+
+[node name="Roof" type="Sprite2D" parent="World/RoofLayer"]
 position = Vector2(-432, -180)
-texture = ExtResource("12_roof")
+texture = SubResource("roof_ct")
 centered = false
 
-[node name="RoofGlow" type="Sprite2D" parent="World"]
+[node name="RoofGlow" type="Sprite2D" parent="World/RoofLayer"]
 unique_name_in_owner = true
 material = SubResource("unshaded")
 position = Vector2(-432, -180)
-texture = ExtResource("13_roof_glow")
+texture = ExtResource("roof_glow")
 centered = false
 
-[node name="Splashes" type="CPUParticles2D" parent="World"]
-position = Vector2(0, 150)
+[node name="Splashes" type="CPUParticles2D" parent="World/RoofLayer"]
+position = Vector2(0, 158)
 amount = 40
 lifetime = 0.25
-texture = ExtResource("17_splash")
+texture = ExtResource("splash")
 emission_shape = 3
-emission_rect_extents = Vector2(432, 28)
+emission_rect_extents = Vector2(432, 22)
 gravity = Vector2(0, 0)
-color = Color(0.78, 0.81, 0.87, 0.55)
+color = Color(1, 1, 1, 0.5)
 color_ramp = SubResource("splash_fade")
 
-[node name="Gang" type="Node2D" parent="World"]
+[node name="RoofFx" type="Node2D" parent="World/RoofLayer"]
 unique_name_in_owner = true
 
-[node name="RoofFx" type="Node2D" parent="World"]
+[node name="Gang" type="Node2D" parent="World/RoofLayer"]
 unique_name_in_owner = true
 
-[node name="Fg" type="Sprite2D" parent="World"]
+[node name="FgLayer" type="Node2D" parent="World"]
+unique_name_in_owner = true
+
+[node name="Fg" type="Sprite2D" parent="World/FgLayer"]
 position = Vector2(-432, -180)
-texture = ExtResource("14_fg")
+texture = SubResource("fg_ct")
 centered = false
 
-[node name="RainNear" type="CPUParticles2D" parent="World"]
+[node name="RainNear" type="CPUParticles2D" parent="World/FgLayer"]
 position = Vector2(0, -210)
 amount = 110
 lifetime = 0.7
 preprocess = 1.0
-texture = ExtResource("16_rain_near")
+texture = ExtResource("rain_near")
 emission_shape = 3
 emission_rect_extents = Vector2(470, 1)
 particle_flag_align_y = true
 direction = Vector2(0.14, 1)
-spread = 2.0
+spread = 1.5
 gravity = Vector2(0, 0)
 initial_velocity_min = 560.0
 initial_velocity_max = 640.0

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bvbnqn030whbf"
-path="res://.godot/imported/gang_phone.png-cbcf51ab781c896f77517f2685feb29b.ctex"
+uid="uid://d1ouohcfjx2uo"
+path="res://.godot/imported/bolt.png-e6dc9afe51995e085eed855d1184d9e8.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/menu/gang_phone.png"
-dest_files=["res://.godot/imported/gang_phone.png-cbcf51ab781c896f77517f2685feb29b.ctex"]
+source_file="res://assets/sprites/fx/bolt.png"
+dest_files=["res://.godot/imported/bolt.png-e6dc9afe51995e085eed855d1184d9e8.ctex"]
 
 [params]
 
