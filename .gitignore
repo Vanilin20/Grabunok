@@ -1,0 +1,22 @@
+# Godot 4 — кеш імпорту й службові файли редактора
+.godot/
+/android/
+*.translation
+
+# Збірки
+/build/
+*.apk
+*.aab
+*.ipa
+*.pck
+*.zip
+
+# Секрети експорту (ключі підпису Android тощо)
+export_credentials.cfg
+*.keystore
+*.jks
+
+# Системне
+.DS_Store
+Thumbs.db
+*.tmp
