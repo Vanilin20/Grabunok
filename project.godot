@@ -13,9 +13,19 @@ config_version=5
 config/name="Банда"
 config/description="Кооперативна гра про пограбування для 3–5 гравців, лише з телефонів."
 config/version="0.0.1"
-run/main_scene="res://scenes/main/boot.tscn"
+run/main_scene="res://scenes/ui/main_menu.tscn"
 config/features=PackedStringArray("4.7", "Mobile")
 config/icon="res://icon.svg"
+
+[audio]
+
+driver/enable_input=true
+
+[autoload]
+
+Network="*res://scripts/autoload/network.gd"
+GameState="*res://scripts/autoload/game_state.gd"
+Router="*res://scripts/autoload/router.gd"
 
 [display]
 
@@ -26,6 +36,11 @@ window/size/window_height_override=720
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
 window/handheld/orientation=0
+
+[gui]
+
+theme/custom="res://assets/ui/theme.tres"
+common/snap_controls_to_pixels=true
 
 [input_devices]
 

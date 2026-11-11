@@ -20,3 +20,4 @@ export_credentials.cfg
 .DS_Store
 Thumbs.db
 *.tmp
+tools/art/menu_city_preview.png
