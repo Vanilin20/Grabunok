@@ -357,6 +357,19 @@ namespace Banda.EditorTools
                 led.gameObject.AddComponent<LedBlink>();
             }
 
+            // Тінеутворювачі: стіни й меблі з HeistLevel (ті самі прямокутники, що зупиняють Тінь у симуляції).
+            Transform casters = new GameObject("ShadowCasters").transform;
+            casters.SetParent(from, false);
+            foreach (Box box in data.Walls)
+            {
+                AddCaster(casters, box);
+            }
+
+            foreach (Box box in data.Covers)
+            {
+                AddCaster(casters, box);
+            }
+
             // Поле камери — слабка червона пляма точно на дальність виявлення симуляції.
             for (int i = 0; i < data.Cameras.Count; i++)
             {
@@ -392,6 +405,15 @@ namespace Banda.EditorTools
                 light.pointLightInnerRadius = spot.Radius * 0.35f;
                 light.falloffIntensity = 0.3f;
                 light.targetSortingLayers = AllSortingLayers(); // без цього новий Light2D нічого не освітлює
+                // Лампи кидають чіткі тіні від стелажів і стін — межа світла читається як геймплей (R5).
+                bool lamp = spot.Name.StartsWith("lamp") || spot.Name.StartsWith("backroom");
+                light.shadowsEnabled = lamp;
+                light.shadowIntensity = 0.8f;
+                light.shadowSoftness = 0f;
+                if (lamp)
+                {
+                    AddDust(go.transform, spot.Radius);
+                }
                 if (spot.Flicker != LightFlicker.None)
                 {
                     LevelLightFlicker flicker = go.AddComponent<LevelLightFlicker>();
@@ -400,6 +422,81 @@ namespace Banda.EditorTools
                     f.ApplyModifiedPropertiesWithoutUndo();
                 }
             }
+        }
+
+        /// <summary>ShadowCaster2D у формі прямокутника рівня (шлях задається в локальних координатах).</summary>
+        private static void AddCaster(Transform parent, Box box)
+        {
+            GameObject go = new GameObject("Caster");
+            go.transform.SetParent(parent, false);
+            go.transform.localPosition = HeistWorldView.ToWorld(new Vec2(box.X, box.Y));
+            ShadowCaster2D caster = go.AddComponent<ShadowCaster2D>();
+            caster.selfShadows = false;
+            SerializedObject so = new SerializedObject(caster);
+            SerializedProperty path = so.FindProperty("m_ShapePath");
+            Vector3[] corners =
+            {
+                new Vector3(0f, -box.H, 0f), new Vector3(0f, 0f, 0f), new Vector3(box.W, 0f, 0f), new Vector3(box.W, -box.H, 0f),
+            };
+            path.arraySize = corners.Length;
+            for (int i = 0; i < corners.Length; i++)
+            {
+                path.GetArrayElementAtIndex(i).vector3Value = corners[i];
+            }
+
+            so.FindProperty("m_ShapePathHash").intValue = 0;
+            so.FindProperty("m_ShadowCastingSource").enumValueIndex = 1; // ShapeEditor
+            so.ApplyModifiedPropertiesWithoutUndo();
+        }
+
+        /// <summary>Пил, що кружляє в промені лампи: живий кадр без «шуму» (R4).</summary>
+        private static void AddDust(Transform lamp, float radius)
+        {
+            GameObject go = new GameObject("Dust");
+            go.transform.SetParent(lamp, false);
+            ParticleSystem ps = go.AddComponent<ParticleSystem>();
+            ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+            ParticleSystem.MainModule main = ps.main;
+            main.loop = true;
+            main.prewarm = true;
+            main.startLifetime = new ParticleSystem.MinMaxCurve(3f, 6f);
+            main.startSpeed = new ParticleSystem.MinMaxCurve(0.5f, 2f);
+            main.startSize = 1f;
+            main.startColor = new Color(1f, 0.95f, 0.77f, 0.5f);
+            main.maxParticles = 30;
+            main.simulationSpace = ParticleSystemSimulationSpace.Local;
+            ParticleSystem.EmissionModule emission = ps.emission;
+            emission.rateOverTime = 6f;
+            ParticleSystem.ShapeModule shape = ps.shape;
+            shape.shapeType = ParticleSystemShapeType.Circle;
+            shape.radius = radius * 0.6f;
+            ParticleSystem.NoiseModule noise = ps.noise;
+            noise.enabled = true;
+            noise.strength = 3f;
+            noise.frequency = 0.3f;
+            ParticleSystem.ColorOverLifetimeModule col = ps.colorOverLifetime;
+            col.enabled = true;
+            Gradient g = new Gradient();
+            g.SetKeys(new[] { new GradientColorKey(Color.white, 0f), new GradientColorKey(Color.white, 1f) },
+                new[] { new GradientAlphaKey(0f, 0f), new GradientAlphaKey(1f, 0.3f), new GradientAlphaKey(0f, 1f) });
+            col.color = new ParticleSystem.MinMaxGradient(g);
+            ParticleSystemRenderer r = go.GetComponent<ParticleSystemRenderer>();
+            r.sharedMaterial = DustMaterial();
+            r.sortingOrder = 7;
+        }
+
+        private static Material DustMaterial()
+        {
+            const string path = "Assets/Art/Materials/Dust.mat";
+            Material m = AssetDatabase.LoadAssetAtPath<Material>(path);
+            if (m == null)
+            {
+                m = new Material(Shader.Find("Sprites/Default"));
+                m.mainTexture = AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/Art/Fx/pixel.png");
+                AssetDatabase.CreateAsset(m, path);
+            }
+
+            return m;
         }
 
         private static int[] AllSortingLayers()

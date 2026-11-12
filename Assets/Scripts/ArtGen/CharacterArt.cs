@@ -30,14 +30,14 @@ namespace Banda.ArtGen
         {
             return Sheet(new Look
             {
-                Body = P.Night5,
-                BodyDark = P.Night3,
-                BodyLight = P.Night6,
-                Head = P.Night6,
-                HeadLight = P.Night7,
+                Body = P.Night6,
+                BodyDark = P.Night4,
+                BodyLight = P.Night7,
+                Head = P.Night7,
+                HeadLight = P.Steel2,
                 Feet = P.Night0,
                 Hands = P.Brick2,
-                Rim = P.Night7, // фіолетовий кант — Тінь завжди читається для свого гравця
+                Rim = P.Neon3, // яскравий кант — Тінь завжди фокус для свого гравця
                 Guard = false,
             });
         }
