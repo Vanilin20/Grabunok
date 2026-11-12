@@ -21,6 +21,7 @@ const NIGHT_4 := Color("2f2849")
 const NIGHT_5 := Color("40375e")
 const NIGHT_6 := Color("574b78")
 const STEEL_1 := Color("5a6175")
+const STEEL_2 := Color("8b93a8")
 const STEEL_3 := Color("c7cede")
 const LAMP_3 := Color("f7c95a")
 const LAMP_4 := Color("fff2c4")
@@ -45,9 +46,19 @@ func _init() -> void:
 	theme.set_color("font_hover_color", "Button", LAMP_4)
 	theme.set_color("font_pressed_color", "Button", LAMP_4)
 	theme.set_color("font_hover_pressed_color", "Button", LAMP_4)
-	theme.set_color("font_disabled_color", "Button", NIGHT_6)
+	theme.set_color("font_disabled_color", "Button", STEEL_2) # сірий без світіння: читається (≥4.5:1), але явно «не горить»
 	theme.set_color("font_outline_color", "Button", NIGHT_0)
 	theme.set_constant("outline_size", "Button", 2)
+
+	# Другорядна кнопка (тест датчиків тощо): сталева рамка без світіння.
+	theme.add_type("SecondaryButton")
+	theme.set_type_variation("SecondaryButton", "Button")
+	theme.set_stylebox("normal", "SecondaryButton", _box("button_secondary", Vector4(10, 7, 10, 8), GLOW))
+	theme.set_stylebox("hover", "SecondaryButton", _box("button_secondary_hover", Vector4(10, 7, 10, 8), GLOW))
+	theme.set_stylebox("pressed", "SecondaryButton", _box("button_secondary_hover", Vector4(10, 8, 10, 7), GLOW))
+	theme.set_color("font_color", "SecondaryButton", CYAN_2)
+	theme.set_color("font_hover_color", "SecondaryButton", Color("ffffff"))
+	theme.set_color("font_pressed_color", "SecondaryButton", Color("ffffff"))
 
 	theme.set_color("font_color", "Label", STEEL_3)
 	theme.set_constant("line_spacing", "Label", 4)
@@ -56,7 +67,7 @@ func _init() -> void:
 	theme.set_stylebox("read_only", "LineEdit", _box("edit_normal", Vector4(8, 8, 8, 8)))
 	theme.set_stylebox("focus", "LineEdit", _box("edit_focus", Vector4(8, 8, 8, 8)))
 	theme.set_color("font_color", "LineEdit", STEEL_3)
-	theme.set_color("font_placeholder_color", "LineEdit", STEEL_1)
+	theme.set_color("font_placeholder_color", "LineEdit", STEEL_2)
 	theme.set_color("caret_color", "LineEdit", CYAN_2)
 	theme.set_color("selection_color", "LineEdit", NIGHT_5)
 

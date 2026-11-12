@@ -32,6 +32,7 @@ func _ready() -> void:
 	_mic_button.pressed.connect(_toggle_mic)
 	_back_button.pressed.connect(Router.show_menu)
 	_orientation_button.pressed.connect(_toggle_orientation)
+	%BenchmarkButton.pressed.connect(Router.show_benchmark)
 	get_tree().on_request_permissions_result.connect(_on_permission_result)
 
 

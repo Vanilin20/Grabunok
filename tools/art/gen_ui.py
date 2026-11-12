@@ -37,16 +37,31 @@ def main() -> None:
 	plate(19, 17, 2, 3, 1, 17).save(os.path.join(OUT, "button_normal.png"))
 	plate(20, 18, 3, 4, 2, 18).save(os.path.join(OUT, "button_hover.png"))
 	plate(21, 19, 17, 18, 17, 19).save(os.path.join(OUT, "button_pressed.png"))
-	plate(3, 1, 1, 1, 0, None).save(os.path.join(OUT, "button_disabled.png"))
-	# Панель: темний метал, світлий верхній-лівий скіс, заклепки.
+	# Вимкнена: без світла, зі штрихуванням — «заблоковано», видно навіть на маленькому екрані.
+	dis = plate(3, 1, 1, 1, 0, None)
+	for y in range(5, S - 5):
+		for x in range(5, S - 5):
+			if (x + y) % 4 == 0:
+				dis.put(x, y, 2)
+	dis.save(os.path.join(OUT, "button_disabled.png"))
+	# Другорядна, але активна: бірюзова трубка без ореолу (головні — бурштинові з ореолом).
+	plate(27, 26, 1, 3, 0, None).save(os.path.join(OUT, "button_secondary.png"))
+	plate(28, 27, 2, 4, 1, 26).save(os.path.join(OUT, "button_secondary_hover.png"))
+	# Панель: масивна металева рамка (3 px: світлий скіс зверху-зліва, тінь знизу-справа),
+	# заклепки, рожевий відблиск неону на верхньому ребрі, всередині — темне скло.
 	p = Canvas(S, S)
 	p.rect(0, 0, S, S, 0)
-	p.rect(1, 1, S - 2, S - 2, 4)
-	p.hline(1, 1, S - 2, 5)
-	p.vline(1, 1, S - 2, 5)
-	p.rect(2, 2, S - 4, S - 4, 1)
-	for x, y in ((3, 3), (S - 5, 3), (3, S - 5), (S - 5, S - 5)):
-		p.put(x, y, 15)
+	p.rect(1, 1, S - 2, S - 2, 14)
+	p.hline(1, 1, S - 2, 23) # відблиск вивіски на верхньому ребрі
+	p.hline(1, 2, S - 2, 15)
+	p.vline(1, 2, S - 3, 27) # бірюзовий відсвіт білборда на лівому ребрі
+	p.hline(2, S - 2, S - 3, 13)
+	p.vline(S - 2, 2, S - 3, 13)
+	p.rect(3, 3, S - 6, S - 6, 0)
+	p.rect(4, 4, S - 8, S - 8, 1)
+	p.hline(4, 4, S - 8, 2)
+	for x, y in ((2, 2), (S - 4, 2), (2, S - 4), (S - 4, S - 4)):
+		p.put(x, y, 16)
 		p.put(x + 1, y + 1, 13)
 	p.save(os.path.join(OUT, "panel.png"))
 	# Поле вводу: утоплене (тінь зверху-зліва), фокус — блакитна рамка.

@@ -119,6 +119,12 @@ text = "СЕЙФ"
 layout_mode = 2
 size_flags_vertical = 3
 
+[node name="BenchmarkButton" type="Button" parent="Margin/Root/Columns/Left"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+text = "ЗАМІР FPS МЕНЮ"
+
 [node name="OrientationButton" type="Button" parent="Margin/Root/Columns/Left"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 34)

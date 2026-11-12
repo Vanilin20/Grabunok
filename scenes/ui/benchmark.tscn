@@ -1,0 +1,38 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/benchmark.gd" id="1_script"]
+[ext_resource type="PackedScene" path="res://scenes/ui/city_backdrop.tscn" id="2_backdrop"]
+
+[node name="Benchmark" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("1_script")
+
+[node name="CityBackdrop" parent="." instance=ExtResource("2_backdrop")]
+
+[node name="Ui" type="CanvasLayer" parent="."]
+layer = 2
+
+[node name="Panel" type="PanelContainer" parent="Ui"]
+offset_left = 48.0
+offset_top = 16.0
+offset_right = 300.0
+offset_bottom = 70.0
+
+[node name="Box" type="VBoxContainer" parent="Ui/Panel"]
+layout_mode = 2
+
+[node name="Stats" type="Label" parent="Ui/Panel/Box"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "…"
+
+[node name="BackButton" type="Button" parent="Ui/Panel/Box"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "< НАЗАД"

@@ -26,6 +26,7 @@ driver/enable_input=true
 Network="*res://scripts/autoload/network.gd"
 GameState="*res://scripts/autoload/game_state.gd"
 Router="*res://scripts/autoload/router.gd"
+UiSound="*res://scripts/autoload/ui_sound.gd"
 
 [display]
 
