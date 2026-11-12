@@ -31,6 +31,9 @@ namespace Banda.HeistRuntime
         [SerializeField] private Color _nightColor = new Color(0.34f, 0.29f, 0.47f);
         [SerializeField] private float _nightIntensity = 0.35f;
         [SerializeField] private GameObject _menuBackdrop;
+        [Tooltip("Межі арту рівня в локальних координатах (store_base з полем довкола).")]
+        [SerializeField] private Vector2 _artMin = new Vector2(-48f, -256f);
+        [SerializeField] private Vector2 _artMax = new Vector2(400f, 48f);
 
         private ITransport _transport;
         private Camera _camera;
@@ -215,10 +218,22 @@ namespace Banda.HeistRuntime
 
             if (_camera != null)
             {
-                Vector3 world = _shadow.transform.position;
+                // Камера не виїжджає за межі арту рівня — у кадрі ніколи немає порожнечі.
+                Vector3 local = _shadow.transform.localPosition;
+                float halfH = _camera.orthographicSize;
+                float halfW = halfH * _camera.aspect;
+                local.x = ClampAxis(local.x, _artMin.x + halfW, _artMax.x - halfW);
+                local.y = ClampAxis(local.y, _artMin.y + halfH, _artMax.y - halfH);
+                Vector3 world = _levelRoot.TransformPoint(local);
                 // Ціле значення пікселя на екрані: при ×2 крок камери — пів пікселя світу.
                 _camera.transform.position = new Vector3(Mathf.Round(world.x * 2f) / 2f, Mathf.Round(world.y * 2f) / 2f, _cameraHome.z);
             }
+        }
+
+        /// <summary>Якщо арт вужчий за кадр — центр між межами, інакше обмеження.</summary>
+        private static float ClampAxis(float value, float min, float max)
+        {
+            return min > max ? (min + max) / 2f : Mathf.Clamp(value, min, max);
         }
 
         /// <summary>Координати рівня (Y униз, від верхнього лівого кута) → локальні координати світу справи.</summary>

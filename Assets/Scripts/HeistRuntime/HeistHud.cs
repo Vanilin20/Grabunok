@@ -54,6 +54,11 @@ namespace Banda.HeistRuntime
             {
                 HeistDirector.Instance.HeistStarted += Attach;
                 HeistDirector.Instance.HeistStopped += Detach;
+                // Екран справи міг увімкнутися вже після старту — підхоплюємо поточну справу.
+                if (HeistDirector.Instance.Transport != null)
+                {
+                    Attach(HeistDirector.Instance.Transport);
+                }
             }
         }
 
