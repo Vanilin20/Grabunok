@@ -6,11 +6,11 @@ enum Id { NONE = -1, HACKER = 0, SHADOW = 1, SAFECRACKER = 2, DISTRACTOR = 3, DR
 
 ## Етап розробки, з якого роль стає грабельною (TZ: «MVP і план розробки»).
 const INFO: Dictionary = {
-	Id.HACKER: {"name": "Хакер", "hint": "Камери, двері, охорона", "color": Color("3de0ff"), "stage": 1},
-	Id.SHADOW: {"name": "Тінь", "hint": "Крадеться й бере здобич", "color": Color("a77bff"), "stage": 1},
-	Id.SAFECRACKER: {"name": "Зломщик", "hint": "Відкриває сейф", "color": Color("f2c14e"), "stage": 1},
-	Id.DISTRACTOR: {"name": "Відволікач", "hint": "Заговорює охорону", "color": Color("ff3d7f"), "stage": 3},
-	Id.DRIVER: {"name": "Водій", "hint": "Везе банду під час втечі", "color": Color("5cf08a"), "stage": 4},
+	Id.HACKER: {"name": "Хакер", "hint": "Камери, двері, охорона", "color": Palette.CYAN_2, "stage": 1},
+	Id.SHADOW: {"name": "Тінь", "hint": "Крадеться й бере здобич", "color": Palette.STEEL_3, "stage": 1},
+	Id.SAFECRACKER: {"name": "Зломщик", "hint": "Відкриває сейф", "color": Palette.LAMP_3, "stage": 1},
+	Id.DISTRACTOR: {"name": "Відволікач", "hint": "Заговорює охорону", "color": Palette.NEON_2, "stage": 3},
+	Id.DRIVER: {"name": "Водій", "hint": "Везе банду під час втечі", "color": Palette.OK, "stage": 4},
 }
 
 ## Поточний етап розробки — ролі з пізніших етапів показуються заблокованими.

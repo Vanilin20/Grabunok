@@ -1,0 +1,85 @@
+[gd_scene load_steps=15 format=3]
+
+[ext_resource type="Script" path="res://scripts/levels/store_level.gd" id="script"]
+[ext_resource type="Texture2D" path="res://assets/sprites/store/floor.png" id="floor"]
+[ext_resource type="Texture2D" path="res://assets/sprites/store/floor_n.png" id="floor_n"]
+[ext_resource type="Texture2D" path="res://assets/sprites/store/walls.png" id="walls"]
+[ext_resource type="Texture2D" path="res://assets/sprites/store/walls_n.png" id="walls_n"]
+[ext_resource type="Texture2D" path="res://assets/sprites/store/objects.png" id="objects"]
+[ext_resource type="Texture2D" path="res://assets/sprites/store/objects_n.png" id="objects_n"]
+[ext_resource type="Texture2D" path="res://assets/sprites/store/glow.png" id="glow"]
+[ext_resource type="Texture2D" path="res://assets/sprites/store/ceiling.png" id="ceiling"]
+
+[sub_resource type="CanvasItemMaterial" id="unshaded"]
+light_mode = 1
+
+[sub_resource type="CanvasTexture" id="floor_ct"]
+diffuse_texture = ExtResource("floor")
+normal_texture = ExtResource("floor_n")
+
+[sub_resource type="CanvasTexture" id="walls_ct"]
+diffuse_texture = ExtResource("walls")
+normal_texture = ExtResource("walls_n")
+
+[sub_resource type="CanvasTexture" id="objects_ct"]
+diffuse_texture = ExtResource("objects")
+normal_texture = ExtResource("objects_n")
+
+[sub_resource type="Environment" id="glow_env"]
+background_mode = 3
+glow_enabled = true
+glow_intensity = 0.4
+glow_strength = 0.9
+glow_blend_mode = 0
+glow_hdr_threshold = 0.9
+
+[node name="StoreConcept" type="Node2D"]
+
+[node name="Glow" type="WorldEnvironment" parent="."]
+environment = SubResource("glow_env")
+
+[node name="Night" type="CanvasModulate" parent="."]
+color = Color(0.26, 0.26, 0.42, 1)
+
+[node name="View" type="Node2D" parent="."]
+
+[node name="Level" type="Node2D" parent="View"]
+script = ExtResource("script")
+
+[node name="Floor" type="Sprite2D" parent="View/Level"]
+texture = SubResource("floor_ct")
+centered = false
+
+[node name="StreetFx" type="Node2D" parent="View/Level"]
+unique_name_in_owner = true
+
+[node name="Walls" type="Sprite2D" parent="View/Level"]
+texture = SubResource("walls_ct")
+centered = false
+
+[node name="Objects" type="Sprite2D" parent="View/Level"]
+texture = SubResource("objects_ct")
+centered = false
+
+[node name="Glow" type="Sprite2D" parent="View/Level"]
+material = SubResource("unshaded")
+texture = ExtResource("glow")
+centered = false
+
+[node name="Occluders" type="Node2D" parent="View/Level"]
+unique_name_in_owner = true
+
+[node name="Actors" type="Node2D" parent="View/Level"]
+unique_name_in_owner = true
+y_sort_enabled = true
+
+[node name="Lights" type="Node2D" parent="View/Level"]
+unique_name_in_owner = true
+
+[node name="Ceiling" type="Sprite2D" parent="View/Level"]
+texture = ExtResource("ceiling")
+centered = false
+
+[node name="Camera" type="Camera2D" parent="View/Level"]
+position = Vector2(262, 200)
+zoom = Vector2(2, 2)

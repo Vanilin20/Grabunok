@@ -15,8 +15,25 @@ SPRITES = {"assets/sprites/menu/gang_leader.png": 72, "assets/sprites/menu/gang_
 MIN_HEIGHT = 16
 
 
+def topdown_heights(rel: str) -> list[int]:
+	"""Вид зверху: аркуш 12×4 кадри по 24×32 — висота фігури в кожному кадрі."""
+	img = Image.open(os.path.join(ROOT, rel)).convert("RGBA")
+	hs = []
+	for r in range(4):
+		for c in range(12):
+			box = img.crop((c * 24, r * 32, (c + 1) * 24, (r + 1) * 32)).getbbox()
+			hs.append(box[3] - box[1] if box else 0)
+	return hs
+
+
 def main() -> int:
 	bad = 0
+	for rel in ("assets/sprites/chars/shadow.png", "assets/sprites/chars/guard.png"):
+		if os.path.exists(os.path.join(ROOT, rel)):
+			hs = topdown_heights(rel)
+			ok = min(hs) >= MIN_HEIGHT
+			bad += 0 if ok else 1
+			print(f"[sizes] {'OK  ' if ok else 'FAIL'} {rel}: висота {min(hs)}–{max(hs)} px (мін. {MIN_HEIGHT}), кадрів 48 (4 напрямки × idle 4, ходьба 6, тривога 2)")
 	for rel, frame_w in SPRITES.items():
 		img = Image.open(os.path.join(ROOT, rel)).convert("RGBA")
 		heights = []

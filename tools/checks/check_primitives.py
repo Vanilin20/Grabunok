@@ -19,6 +19,7 @@ SCOPES = {
 ## Решта файлів — «ще не перемальовані» (етап 3): друкуються окремим звітом і не валять перевірку.
 REDRAWN = {
 	"Головне меню": SCOPES["menu"],
+	"Рівень «Магазин на розі» (концепт)": ["scenes/levels/store_concept.tscn", "scripts/levels/store_level.gd"],
 }
 
 

@@ -28,28 +28,11 @@ def luminance(rgb: np.ndarray) -> np.ndarray:
 	return 0.2126 * lin[..., 0] + 0.7152 * lin[..., 1] + 0.0722 * lin[..., 2]
 
 
-def main() -> int:
-	shot = sys.argv[1]
-	layout_path = os.path.join(ROOT, "assets", "sprites", "menu", "menu_layout.json")
-	layout = json.load(open(layout_path, encoding="utf-8"))
-	img = np.asarray(Image.open(shot).convert("RGB")).astype(np.float64)
-	H, W = img.shape[:2]
-	scale = H / 360.0
-	vw = W / scale
-	L = luminance(img)
-	mask = np.zeros((H, W), bool)
-	for key, file in GANG.items():
-		sx, sy = layout["gang"][key]
-		fw = layout.get("gang_frames", {}).get(key, FRAME)[0]
-		spr = np.asarray(Image.open(os.path.join(ROOT, "assets", "sprites", "menu", file)).convert("RGBA"))[:, :fw]
-		alpha = spr[..., 3] > 0
-		big = np.kron(alpha, np.ones((int(scale), int(scale)), bool))
-		x0 = int(round((sx - 432 + vw / 2) * scale))
-		y0 = int(round(sy * scale))
-		h, w = big.shape
-		ys, xs = slice(max(y0, 0), min(y0 + h, H)), slice(max(x0, 0), min(x0 + w, W))
-		mask[ys, xs] |= big[: ys.stop - ys.start, : xs.stop - xs.start]
-	# Відділення силуету: фігури проти кільця навколо.
+FIGURE_MASKS: list = []
+
+
+def separation(L, mask, scale, H, W, focus_all=None):
+	"""→ (відділення фігури від кільця 4 px навколо, найкраща інша область тієї ж форми, L фігури, L кільця)."""
 	ring = np.zeros_like(mask)
 	r = int(4 * scale)
 	for dy in range(-r, r + 1, max(1, r // 2)):
@@ -68,11 +51,88 @@ def main() -> int:
 	for oy in range(y_lo, y_hi + 1, step):
 		for ox in range(x_lo, x_hi + 1, step):
 			if abs(oy) < h_span / 2 and abs(ox) < w_span / 2:
-				continue # перекривається з бандою більш ніж наполовину
+				continue
+			if focus_all is not None and focus_all[ys + oy, xs + ox].mean() > 0.3:
+				continue # це інший персонаж фокусу (Тінь і охоронець — обидва фокус кадру)
 			a_in, a_ring = L[ys + oy, xs + ox].mean(), L[ry + oy, rx + ox].mean()
 			v = (max(a_in, a_ring) + 0.05) / (min(a_in, a_ring) + 0.05)
 			if v > best[0]:
 				best = (v, ox, oy)
+	return sep, best, lf, lr
+
+
+def main() -> int:
+	shot = sys.argv[1]
+	layout_path = os.path.join(ROOT, "assets", "sprites", "menu", "menu_layout.json")
+	layout = json.load(open(layout_path, encoding="utf-8"))
+	img = np.asarray(Image.open(shot).convert("RGB")).astype(np.float64)
+	H, W = img.shape[:2]
+	scale = H / 360.0
+	vw = W / scale
+	L = luminance(img)
+	mask = np.zeros((H, W), bool)
+	if "--mask" in sys.argv:
+		# Маска з окремого запису того самого кадру (сцена з --focus-mask): персонажі білі, решта чорна.
+		# Кожна зв'язна біла область — окремий персонаж фокусу.
+		from scipy import ndimage
+		mimg = np.asarray(Image.open(sys.argv[sys.argv.index("--mask") + 1]).convert("L")) > 128
+		labels, n = ndimage.label(mimg)
+		for i in range(1, n + 1):
+			fm = labels == i
+			if fm.sum() > 50 * scale * scale:
+				FIGURE_MASKS.append(fm)
+				mask |= fm
+		GANG.clear()
+	elif "--store" in sys.argv:
+		# Концепт магазину: фокус — Тінь (кадр «тривога, праворуч» у точці появи з store.json).
+		level = json.load(open(os.path.join(ROOT, "assets", "levels", "store.json"), encoding="utf-8"))
+		sx, sy = level["spawns"]["shadow"]
+		sheet = np.asarray(Image.open(os.path.join(ROOT, "assets", "sprites", "chars", "shadow.png")).convert("RGBA"))
+		alpha = sheet[2 * 32:3 * 32, 10 * 24:11 * 24, 3] > 0
+		# Камера концепту: центр (262, 200), zoom 2 (scenes/levels/store_concept.tscn).
+		cam, zoom = (262.0, 200.0), 2
+		big = np.kron(alpha, np.ones((int(scale) * zoom, int(scale) * zoom), bool))
+		x0 = int(round(((sx - 12 - cam[0]) * zoom + vw / 2) * scale))
+		y0 = int(round(((sy - 28 - cam[1]) * zoom + 180) * scale))
+		h, w = big.shape
+		mask[y0:y0 + h, x0:x0 + w] |= big
+		m1 = np.zeros((H, W), bool)
+		m1[y0:y0 + h, x0:x0 + w] |= big
+		FIGURE_MASKS.append(m1)
+		# Загроза — охоронець — теж частина фокусу кадру. Його позиція на 120-му кадрі запису (2 с при 60 FPS):
+		# стартує в spawns.guard і йде на захід зі швидкістю 26 px/с (store_level.gd).
+		gx, gy = level["spawns"]["guard"]
+		gx -= 26 * 2
+		gsheet = np.asarray(Image.open(os.path.join(ROOT, "assets", "sprites", "chars", "guard.png")).convert("RGBA"))
+		galpha = gsheet[1 * 32:2 * 32, 4 * 24:5 * 24, 3] > 0
+		gbig = np.kron(galpha, np.ones((int(scale) * zoom, int(scale) * zoom), bool))
+		gx0 = int(round(((gx - 12 - cam[0]) * zoom + vw / 2) * scale))
+		gy0 = int(round(((gy - 28 - cam[1]) * zoom + 180) * scale))
+		gh, gw = gbig.shape
+		mask[gy0:gy0 + gh, gx0:gx0 + gw] |= gbig
+		m2 = np.zeros((H, W), bool)
+		m2[gy0:gy0 + gh, gx0:gx0 + gw] |= gbig
+		FIGURE_MASKS.append(m2)
+		GANG.clear()
+	for key, file in GANG.items():
+		sx, sy = layout["gang"][key]
+		fw = layout.get("gang_frames", {}).get(key, FRAME)[0]
+		spr = np.asarray(Image.open(os.path.join(ROOT, "assets", "sprites", "menu", file)).convert("RGBA"))[:, :fw]
+		alpha = spr[..., 3] > 0
+		big = np.kron(alpha, np.ones((int(scale), int(scale)), bool))
+		x0 = int(round((sx - 432 + vw / 2) * scale))
+		y0 = int(round(sy * scale))
+		h, w = big.shape
+		ys, xs = slice(max(y0, 0), min(y0 + h, H)), slice(max(x0, 0), min(x0 + w, W))
+		mask[ys, xs] |= big[: ys.stop - ys.start, : xs.stop - xs.start]
+	# Для кадру з кількома персонажами різної «полярності» (темна Тінь на світлому склі, світлий
+	# охоронець на темній підлозі) середнє по всіх фігурах дає хибні цифри — тому кожну фігуру
+	# міряємо окремо й беремо найгіршу.
+	figures = FIGURE_MASKS if FIGURE_MASKS else [mask]
+	results = [separation(L, fm, scale, H, W, mask) for fm in figures]
+	sep = min(r[0] for r in results)
+	best = max((r[1] for r in results), key=lambda b: b[0])
+	lf, lr = results[0][2], results[0][3]
 	# Довідково: локальний RMS-контраст під маскою.
 	k = max(1, int(8 * scale))
 	def box(a):
@@ -86,7 +146,9 @@ def main() -> int:
 		return (c[y1][:, x1] - c[y0][:, x1] - c[y1][:, x0] + c[y0][:, x0]) / area
 	m = box(L)
 	local = np.sqrt(np.maximum(box(L * L) - m * m, 0))
-	print(f"[focus] {os.path.basename(shot)}: банда проти оточення {sep:.2f}:1 (фігури L={lf:.3f}, кільце L={lr:.3f})")
+	who = "Тінь і охоронець" if "--store" in sys.argv else "банда"
+	print(f"[focus] {os.path.basename(shot)}: {who} проти оточення {sep:.2f}:1 (найгірша фігура)" +
+		("" if len(results) == 1 else " — окремо: " + ", ".join(f"{r[0]:.2f}:1" for r in results)))
 	print(f"[focus] найкраща інша область тієї ж форми: {best[0]:.2f}:1, зсув ({best[1] / scale:+.0f}, {best[2] / scale:+.0f}) базових px")
 	print(f"[focus] довідково: локальний RMS під бандою {local[mask].mean():.4f}, середній по кадру {local.mean():.4f}")
 	ok = sep >= best[0]
