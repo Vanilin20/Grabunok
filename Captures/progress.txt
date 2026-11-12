@@ -24,3 +24,7 @@
   - Light2D, ParticleSystem, uGUI — вже вбудовані засоби.
 крок 2 | план рівня docs/levels/store.md + store_grid.txt + store_plan.png (рендер Unity, тимчасова сцена — не збережена) | 146aad5 | 12:08 | — | commit 4.0 ГБ | СТОП: чекаю затвердження
 крок 3а | HeistLevel з сітки (джерело — StoreGrid = docs/levels/store_grid.txt), Exits ×2, Notes ×2, Cameras ×2 (відсортовані: 1 — зал, 2 — підсобка); тести 21/21 у Unity | 7c46661 | 12:14 | — | commit 4.0 ГБ
+крок 3б | Tilemap: 7 шарів (Outside, Floor, Shade, Decor, Walls, Props, Glow), ~75 тайлів у Assets/Art/Heist/Tiles (джерело правди — PNG), меню Banda → 4/5 | 07ce426 | 12:24 | — | commit 3.8 ГБ
+  рендери: Captures/unity/store_overview_u3.png, shadow_tiles_u2.png
+  ВАДИ: світло ламп ледь видно (плями не читаються) → 3в; шахівниця підлоги на ×2 ще зашумна; Play без фокусу
+  тікає лише після перемикання Application.runInBackground (налаштування проєкту не зберігається з Play — записати поза Play)
