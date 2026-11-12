@@ -76,6 +76,12 @@ namespace Banda.Backdrop
 
         private void Apply()
         {
+            if (_basePositions.Length != _layers.Length)
+            {
+                // Виклик до Awake (наприклад, Frozen з редактора в перший кадр Play) — запам'ятовуємо базу зараз.
+                Awake();
+            }
+
             for (int i = 0; i < _layers.Length; i++)
             {
                 Transform layer = _layers[i].Target;

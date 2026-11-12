@@ -39,3 +39,7 @@ crashlytics-buildid.txt
 # Система
 .DS_Store
 Thumbs.db
+
+# .NET-обв'язка тестів
+tools/heist_tests/bin/
+tools/heist_tests/obj/

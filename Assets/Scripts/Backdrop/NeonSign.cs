@@ -16,6 +16,9 @@ namespace Banda.Backdrop
             public SpriteRenderer Renderer;
             [Tooltip("Імовірність збою за секунду.")]
             public float GlitchChance;
+            [Tooltip("Адитивна копія літери: розпечене біле ядро неону (у Godot — HDR 1.3 + glow).")]
+            public SpriteRenderer Core;
+            public float CoreAlpha;
         }
 
         [SerializeField] private Letter[] _letters = Array.Empty<Letter>();
@@ -64,6 +67,15 @@ namespace Banda.Backdrop
                 Color c = letter.color;
                 c.a = alpha;
                 letter.color = c;
+                // Біле ядро трубки (адитивна копія-дитина) збоїть разом з літерою.
+                SpriteRenderer core = _letters[i].Core;
+                if (core != null)
+                {
+                    Color k = core.color;
+                    k.a = alpha * _letters[i].CoreAlpha;
+                    core.color = k;
+                }
+
                 lit += alpha;
             }
 

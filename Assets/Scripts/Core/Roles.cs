@@ -3,16 +3,7 @@ using UnityEngine;
 
 namespace Banda.Core
 {
-    /// <summary>Ідентифікатори ролей банди (docs/TZ.md, розділ «Ролі»).</summary>
-    public enum RoleId
-    {
-        None = -1,
-        Hacker = 0,
-        Shadow = 1,
-        Safecracker = 2,
-        Distractor = 3,
-        Driver = 4,
-    }
+    // RoleId лежить у збірці Banda.Heist (Assets/Scripts/Heist/RoleId.cs): ролі потрібні симуляції без рушія.
 
     /// <summary>Дані ролей для інтерфейсу: назва, підказка, колір, етап розробки, з якого роль грабельна.</summary>
     public static class Roles

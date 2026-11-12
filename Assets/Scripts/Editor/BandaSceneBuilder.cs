@@ -32,7 +32,7 @@ namespace Banda.EditorTools
         private static readonly Color NightLight = new Color(0.56f, 0.54f, 0.74f, 1f);
         // Глобальне світло URP додається до точкових, а CanvasModulate у Godot множив усе разом —
         // тому ніч притемнена, а точкові світла підсилені (підібрано звіркою з godot_menu_reference.png).
-        private const float NightIntensity = 0.72f;
+        private const float NightIntensity = 0.62f;
         private const float EnergyToIntensity = 0.75f;
 
         private static TMP_FontAsset _font;
@@ -321,10 +321,18 @@ namespace Banda.EditorTools
 
             Transform letters = Child(mid, "SignLetters");
             List<SpriteRenderer> letterRenderers = new List<SpriteRenderer>();
+            List<SpriteRenderer> letterCores = new List<SpriteRenderer>();
             foreach (LetterInfo info in layout.letters)
             {
                 string file = info.file.Replace(".png", string.Empty);
-                letterRenderers.Add(Sprite(letters, file, "Menu/" + file, new Vector2(info.x, info.y), 17, false));
+                SpriteRenderer letter = Sprite(letters, file, "Menu/" + file, new Vector2(info.x, info.y), 17, false);
+                letterRenderers.Add(letter);
+                // Розпечене біле ядро трубки: адитивна копія поверх (Godot: self_modulate 1.3 у HDR + glow).
+                SpriteRenderer core = Sprite(letter.transform, "Core", "Menu/" + file, Vector2.zero, 18, false);
+                core.transform.localPosition = Vector3.zero;
+                core.sharedMaterial = _additiveMaterial;
+                core.color = new Color(1f, 0.85f, 0.92f, 0.35f);
+                letterCores.Add(core);
             }
 
             // Дах, на якому стоїть банда.
@@ -346,11 +354,13 @@ namespace Banda.EditorTools
                     case "sign":
                         // Неон світить на каркас і будинок; банду не заливає — зі спини вони силуети.
                         // Енергія вища за Godot (2.0): карти нормалей URP гасять світло на вертикалях каркаса.
-                        signLight = PointLight(mid, "SignLight", at, color, 3.6f, 2.4f, 60f, world);
+                        signLight = PointLight(mid, "SignLight", at, color, 3.6f, 2.0f, 60f, world);
                         // Каркас — тонкі вертикальні рейки: з картою нормалей URP світло зверху їх майже не чіпає.
                         // Як у Godot-референсі, рейки мають ловити рожевий неон — світимо без нормалей.
                         DisableNormalMap(signLight);
-                        bounceLight = PointLight(mid, "SignBounce", at + new Vector2(0f, 70f), color, 2.4f, 1.1f, 24f, world);
+                        // Відсвіт на карнизі й верхніх вікнах під вивіскою (у референсі — рожева смуга по карнизу).
+                        bounceLight = PointLight(mid, "SignBounce", at + new Vector2(0f, 70f), color, 2.4f, 1.6f, 24f, world);
+                        DisableNormalMap(bounceLight);
                         // Рожеве марево довкола вивіски: у мокрому повітрі неон світиться плямою.
                         signHalo = Sprite(mid, "SignHalo", "Fx/radial", at, 18, false);
                         signHalo.sharedMaterial = _additiveMaterial;
@@ -364,7 +374,7 @@ namespace Banda.EditorTools
                         break;
                     case "billboard":
                         // Холодне світло реклами: на парапет і дах перед бандою; для банди — контрове.
-                        PointLight(roof, "Billboard", at + new Vector2(0f, 46f), color, 2.6f, 2.4f, 30f, world);
+                        PointLight(roof, "Billboard", at + new Vector2(0f, 46f), color, 2.6f, 2.0f, 30f, world);
                         break;
                     case "bar":
                         Light2D bar = PointLight(mid, "BarNeon", at, color, 1.3f, 1.0f, 24f, world);
@@ -383,6 +393,8 @@ namespace Banda.EditorTools
                 element.FindPropertyRelative("Renderer").objectReferenceValue = letterRenderers[i];
                 // «Д» (4-та літера) — стара трубка, збоїть частіше за інші.
                 element.FindPropertyRelative("GlitchChance").floatValue = i == 3 ? 0.35f : 0.03f;
+                element.FindPropertyRelative("Core").objectReferenceValue = letterCores[i];
+                element.FindPropertyRelative("CoreAlpha").floatValue = 0.35f;
             }
 
             signSo.FindProperty("_signLight").objectReferenceValue = signLight;

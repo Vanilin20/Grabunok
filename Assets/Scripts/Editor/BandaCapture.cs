@@ -72,5 +72,78 @@ namespace Banda.EditorTools
 
             return path;
         }
+
+        /// <summary>Два PNG однакової висоти поруч (ліворуч | праворуч) з темною смугою між ними.</summary>
+        public static string SideBySide(string leftPath, string rightPath, string outPath)
+        {
+            Texture2D left = Load(leftPath);
+            Texture2D right = Load(rightPath);
+            const int gap = 8;
+            int height = Mathf.Max(left.height, right.height);
+            Texture2D result = new Texture2D(left.width + gap + right.width, height, TextureFormat.RGB24, false);
+            Color[] fill = new Color[result.width * result.height];
+            for (int i = 0; i < fill.Length; i++)
+            {
+                fill[i] = Color.black;
+            }
+
+            result.SetPixels(fill);
+            result.SetPixels(0, height - left.height, left.width, left.height, left.GetPixels());
+            result.SetPixels(left.width + gap, height - right.height, right.width, right.height, right.GetPixels());
+            result.Apply();
+            File.WriteAllBytes(outPath, result.EncodeToPNG());
+            Object.DestroyImmediate(left);
+            Object.DestroyImmediate(right);
+            Object.DestroyImmediate(result);
+            return outPath;
+        }
+
+        /// <summary>Зменшена копія (bilinear) — «як на телефоні» на відстані витягнутої руки.</summary>
+        public static string Downscale(string sourcePath, string outPath, float factor)
+        {
+            Texture2D source = Load(sourcePath);
+            int w = Mathf.Max(1, Mathf.RoundToInt(source.width * factor));
+            int h = Mathf.Max(1, Mathf.RoundToInt(source.height * factor));
+            Texture2D result = new Texture2D(w, h, TextureFormat.RGB24, false);
+            for (int y = 0; y < h; y++)
+            {
+                for (int x = 0; x < w; x++)
+                {
+                    result.SetPixel(x, y, source.GetPixelBilinear((x + 0.5f) / w, (y + 0.5f) / h));
+                }
+            }
+
+            result.Apply();
+            File.WriteAllBytes(outPath, result.EncodeToPNG());
+            Object.DestroyImmediate(source);
+            Object.DestroyImmediate(result);
+            return outPath;
+        }
+
+        /// <summary>Середній колір прямокутника (координати від верхнього лівого кута) — для звірки з референсом.</summary>
+        public static Color AverageColor(string path, RectInt region)
+        {
+            Texture2D texture = Load(path);
+            Color sum = Color.clear;
+            int count = 0;
+            for (int y = region.yMin; y < region.yMax; y += 2)
+            {
+                for (int x = region.xMin; x < region.xMax; x += 2)
+                {
+                    sum += texture.GetPixel(x, texture.height - 1 - y);
+                    count++;
+                }
+            }
+
+            Object.DestroyImmediate(texture);
+            return count > 0 ? sum / count : Color.clear;
+        }
+
+        private static Texture2D Load(string path)
+        {
+            Texture2D texture = new Texture2D(2, 2, TextureFormat.RGBA32, false);
+            texture.LoadImage(File.ReadAllBytes(path));
+            return texture;
+        }
     }
 }
