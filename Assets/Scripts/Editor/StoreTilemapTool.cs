@@ -26,6 +26,8 @@ namespace Banda.EditorTools
         private const int Pad = 3; // поле довкола рівня в тайлах (дахи, провулок)
         private const int Street = 4; // тротуар і дорога знизу
         private const float T = HeistLevel.Tile;
+        /// <summary>Множник інтенсивності світла рівня (підібрано по рендеру з Unity при нічному світлі 0.22).</summary>
+        private const float LightGain = 2.6f;
 
         [MenuItem("Banda/4. Згенерувати тайли магазину", priority = 4)]
         public static void GenerateTiles()
@@ -355,6 +357,22 @@ namespace Banda.EditorTools
                 led.gameObject.AddComponent<LedBlink>();
             }
 
+            // Поле камери — слабка червона пляма точно на дальність виявлення симуляції.
+            for (int i = 0; i < data.Cameras.Count; i++)
+            {
+                GameObject go = new GameObject("CameraField" + (i + 1));
+                go.transform.SetParent(from, false);
+                go.transform.localPosition = HeistWorldView.ToWorld(data.Cameras[i]);
+                Light2D field = go.AddComponent<Light2D>();
+                field.lightType = Light2D.LightType.Point;
+                field.color = Palette.Danger;
+                field.intensity = 0.9f;
+                field.pointLightOuterRadius = HeistSim.CameraRange;
+                field.pointLightInnerRadius = HeistSim.CameraRange * 0.8f;
+                field.falloffIntensity = 0.8f;
+                field.targetSortingLayers = AllSortingLayers();
+            }
+
             for (int i = 0; i < data.Notes.Count; i++)
             {
                 Sprite(from, "Note" + (i + 1), $"{TileFolder}/note.png", HeistWorldView.ToWorld(data.Notes[i]), 2, lit);
@@ -368,10 +386,11 @@ namespace Banda.EditorTools
                 Light2D light = go.AddComponent<Light2D>();
                 light.lightType = Light2D.LightType.Point;
                 light.color = Palette.Hex(spot.Color);
-                light.intensity = spot.Intensity * 1.6f;
-                light.pointLightOuterRadius = spot.Radius;
-                light.pointLightInnerRadius = 0f;
-                light.falloffIntensity = 0.5f;
+                // Світло = геймплей: чітка пляма з ядром (inner) і коротким спадом, між плямами — справжня темрява.
+                light.intensity = spot.Intensity * LightGain;
+                light.pointLightOuterRadius = spot.Radius * 1.25f;
+                light.pointLightInnerRadius = spot.Radius * 0.35f;
+                light.falloffIntensity = 0.3f;
                 light.targetSortingLayers = AllSortingLayers(); // без цього новий Light2D нічого не освітлює
                 if (spot.Flicker != LightFlicker.None)
                 {
