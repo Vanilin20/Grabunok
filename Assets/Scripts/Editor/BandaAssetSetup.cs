@@ -19,7 +19,6 @@ namespace Banda.EditorTools
         public const string FontTtf = "Assets/Art/Fonts/press_start_2p.ttf";
         public const string FontAssetPath = "Assets/Art/Fonts/press_start_2p SDF.asset";
         public const string RadialPath = "Assets/Art/Fx/radial.png";
-        public const string TmpEssentials = "Packages/com.unity.ugui/Package Resources/TMP Essential Resources.unitypackage";
 
         public static readonly string[] SortingLayers = { "Gang", "Front" };
 
@@ -31,9 +30,6 @@ namespace Banda.EditorTools
         [MenuItem("Banda/1. Налаштувати ассети", priority = 1)]
         public static void RunAll()
         {
-            ImportTmpEssentials();
-            EnsureRadialTexture();
-            EnsureFillTexture();
             ConfigureWorldSprites(MenuArt);
             ConfigureWorldSprites(FxArt);
             ConfigureUiSprites();
@@ -41,76 +37,6 @@ namespace Banda.EditorTools
             EnsureFontAsset();
             AssetDatabase.SaveAssets();
             Debug.Log("[Banda] Ассети налаштовано.");
-        }
-
-        public static void ImportTmpEssentials()
-        {
-            if (Shader.Find("TextMeshPro/Bitmap") != null && AssetDatabase.IsValidFolder("Assets/TextMesh Pro"))
-            {
-                return;
-            }
-
-            AssetDatabase.ImportPackage(TmpEssentials, false);
-            AssetDatabase.Refresh();
-        }
-
-        /// <summary>М'яка радіальна пляма (тінь під меню, ореоли): генерується один раз.</summary>
-        public static void EnsureRadialTexture()
-        {
-            if (File.Exists(RadialPath))
-            {
-                return;
-            }
-
-            const int size = 128;
-            Texture2D texture = new Texture2D(size, size, TextureFormat.RGBA32, false);
-            Vector2 center = new Vector2((size - 1) / 2f, (size - 1) / 2f);
-            for (int y = 0; y < size; y++)
-            {
-                for (int x = 0; x < size; x++)
-                {
-                    float d = Vector2.Distance(new Vector2(x, y), center) / (size / 2f);
-                    float a = Mathf.Clamp01(1f - d);
-                    a = a * a * (3f - 2f * a); // плавний спад до краю
-                    texture.SetPixel(x, y, new Color(1f, 1f, 1f, a));
-                }
-            }
-
-            File.WriteAllBytes(RadialPath, texture.EncodeToPNG());
-            Object.DestroyImmediate(texture);
-            AssetDatabase.ImportAsset(RadialPath);
-        }
-
-        public const string FillPath = "Assets/Art/UI/fill.png";
-
-        /// <summary>
-        /// Суцільна заливка для обраної кнопки ролі (у Godot — StyleBoxFlat кольору ролі):
-        /// біла, фарбується кольором ролі; світлий кант 1 px, щоб край кнопки лишався чітким.
-        /// </summary>
-        public static void EnsureFillTexture()
-        {
-            if (File.Exists(FillPath))
-            {
-                return;
-            }
-
-            const int size = 24;
-            Texture2D texture = new Texture2D(size, size, TextureFormat.RGBA32, false);
-            for (int y = 0; y < size; y++)
-            {
-                for (int x = 0; x < size; x++)
-                {
-                    bool outer = x < 2 || y < 2 || x >= size - 2 || y >= size - 2;
-                    bool edge = x == 2 || y == 2 || x == size - 3 || y == size - 3;
-                    // Зовнішні 2 px — прозорий «ореол», як у спрайтів кнопок; кант — світліший.
-                    Color c = outer ? new Color(1f, 1f, 1f, 0f) : (edge ? Color.white : new Color(0.86f, 0.86f, 0.86f, 1f));
-                    texture.SetPixel(x, y, c);
-                }
-            }
-
-            File.WriteAllBytes(FillPath, texture.EncodeToPNG());
-            Object.DestroyImmediate(texture);
-            AssetDatabase.ImportAsset(FillPath);
         }
 
         /// <summary>Світові спрайти: 1 піксель = 1 одиниця, Nearest, без стиснення, опора — верхній лівий кут.</summary>

@@ -270,8 +270,10 @@ namespace Banda.ArtGen
         private static PixelCanvas CameraFeed(HeistLevel level)
         {
             (PixelCanvas b, PixelCanvas g) = StoreArt.Build(level);
-            List<LightPreview.Light> lights = ScreenPreviews.LevelLights(level, 1.6f);
-            PixelCanvas lit = LightPreview.Render(b, g, lights, P.Night6, 0.5f);
+            // Камера бачить зал у своєму ІЧ-режимі: без кольору світла, лише яскравість поверхонь + власне світіння.
+            PixelCanvas lit = new PixelCanvas(b.Width, b.Height);
+            lit.Blit(b, 0, 0);
+            lit.Blit(g, 0, 0);
             Vec2 cam = level.Cameras[0];
             int cx = (int)cam.X + StoreArt.Pad;
             int cy = (int)cam.Y + StoreArt.Pad;

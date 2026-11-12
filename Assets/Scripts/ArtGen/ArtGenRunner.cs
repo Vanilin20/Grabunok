@@ -53,21 +53,6 @@ namespace Banda.ArtGen
             return written;
         }
 
-        /// <summary>Превʼю екранів поза Unity — для циклу якості, поки редактор недоступний.</summary>
-        public static List<string> Previews(string projectRoot, string version)
-        {
-            List<string> written = new List<string>();
-            string dir = Path.Combine(projectRoot, "Captures", "previews");
-            foreach (KeyValuePair<string, PixelCanvas> pair in ScreenPreviews.All(projectRoot))
-            {
-                string name = $"{pair.Key}_{version}";
-                Save(pair.Value, dir, name + ".png", written);
-                Save(LightPreview.Half(pair.Value), dir, name + "_phone_half.png", written);
-            }
-
-            return written;
-        }
-
         private static void Save(PixelCanvas canvas, string dir, string file, List<string> written)
         {
             string path = Path.Combine(dir, file);

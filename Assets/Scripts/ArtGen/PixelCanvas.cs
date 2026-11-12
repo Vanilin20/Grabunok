@@ -1,4 +1,6 @@
 using System;
+using System.IO;
+using UnityEngine;
 
 namespace Banda.ArtGen
 {
@@ -60,15 +62,50 @@ namespace Banda.ArtGen
             Pixels = new Rgba[width * height];
         }
 
+        /// <summary>Прочитати PNG через Texture2D.LoadImage (рядки Unity — знизу, полотно — згори).</summary>
         public static PixelCanvas Load(string path)
         {
-            Rgba[] pixels = Png.Read(path, out int w, out int h);
-            PixelCanvas canvas = new PixelCanvas(w, h);
-            Array.Copy(pixels, canvas.Pixels, pixels.Length);
+            Texture2D texture = new Texture2D(2, 2, TextureFormat.RGBA32, false);
+            texture.LoadImage(File.ReadAllBytes(path));
+            PixelCanvas canvas = new PixelCanvas(texture.width, texture.height);
+            Color32[] src = texture.GetPixels32();
+            for (int y = 0; y < canvas.Height; y++)
+            {
+                for (int x = 0; x < canvas.Width; x++)
+                {
+                    Color32 c = src[(canvas.Height - 1 - y) * canvas.Width + x];
+                    canvas.Pixels[y * canvas.Width + x] = new Rgba(c.r, c.g, c.b, c.a);
+                }
+            }
+
+            UnityEngine.Object.DestroyImmediate(texture);
             return canvas;
         }
 
-        public void Save(string path) => Png.Write(path, Width, Height, Pixels);
+        /// <summary>Зберегти PNG через Texture2D.EncodeToPNG.</summary>
+        public void Save(string path)
+        {
+            Texture2D texture = new Texture2D(Width, Height, TextureFormat.RGBA32, false);
+            Color32[] dst = new Color32[Width * Height];
+            for (int y = 0; y < Height; y++)
+            {
+                for (int x = 0; x < Width; x++)
+                {
+                    Rgba c = Pixels[y * Width + x];
+                    dst[(Height - 1 - y) * Width + x] = new Color32(c.R, c.G, c.B, c.A);
+                }
+            }
+
+            texture.SetPixels32(dst);
+            string dir = Path.GetDirectoryName(path);
+            if (!string.IsNullOrEmpty(dir))
+            {
+                Directory.CreateDirectory(dir);
+            }
+
+            File.WriteAllBytes(path, texture.EncodeToPNG());
+            UnityEngine.Object.DestroyImmediate(texture);
+        }
 
         public bool Inside(int x, int y) => x >= 0 && y >= 0 && x < Width && y < Height;
 

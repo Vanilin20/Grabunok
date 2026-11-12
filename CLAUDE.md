@@ -104,9 +104,9 @@ Unity.exe -batchmode -nographics -projectPath . -runTests -testPlatform EditMode
 - Знімки й звіти — у `Captures/`, порівняння з Godot — у `docs/art/compare/`.
 
 ## Сцени
-- Сцени не правляться руками: їх збирає код (`Assets/Scripts/Editor/BandaSceneBuilder.cs`, меню **Banda → 2. Зібрати сцену Main**). Ручна правка зникне при наступній збірці.
+- Сцена Assets/Scenes/Main.unity — джерело правди. Її правлять у редакторі: Іван руками, Claude — через Unity MCP (обʼєкти, компоненти, світло, UI). Генератора сцени немає; ручні правки ніщо не затирає.
 - Налаштування імпорту арту (Point, без стиснення, 1 px = 1 одиниця, нормалі) — `BandaAssetSetup` (**Banda → 1. Налаштувати ассети**).
-- Згенерований арт (текстури з коду) — генератори в `Assets/Scripts/Editor/Art/`, результат — PNG у `Assets/Art/`.
+- Генератори арту (`Assets/Scripts/ArtGen`, збірка лише для редактора) — інструмент, що створює PNG (**Banda → 3. Згенерувати арт справи**). Після генерації джерело правди — PNG у `Assets/Art/`; генератори не потрапляють у збірку гри.
 
 ## Відповідність термінів Godot → Unity
 Стандарти арту й світла вище написані мовою Godot і лишаються дослівно. У Unity вони означають:
@@ -133,7 +133,9 @@ Assets/
     UI/            — екрани й компоненти інтерфейсу
     Roles/         — екрани ролей
     Backdrop/      — живий фон міста
-    Editor/        — збирач сцени, налаштування ассетів, генератори арту, знімки
+    HeistRuntime/  — світ Тіні, екрани ролей, HUD, HeistDirector
+    ArtGen/        — генератори PNG (лише редактор)
+    Editor/        — налаштування ассетів, знімки
   Tests/EditMode/  — тести Unity Test Framework
   Art/             — спрайти, UI, шрифти, матеріали (Menu/, Fx/, UI/, Fonts/, Heist/)
   Audio/           — звуки
