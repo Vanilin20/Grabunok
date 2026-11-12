@@ -113,7 +113,7 @@ namespace Banda.Heist
             {
                 Outcome = HeistOutcome.Timeout;
             }
-            else if (ShadowCarrying && _level.Exit.HasPoint(ShadowPos))
+            else if (ShadowCarrying && AtExit(ShadowPos))
             {
                 Outcome = HeistOutcome.Success;
             }
@@ -314,6 +314,19 @@ namespace Banda.Heist
             }
         }
 
+        public bool AtExit(Vec2 pos)
+        {
+            foreach (Box exit in _level.Exits)
+            {
+                if (exit.HasPoint(pos))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         public bool NearCover(Vec2 pos)
         {
             foreach (Box rect in _level.Covers)
@@ -457,7 +470,7 @@ namespace Banda.Heist
                         CameraRange = CameraRange,
                         CameraOffTime = CameraOffTime,
                         Safe = _level.SafePos,
-                        Exit = _level.Exit,
+                        Exits = new List<Box>(_level.Exits),
                     };
                 case RoleId.Shadow:
                     return new ShadowStatic { ViewRadius = ShadowViewRadius };
@@ -551,10 +564,12 @@ namespace Banda.Heist
                 view.SafeOpen = SafeOpen;
             }
 
-            if (_level.Exit.Intersects(area))
+            foreach (Box exit in _level.Exits)
             {
-                view.ExitVisible = true;
-                view.Exit = _level.Exit;
+                if (exit.Intersects(area))
+                {
+                    view.Exits.Add(exit);
+                }
             }
 
             return view;

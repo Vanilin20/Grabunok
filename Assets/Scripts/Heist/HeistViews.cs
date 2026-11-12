@@ -65,7 +65,7 @@ namespace Banda.Heist
         public float CameraRange;
         public float CameraOffTime;
         public Vec2 Safe;
-        public Box Exit;
+        public List<Box> Exits = new List<Box>();
     }
 
     public sealed class HackerView : RoleView
@@ -109,8 +109,8 @@ namespace Banda.Heist
         public bool SafeVisible;
         public Vec2 Safe;
         public bool SafeOpen;
-        public bool ExitVisible;
-        public Box Exit;
+        /// <summary>Виходи в колі видимості.</summary>
+        public List<Box> Exits = new List<Box>();
     }
 
     // --- Зломщик: комбінація й стан сейфа. Більше нічого. ---

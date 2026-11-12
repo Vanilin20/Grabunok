@@ -203,15 +203,18 @@ namespace Banda.ArtGen
                 }
             }
 
-            Box exit = level.Exit;
-            s.Rect((int)exit.X + 1, (int)exit.Y + 1, (int)exit.W, (int)exit.H, P.Ok);
-            PixelFont.DrawCentered(s, "ВХІД", (int)exit.Center.X + 1, (int)exit.Y + 9, P.Ok);
+            foreach (Box exit in level.Exits)
+            {
+                s.Rect((int)exit.X + 1, (int)exit.Y + 1, (int)exit.W, (int)exit.H, P.Ok);
+            }
+
             s.Ring((int)level.SafePos.X + 1, (int)level.SafePos.Y + 1, 6, P.Lamp3);
             s.Disc((int)level.SafePos.X + 1, (int)level.SafePos.Y + 1, 2, P.Lamp3);
-            PixelFont.Draw(s, "ЗАЛ", 40, 140, P.Cyan1);
-            PixelFont.Draw(s, "КАСА", (int)(11 * 16) + 6, (int)(10.4f * 16), P.Cyan1);
-            PixelFont.Draw(s, "ПІДСОБКА", (int)(16 * 16) + 6, (int)(12 * 16) - 12, P.Cyan1);
-            PixelFont.Draw(s, "СЕЙФ", (int)level.SafePos.X - 28, (int)level.SafePos.Y + 10, P.Lamp3);
+            PixelFont.Draw(s, "ЗАЛ", 6 * 16, 11 * 16 + 2, P.Cyan1);
+            PixelFont.Draw(s, "КАСА", 12 * 16 + 6, 10 * 16 + 4, P.Cyan1);
+            PixelFont.Draw(s, "ПІДСОБКА", 19 * 16, 12 * 16 + 4, P.Cyan1);
+            PixelFont.Draw(s, "СЕЙФ", 22 * 16, 2 * 16 + 4, P.Lamp3);
+            PixelFont.Draw(s, "ВХІД", 2 * 16 + 4, 12 * 16 + 4, P.Ok);
             return s;
         }
 

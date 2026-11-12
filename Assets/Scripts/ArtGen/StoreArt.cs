@@ -334,7 +334,7 @@ namespace Banda.ArtGen
             b.HLine(x0 + 30, x0 + 42, y0 + 3, P.Steel3);
 
             // Килимок на вході з написом «ВХІД» (читається згори).
-            Box exit = level.Exit;
+            Box exit = level.Exits[0];
             int mx = X(exit.X) + 2;
             int my = Y(exit.Y) + 10;
             int mw = (int)exit.W - 4;

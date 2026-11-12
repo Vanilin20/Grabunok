@@ -38,6 +38,15 @@ namespace Banda.Tests
             sim.Apply(RoleId.Shadow, HeistAction.Move(Vec2.Zero));
         }
 
+        /// <summary>Пройти через точки (центри тайлів) по черзі.</summary>
+        private static void WalkPath(HeistSim sim, params (float X, float Y)[] tiles)
+        {
+            foreach ((float x, float y) in tiles)
+            {
+                WalkTo(sim, new Vec2(x * 16f + 8f, y * 16f + 8f));
+            }
+        }
+
         private static string[] Members(System.Type type) =>
             type.GetFields(BindingFlags.Public | BindingFlags.Instance).Select(f => f.Name).ToArray();
 
@@ -143,6 +152,7 @@ namespace Banda.Tests
             HeistSim sim = NewSim();
             sim.Apply(RoleId.Hacker, HeistAction.DoorToggle());
             Vec2 cam = sim.Level.Cameras[0];
+            WalkPath(sim, (3, 12), (16, 12));
             WalkTo(sim, cam + new Vec2(0f, 20f));
             float before = sim.Alarm;
             Assert.That(sim.ShadowSeen, Is.True, "камера бачить Тінь");
@@ -155,6 +165,8 @@ namespace Banda.Tests
         {
             HeistSim sim = NewSim();
             Vec2 cam = sim.Level.Cameras[0];
+            WalkPath(sim, (3, 12), (16, 12));
+            // Камера вимикається на 6 с — Хакер тисне, коли Тінь уже на підході.
             sim.Apply(RoleId.Hacker, HeistAction.CameraOff(0));
             WalkTo(sim, cam + new Vec2(0f, 20f), 3f);
             float before = sim.Alarm;
@@ -194,7 +206,8 @@ namespace Banda.Tests
         public void Hidden_NearCover_IsNotSeen()
         {
             HeistSim sim = NewSim();
-            Box shelf = sim.Level.Covers[1]; // стелаж Б — найближчий до входу, прямий шлях без перешкод
+            // Торцевий стенд E (2–5, 8) — найближче укриття до входу, прямий шлях без перешкод.
+            Box shelf = sim.Level.Covers.Find(c => c.X == 2 * 16 && c.Y == 8 * 16);
             WalkTo(sim, new Vec2(shelf.X + 10f, shelf.Bottom + 6f));
             Assert.That(sim.NearCover(sim.ShadowPos), Is.True);
             sim.Apply(RoleId.Shadow, HeistAction.Hide());
@@ -248,26 +261,12 @@ namespace Banda.Tests
             HeistSim sim = NewSim();
             sim.Apply(RoleId.Safecracker, HeistAction.SafeTry(sim.Combo));
             sim.Apply(RoleId.Hacker, HeistAction.DoorToggle());
-            // Шлях обходить камеру знизу й іде до сейфа через двері підсобки.
-            Vec2[] route =
-            {
-                new Vec2(4.5f * 16, 11 * 16), new Vec2(14.5f * 16, 11 * 16), new Vec2(14.5f * 16, 6 * 16),
-                new Vec2(17.5f * 16, 6 * 16), new Vec2(17.5f * 16, 3.5f * 16), new Vec2(19 * 16 + 8, 3.5f * 16),
-            };
+            // Вздовж вітрин → правий прохід → двері підсобки → до сейфа; втеча — задніми дверима b.
             sim.Apply(RoleId.Hacker, HeistAction.CameraOff(0));
-            foreach (Vec2 p in route)
-            {
-                WalkTo(sim, p);
-            }
-
+            sim.Apply(RoleId.Hacker, HeistAction.CameraOff(1));
+            WalkPath(sim, (3, 12), (16, 12), (16, 5.5f), (23, 5.5f), (23, 1));
             Assert.That(sim.Apply(RoleId.Shadow, HeistAction.Take()), Is.True, "Тінь бере здобич біля відчиненого сейфа");
-            sim.Apply(RoleId.Hacker, HeistAction.CameraOff(0));
-            for (int i = route.Length - 1; i >= 0; i--)
-            {
-                WalkTo(sim, route[i]);
-            }
-
-            WalkTo(sim, sim.Level.ShadowStart);
+            WalkPath(sim, (23, 5.5f), (24.4f, 5.5f), (24.4f, 7.8f));
             sim.Tick(Dt);
             Assert.That(sim.Outcome, Is.EqualTo(HeistOutcome.Success),
                 $"Тінь зі здобиччю на виході — успіх (тривога {sim.Alarm:0}, позиція {sim.ShadowPos})");
@@ -292,6 +291,7 @@ namespace Banda.Tests
             HeistSim sim = NewSim();
             Box door = sim.Level.Door;
             Assert.That(sim.Apply(RoleId.Hacker, HeistAction.CameraOff(0)), Is.True);
+            WalkPath(sim, (3, 12), (16, 12));
             WalkTo(sim, new Vec2(door.X - 6f, door.Center.Y));
             WalkTo(sim, new Vec2(door.Right + 8f, door.Center.Y), 2f);
             Assert.That(sim.ShadowPos.X, Is.LessThan(door.X), "зачинені двері не пропускають");
@@ -299,6 +299,19 @@ namespace Banda.Tests
             WalkTo(sim, door.Center, 2f);
             Assert.That(sim.Apply(RoleId.Hacker, HeistAction.DoorToggle()), Is.False, "двері не зачиняються на Тіні");
             Assert.That(sim.DoorOpen, Is.True);
+        }
+
+        [Test]
+        public void StoreGrid_MatchesLevelDoc()
+        {
+            string path = System.IO.Path.Combine(System.IO.Directory.GetCurrentDirectory(), "docs", "levels", "store_grid.txt");
+            string[] doc = System.IO.File.ReadAllLines(path);
+            Assert.That(HeistLevel.StoreGrid, Is.EqualTo(doc), "сітка в коді = docs/levels/store_grid.txt");
+            HeistLevel level = HeistLevel.CornerStore();
+            Assert.That(level.Cameras.Count, Is.EqualTo(2));
+            Assert.That(level.Notes.Count, Is.EqualTo(2));
+            Assert.That(level.Exits.Count, Is.EqualTo(2));
+            Assert.That(level.Door.H, Is.EqualTo(32f));
         }
 
         [Test]
