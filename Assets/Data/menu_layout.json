@@ -1,0 +1,218 @@
+{
+ "blinkers": [
+  {
+   "x": 38,
+   "y": 121
+  },
+  {
+   "x": 128,
+   "y": 118
+  },
+  {
+   "x": 154,
+   "y": 198
+  },
+  {
+   "x": 225,
+   "y": 181
+  },
+  {
+   "x": 265,
+   "y": 95
+  },
+  {
+   "x": 287,
+   "y": 141
+  },
+  {
+   "x": 325,
+   "y": 158
+  },
+  {
+   "x": 375,
+   "y": 103
+  },
+  {
+   "x": 447,
+   "y": 191
+  },
+  {
+   "x": 493,
+   "y": 171
+  },
+  {
+   "x": 591,
+   "y": 154
+  },
+  {
+   "x": 649,
+   "y": 134
+  },
+  {
+   "x": 669,
+   "y": 130
+  },
+  {
+   "x": 760,
+   "y": 172
+  },
+  {
+   "x": 799,
+   "y": 169
+  },
+  {
+   "x": 845,
+   "y": 91
+  },
+  {
+   "x": 79,
+   "y": 99
+  },
+  {
+   "x": 243,
+   "y": 127
+  },
+  {
+   "x": 529,
+   "y": 83
+  }
+ ],
+ "lights": [
+  {
+   "name": "bar",
+   "x": 225,
+   "y": 187,
+   "color": "3de0ff",
+   "scale": 0.7,
+   "flicker": true
+  },
+  {
+   "name": "billboard",
+   "x": 348,
+   "y": 263,
+   "color": "c2f6ff",
+   "scale": 3,
+   "flicker": false
+  },
+  {
+   "name": "sign",
+   "x": 432,
+   "y": 52,
+   "color": "ff3d7f",
+   "scale": 3.2,
+   "flicker": false
+  },
+  {
+   "name": "bulb",
+   "x": 743,
+   "y": 237,
+   "color": "f7c95a",
+   "scale": 2.6,
+   "flicker": true
+  }
+ ],
+ "letters": [
+  {
+   "file": "sign_letter_0.png",
+   "x": 334,
+   "y": 26
+  },
+  {
+   "file": "sign_letter_1.png",
+   "x": 372,
+   "y": 26
+  },
+  {
+   "file": "sign_letter_2.png",
+   "x": 410,
+   "y": 26
+  },
+  {
+   "file": "sign_letter_3.png",
+   "x": 448,
+   "y": 26
+  },
+  {
+   "file": "sign_letter_4.png",
+   "x": 486,
+   "y": 26
+  }
+ ],
+ "layers": [
+  {
+   "name": "clouds",
+   "x": 0,
+   "y": 60
+  },
+  {
+   "name": "far",
+   "x": 0,
+   "y": 91
+  },
+  {
+   "name": "viaduct",
+   "x": 0,
+   "y": 200
+  },
+  {
+   "name": "mid",
+   "x": 0,
+   "y": 80
+  },
+  {
+   "name": "mid_glow",
+   "x": 4,
+   "y": 113
+  },
+  {
+   "name": "sign_frame",
+   "x": 330,
+   "y": 26
+  },
+  {
+   "name": "roof",
+   "x": 0,
+   "y": 216
+  },
+  {
+   "name": "roof_glow",
+   "x": 456,
+   "y": 236
+  },
+  {
+   "name": "fg",
+   "x": 0,
+   "y": 0
+  }
+ ],
+ "gang": [
+  {
+   "name": "runner",
+   "x": 262,
+   "y": 221,
+   "frameW": 48,
+   "frameH": 76
+  },
+  {
+   "name": "hacker",
+   "x": 310,
+   "y": 260,
+   "frameW": 67,
+   "frameH": 106
+  },
+  {
+   "name": "leader",
+   "x": 358,
+   "y": 254,
+   "frameW": 72,
+   "frameH": 114
+  }
+ ],
+ "viaductY": 198,
+ "steam": [
+  {
+   "x": 448,
+   "y": 298
+  }
+ ]
+}
