@@ -113,10 +113,11 @@ namespace Banda.ArtGen
                     // Шахівниця 8×8 двома близькими тонами, зерно рідке — щоб на екрані не було «сітки з крапок».
                     bool odd = (x / 8 + y / 8) % 2 == 0;
                     float n = H(x, y, 10 + v);
-                    Rgba c = odd ? P.Night5 : P.Night4;
-                    if (n < 0.06f)
+                    // Світлі плитки — лише наполовину зерном: шахівниця видна, але не кричить.
+                    Rgba c = odd && n < 0.45f ? P.Night5 : P.Night4;
+                    if (n > 0.97f)
                     {
-                        c = odd ? P.Night4 : P.Night3;
+                        c = P.Night3;
                     }
 
                     if (y == 15 && x % 8 != 0)
