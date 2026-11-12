@@ -17,9 +17,6 @@ namespace Banda.ArtGen
             string art = Path.Combine(projectRoot, "Assets", "Art", "Heist");
             HeistLevel level = HeistLevel.CornerStore();
 
-            (PixelCanvas store, PixelCanvas glow) = StoreArt.Build(level);
-            Save(store, art, "store_base.png", written);
-            Save(glow, art, "store_glow.png", written);
             Save(CharacterArt.Shadow(), art, "shadow_sheet.png", written);
             Save(CharacterArt.Guard(), art, "guard_sheet.png", written);
             Save(PropArt.Door(false), art, "door_closed.png", written);

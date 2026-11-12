@@ -59,6 +59,11 @@ namespace Banda.HeistRuntime
             {
                 HeistDirector.Instance.HeistStarted += OnHeistStarted;
                 HeistDirector.Instance.HeistStopped += OnHeistStopped;
+                // Увімкнувся вже під час справи — підхоплюємо її.
+                if (HeistDirector.Instance.Transport != null)
+                {
+                    OnHeistStarted(HeistDirector.Instance.Transport);
+                }
             }
         }
 

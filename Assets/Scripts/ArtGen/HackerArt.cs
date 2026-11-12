@@ -272,14 +272,11 @@ namespace Banda.ArtGen
         /// <summary>Знімок з камери: освітлений рівень біля камери, перефарбований у моніторний зелено-блакитний.</summary>
         private static PixelCanvas CameraFeed(HeistLevel level)
         {
-            (PixelCanvas b, PixelCanvas g) = StoreArt.Build(level);
-            // Камера бачить зал у своєму ІЧ-режимі: без кольору світла, лише яскравість поверхонь + власне світіння.
-            PixelCanvas lit = new PixelCanvas(b.Width, b.Height);
-            lit.Blit(b, 0, 0);
-            lit.Blit(g, 0, 0);
+            // Камера бачить зал у своєму ІЧ-режимі: без кольору світла, лише яскравість поверхонь — збираємо з тайлів.
+            PixelCanvas lit = TileArt.Compose(HeistLevel.StoreGrid);
             Vec2 cam = level.Cameras[0];
-            int cx = (int)cam.X + StoreArt.Pad;
-            int cy = (int)cam.Y + StoreArt.Pad;
+            int cx = (int)cam.X;
+            int cy = (int)cam.Y + 16; // камера дивиться вниз, у зал
             PixelCanvas crop = lit.Crop(cx - 50, cy - 28, 104, 70);
             PixelCanvas feed = new PixelCanvas(104, 70);
             Rgba[] ramp = { P.Night0, P.Cyan0, P.Cyan1, P.Cyan2, P.Cyan3 };
