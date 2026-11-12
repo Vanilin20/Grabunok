@@ -19,6 +19,8 @@ namespace Banda.ArtGen
 
             Save(CharacterArt.Shadow(), art, "shadow_sheet.png", written);
             Save(CharacterArt.Guard(), art, "guard_sheet.png", written);
+            Save(GuardIcons.Suspect(), art, "guard_suspect.png", written);
+            Save(GuardIcons.Alarm(), art, "guard_alarm.png", written);
             Save(PropArt.Door(false), art, "door_closed.png", written);
             Save(PropArt.Door(true), art, "door_open.png", written);
             Save(PropArt.Safe(false), art, "safe_closed.png", written);

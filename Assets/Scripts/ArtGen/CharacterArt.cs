@@ -10,7 +10,8 @@ namespace Banda.ArtGen
     public static class CharacterArt
     {
         public const int Frame = 16;
-        public const int Columns = 7;
+        /// <summary>Стовпці: 0 — idle, 1 — idle на вдиху, 2..7 — шість кадрів ходьби.</summary>
+        public const int Columns = 8;
 
         private sealed class Look
         {
@@ -85,12 +86,13 @@ namespace Banda.ArtGen
             return sheet;
         }
 
-        /// <summary>Кадр «обличчям униз» (до низу екрана). col 0 — idle, 1..6 — ходьба.</summary>
+        /// <summary>Кадр «обличчям униз» (до низу екрана). col 0 — idle, 1 — вдих, 2..7 — ходьба.</summary>
         private static PixelCanvas DrawFacingDown(Look look, int col)
         {
             PixelCanvas f = new PixelCanvas(Frame, Frame);
-            bool walking = col > 0;
-            float phase = walking ? (col - 1) / 6f * MathF.PI * 2f : 0f;
+            bool walking = col > 1;
+            bool inhale = col == 1;
+            float phase = walking ? (col - 2) / 6f * MathF.PI * 2f : 0f;
             int step = walking ? (int)MathF.Round(MathF.Sin(phase) * 1.6f) : 0; // ступні: −2..2
             int bob = walking && (col % 3 == 0) ? 1 : 0; // корпус ледь «пружинить» на кроці
             int cx = 8;
@@ -105,7 +107,7 @@ namespace Banda.ArtGen
             {
                 for (int x = -5; x <= 5; x++)
                 {
-                    if (x * x / 30f + y * y / 11f > 1f)
+                    if (x * x / (inhale ? 36f : 30f) + y * y / 11f > 1f)
                     {
                         continue;
                     }
@@ -166,6 +168,25 @@ namespace Banda.ArtGen
             }
 
             return f;
+        }
+    }
+
+    /// <summary>Значки стану охоронця над головою: «?» — підозра, «!» — тривога.</summary>
+    public static class GuardIcons
+    {
+        public static PixelCanvas Suspect() => Bubble(P.Lamp3, '?');
+
+        public static PixelCanvas Alarm() => Bubble(P.Alarm, '!');
+
+        private static PixelCanvas Bubble(Rgba color, char mark)
+        {
+            PixelCanvas b = new PixelCanvas(9, 11);
+            b.FillRect(1, 0, 7, 9, P.Night0);
+            b.FillRect(0, 1, 9, 7, P.Night0);
+            b.Set(4, 9, P.Night0);
+            b.Set(4, 10, P.Night0);
+            PixelFont.Draw(b, mark.ToString(), 2, 1, color);
+            return b;
         }
     }
 

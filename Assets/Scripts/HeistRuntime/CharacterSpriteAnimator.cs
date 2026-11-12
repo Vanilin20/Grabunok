@@ -9,7 +9,9 @@ namespace Banda.HeistRuntime
     [RequireComponent(typeof(SpriteRenderer))]
     public sealed class CharacterSpriteAnimator : MonoBehaviour
     {
-        private const int Columns = 7;
+        private const int Columns = 8; // idle, вдих, 6 кадрів ходьби
+        private const int WalkFirst = 2;
+        private const float BreathFps = 1.4f;
         private const int Rows = 4;
         private const int FrameSize = 16;
 
@@ -24,6 +26,7 @@ namespace Banda.HeistRuntime
         private int _direction;
         private float _time;
         private float _speed;
+        private float _breath;
 
         private void Awake()
         {
@@ -47,6 +50,7 @@ namespace Banda.HeistRuntime
             }
 
             _renderer.sprite = _frames[0, 0];
+            _breath = Random.value * 2f;
         }
 
         private void OnDestroy()
@@ -112,11 +116,17 @@ namespace Banda.HeistRuntime
                 return;
             }
 
-            int col = 0;
+            int col;
             if (_speed > _moveThreshold)
             {
                 _time += Time.deltaTime * _walkFps;
-                col = 1 + Mathf.FloorToInt(_time) % (Columns - 1);
+                col = WalkFirst + Mathf.FloorToInt(_time) % (Columns - WalkFirst);
+            }
+            else
+            {
+                // Дихання на місці: повільно між idle і вдихом, зі зсувом фази в кожного персонажа.
+                _breath += Time.deltaTime * BreathFps;
+                col = Mathf.FloorToInt(_breath) % 2;
             }
 
             _renderer.sprite = _frames[_direction, col];

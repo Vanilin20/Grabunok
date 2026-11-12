@@ -23,7 +23,7 @@ namespace Banda.EditorTools
         /// <summary>Світові спрайти з опорою в центрі.</summary>
         private static readonly HashSet<string> WorldCenter = new HashSet<string>
         {
-            "safe_closed", "safe_open", "camera_dome", "led_red", "shadow_sheet", "guard_sheet",
+            "safe_closed", "safe_open", "camera_dome", "led_red", "shadow_sheet", "guard_sheet", "guard_suspect", "guard_alarm",
         };
 
         /// <summary>UI-спрайти з 9-slice (поле 4 px).</summary>
@@ -44,6 +44,11 @@ namespace Banda.EditorTools
             foreach (string guid in AssetDatabase.FindAssets("t:Texture2D", new[] { Folder }))
             {
                 string path = AssetDatabase.GUIDToAssetPath(guid);
+                if (path.Contains("/Tiles/"))
+                {
+                    continue; // тайли рівня імпортує StoreTilemapTool (1 px = 1 одиниця, клітинка 16)
+                }
+
                 string name = Path.GetFileNameWithoutExtension(path);
                 TextureImporter importer = (TextureImporter)AssetImporter.GetAtPath(path);
                 bool world = WorldTopLeft.Contains(name) || WorldCenter.Contains(name);
