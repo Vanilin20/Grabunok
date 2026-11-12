@@ -27,5 +27,8 @@ namespace Banda.Heist
 
         /// <summary>Надіслати дію від імені локального гравця.</summary>
         void Send(HeistAction action);
+
+        /// <summary>Попросити повний стан ролі (статика + знімок): екран відкрився пізніше чи після перепідключення.</summary>
+        void RequestState();
     }
 }

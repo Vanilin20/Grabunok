@@ -23,6 +23,8 @@ namespace Banda.Heist
         public List<Vec2> Cameras = new List<Vec2>();
         public List<Vec2> GuardPath = new List<Vec2>();
         public Vec2 ShadowStart;
+        /// <summary>Джерела світла (лише візуал; симуляція їх не читає). Колір — hex з палітри.</summary>
+        public List<LightSpot> Lights = new List<LightSpot>();
 
         /// <summary>
         /// «Тестовий поверх» Godot-версії (heist_sim.gd) — 1:1, для порівняльних тестів поведінки.
@@ -85,7 +87,55 @@ namespace Banda.Heist
                     new Vec2(12 * t + 8, 8 * t + 8), new Vec2(2 * t + 8, 8 * t + 8),
                 },
                 ShadowStart = new Vec2(2 * t + 8, 11 * t + 8),
+                Lights = new List<LightSpot>
+                {
+                    // Чергове світло в залі: дві тьмяні лампи, між ними справжня темрява (стандарт R5).
+                    new LightSpot("lamp_aisle", new Vec2(6 * t, 5.5f * t), 46f, "fff2c4", 0.9f, LightFlicker.None),
+                    new LightSpot("lamp_counter", new Vec2(12.5f * t, 9.5f * t), 40f, "f7c95a", 0.85f, LightFlicker.Buzz),
+                    // Холодильники світять холодним уздовж свого ряду.
+                    new LightSpot("fridge_a", new Vec2(4 * t, 2.6f * t), 30f, "3de0ff", 0.7f, LightFlicker.None),
+                    new LightSpot("fridge_b", new Vec2(8 * t, 2.6f * t), 30f, "3de0ff", 0.7f, LightFlicker.None),
+                    // Підсобка: одна гола лампочка, що мерехтить.
+                    new LightSpot("backroom_bulb", new Vec2(18 * t, 6 * t), 40f, "d8962f", 0.8f, LightFlicker.Dying),
+                    // Неон вулиці крізь вітрини.
+                    new LightSpot("street_neon_a", new Vec2(8 * t, 13.4f * t), 52f, "ff3d7f", 0.75f, LightFlicker.None),
+                    new LightSpot("street_neon_b", new Vec2(16 * t, 13.4f * t), 44f, "3de0ff", 0.55f, LightFlicker.None),
+                    // Зелений покажчик «ВИХІД» над дверима.
+                    new LightSpot("exit_sign", new Vec2(2.5f * t, 11.4f * t), 22f, "5cf08a", 0.6f, LightFlicker.None),
+                    // Екран каси.
+                    new LightSpot("register", new Vec2(12 * t, 9.3f * t), 12f, "5cf08a", 0.5f, LightFlicker.None),
+                },
             };
+        }
+    }
+
+    public enum LightFlicker
+    {
+        None,
+        /// <summary>Люмінесцентна лампа гуде й зрідка просідає.</summary>
+        Buzz,
+        /// <summary>Лампа, що доживає: часто гасне на мить.</summary>
+        Dying,
+    }
+
+    /// <summary>Точкове джерело світла рівня (координати рівня, радіус у пікселях).</summary>
+    public sealed class LightSpot
+    {
+        public string Name;
+        public Vec2 Pos;
+        public float Radius;
+        public string Color;
+        public float Intensity;
+        public LightFlicker Flicker;
+
+        public LightSpot(string name, Vec2 pos, float radius, string color, float intensity, LightFlicker flicker)
+        {
+            Name = name;
+            Pos = pos;
+            Radius = radius;
+            Color = color;
+            Intensity = intensity;
+            Flicker = flicker;
         }
     }
 }

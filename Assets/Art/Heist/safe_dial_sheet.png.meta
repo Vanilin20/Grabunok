@@ -1,0 +1,1157 @@
+fileFormatVersion: 2
+guid: 2f11152c60c936a43bae23056182e757
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -5711734491148207147
+    second: safe_dial_sheet_0
+  - first:
+      213: -1980624379218208668
+    second: safe_dial_sheet_1
+  - first:
+      213: -2764361849614104073
+    second: safe_dial_sheet_2
+  - first:
+      213: 2823199447321423418
+    second: safe_dial_sheet_3
+  - first:
+      213: 5869526501678590978
+    second: safe_dial_sheet_4
+  - first:
+      213: -1656749604812796562
+    second: safe_dial_sheet_5
+  - first:
+      213: -2349219238695621243
+    second: safe_dial_sheet_6
+  - first:
+      213: 6570166813811884656
+    second: safe_dial_sheet_7
+  - first:
+      213: -3721808092947006763
+    second: safe_dial_sheet_8
+  - first:
+      213: 9189817754264396460
+    second: safe_dial_sheet_9
+  - first:
+      213: 5861836931586392592
+    second: safe_dial_sheet_10
+  - first:
+      213: -4075889786819584095
+    second: safe_dial_sheet_11
+  - first:
+      213: 3021133840837312465
+    second: safe_dial_sheet_12
+  - first:
+      213: 2700340572331977361
+    second: safe_dial_sheet_13
+  - first:
+      213: -6750891888292920564
+    second: safe_dial_sheet_14
+  - first:
+      213: 6769577040547299949
+    second: safe_dial_sheet_15
+  - first:
+      213: 1065619629915903346
+    second: safe_dial_sheet_16
+  - first:
+      213: -794768445564433199
+    second: safe_dial_sheet_17
+  - first:
+      213: -4091512728607101688
+    second: safe_dial_sheet_18
+  - first:
+      213: -6814176899081705789
+    second: safe_dial_sheet_19
+  - first:
+      213: 6253950488761424367
+    second: safe_dial_sheet_20
+  - first:
+      213: 718267960732252841
+    second: safe_dial_sheet_21
+  - first:
+      213: -8487431811424597085
+    second: safe_dial_sheet_22
+  - first:
+      213: 1971008160330699672
+    second: safe_dial_sheet_23
+  - first:
+      213: 8802662585819521501
+    second: safe_dial_sheet_24
+  - first:
+      213: -5715339353026590903
+    second: safe_dial_sheet_25
+  - first:
+      213: 5570471008189320490
+    second: safe_dial_sheet_26
+  - first:
+      213: -1460396727828746970
+    second: safe_dial_sheet_27
+  - first:
+      213: -8682612081122908086
+    second: safe_dial_sheet_28
+  - first:
+      213: -5670976726408188860
+    second: safe_dial_sheet_29
+  - first:
+      213: 7414617600484874700
+    second: safe_dial_sheet_30
+  - first:
+      213: -124255756610881405
+    second: safe_dial_sheet_31
+  - first:
+      213: 3263865303714012963
+    second: safe_dial_sheet_32
+  - first:
+      213: 7054158323295567130
+    second: safe_dial_sheet_33
+  - first:
+      213: -1060485249037524909
+    second: safe_dial_sheet_34
+  - first:
+      213: -1938693684737172509
+    second: safe_dial_sheet_35
+  - first:
+      213: 4693294053603284230
+    second: safe_dial_sheet_36
+  - first:
+      213: -7033945905543054575
+    second: safe_dial_sheet_37
+  - first:
+      213: 5237212514423342795
+    second: safe_dial_sheet_38
+  - first:
+      213: 3569420861459309039
+    second: safe_dial_sheet_39
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: safe_dial_sheet_0
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 0
+        width: 111
+        height: 111
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5dbb3cb0eb7dbb0b0800000000000000
+      internalID: -5711734491148207147
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: safe_dial_sheet_1
+      rect:
+        serializedVersion: 2
+        x: 113
+        y: 0
+        width: 111
+        height: 111
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4685833fe986384e0800000000000000
+      internalID: -1980624379218208668
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: safe_dial_sheet_2
+      rect:
+        serializedVersion: 2
+        x: 225
+        y: 0
+        width: 111
+        height: 111
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7f90c134b8303a9d0800000000000000
+      internalID: -2764361849614104073
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: safe_dial_sheet_3
+      rect:
+        serializedVersion: 2
+        x: 337
+        y: 0
+        width: 111
+        height: 111
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a3e2cab70f40e2720800000000000000
+      internalID: 2823199447321423418
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: safe_dial_sheet_4
+      rect:
+        serializedVersion: 2
+        x: 449
+        y: 0
+        width: 111
+        height: 111
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 20c2b44514fb47150800000000000000
+      internalID: 5869526501678590978
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: safe_dial_sheet_5
+      rect:
+        serializedVersion: 2
+        x: 561
+        y: 0
+        width: 111
+        height: 111
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e6d4d53230b0209e0800000000000000
+      internalID: -1656749604812796562
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: safe_dial_sheet_6
+      rect:
+        serializedVersion: 2
+        x: 673
+        y: 0
+        width: 111
+        height: 111
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 58da8029c85e56fd0800000000000000
+      internalID: -2349219238695621243
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: safe_dial_sheet_7
+      rect:
+        serializedVersion: 2
+        x: 785
+        y: 0
+        width: 111
+        height: 111
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 072415c28ebed2b50800000000000000
+      internalID: 6570166813811884656
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: safe_dial_sheet_8
+      rect:
+        serializedVersion: 2
+        x: 897
+        y: 0
+        width: 111
+        height: 111
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5da38b9224b795cc0800000000000000
+      internalID: -3721808092947006763
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: safe_dial_sheet_9
+      rect:
+        serializedVersion: 2
+        x: 1009
+        y: 0
+        width: 111
+        height: 111
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ca2e189ce8ac88f70800000000000000
+      internalID: 9189817754264396460
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: safe_dial_sheet_10
+      rect:
+        serializedVersion: 2
+        x: 1121
+        y: 0
+        width: 111
+        height: 111
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0120976c1ad695150800000000000000
+      internalID: 5861836931586392592
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: safe_dial_sheet_11
+      rect:
+        serializedVersion: 2
+        x: 1233
+        y: 0
+        width: 111
+        height: 111
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1afd9f875d78f67c0800000000000000
+      internalID: -4075889786819584095
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: safe_dial_sheet_12
+      rect:
+        serializedVersion: 2
+        x: 1345
+        y: 0
+        width: 111
+        height: 111
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1dff40ab8393de920800000000000000
+      internalID: 3021133840837312465
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: safe_dial_sheet_13
+      rect:
+        serializedVersion: 2
+        x: 1457
+        y: 0
+        width: 111
+        height: 111
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 19a2c6a8179897520800000000000000
+      internalID: 2700340572331977361
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: safe_dial_sheet_14
+      rect:
+        serializedVersion: 2
+        x: 1569
+        y: 0
+        width: 111
+        height: 111
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c030c3968930052a0800000000000000
+      internalID: -6750891888292920564
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: safe_dial_sheet_15
+      rect:
+        serializedVersion: 2
+        x: 1681
+        y: 0
+        width: 111
+        height: 111
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d62467d937e52fd50800000000000000
+      internalID: 6769577040547299949
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: safe_dial_sheet_16
+      rect:
+        serializedVersion: 2
+        x: 1793
+        y: 0
+        width: 111
+        height: 111
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 27512d25867d9ce00800000000000000
+      internalID: 1065619629915903346
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: safe_dial_sheet_17
+      rect:
+        serializedVersion: 2
+        x: 1905
+        y: 0
+        width: 111
+        height: 111
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1dc41734f4a68f4f0800000000000000
+      internalID: -794768445564433199
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: safe_dial_sheet_18
+      rect:
+        serializedVersion: 2
+        x: 2017
+        y: 0
+        width: 111
+        height: 111
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 80d6261e9d60837c0800000000000000
+      internalID: -4091512728607101688
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: safe_dial_sheet_19
+      rect:
+        serializedVersion: 2
+        x: 2129
+        y: 0
+        width: 111
+        height: 111
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3c6ef8d963e2f61a0800000000000000
+      internalID: -6814176899081705789
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: safe_dial_sheet_20
+      rect:
+        serializedVersion: 2
+        x: 2241
+        y: 0
+        width: 111
+        height: 111
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fe9518da5de7ac650800000000000000
+      internalID: 6253950488761424367
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: safe_dial_sheet_21
+      rect:
+        serializedVersion: 2
+        x: 2353
+        y: 0
+        width: 111
+        height: 111
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9aa7dfc97ecc7f900800000000000000
+      internalID: 718267960732252841
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: safe_dial_sheet_22
+      rect:
+        serializedVersion: 2
+        x: 2465
+        y: 0
+        width: 111
+        height: 111
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3abcfa06cb5963a80800000000000000
+      internalID: -8487431811424597085
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: safe_dial_sheet_23
+      rect:
+        serializedVersion: 2
+        x: 2577
+        y: 0
+        width: 111
+        height: 111
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 89358ed9a7d6a5b10800000000000000
+      internalID: 1971008160330699672
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: safe_dial_sheet_24
+      rect:
+        serializedVersion: 2
+        x: 2689
+        y: 0
+        width: 111
+        height: 111
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dd1e469bbf6592a70800000000000000
+      internalID: 8802662585819521501
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: safe_dial_sheet_25
+      rect:
+        serializedVersion: 2
+        x: 2801
+        y: 0
+        width: 111
+        height: 111
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9470a0cb3290fa0b0800000000000000
+      internalID: -5715339353026590903
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: safe_dial_sheet_26
+      rect:
+        serializedVersion: 2
+        x: 2913
+        y: 0
+        width: 111
+        height: 111
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a2d8cba4ed94e4d40800000000000000
+      internalID: 5570471008189320490
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: safe_dial_sheet_27
+      rect:
+        serializedVersion: 2
+        x: 3025
+        y: 0
+        width: 111
+        height: 111
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 62def9ed9e0abbbe0800000000000000
+      internalID: -1460396727828746970
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: safe_dial_sheet_28
+      rect:
+        serializedVersion: 2
+        x: 3137
+        y: 0
+        width: 111
+        height: 111
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a48672e805a218780800000000000000
+      internalID: -8682612081122908086
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: safe_dial_sheet_29
+      rect:
+        serializedVersion: 2
+        x: 3249
+        y: 0
+        width: 111
+        height: 111
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 44caee4a6b4ac41b0800000000000000
+      internalID: -5670976726408188860
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: safe_dial_sheet_30
+      rect:
+        serializedVersion: 2
+        x: 3361
+        y: 0
+        width: 111
+        height: 111
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cc9924e5c6306e660800000000000000
+      internalID: 7414617600484874700
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: safe_dial_sheet_31
+      rect:
+        serializedVersion: 2
+        x: 3473
+        y: 0
+        width: 111
+        height: 111
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 38839e53c0e864ef0800000000000000
+      internalID: -124255756610881405
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: safe_dial_sheet_32
+      rect:
+        serializedVersion: 2
+        x: 3585
+        y: 0
+        width: 111
+        height: 111
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 32f989673349b4d20800000000000000
+      internalID: 3263865303714012963
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: safe_dial_sheet_33
+      rect:
+        serializedVersion: 2
+        x: 3697
+        y: 0
+        width: 111
+        height: 111
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a1db569de9765e160800000000000000
+      internalID: 7054158323295567130
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: safe_dial_sheet_34
+      rect:
+        serializedVersion: 2
+        x: 3809
+        y: 0
+        width: 111
+        height: 111
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 350a391e8466841f0800000000000000
+      internalID: -1060485249037524909
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: safe_dial_sheet_35
+      rect:
+        serializedVersion: 2
+        x: 3921
+        y: 0
+        width: 111
+        height: 111
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3eb92f88d506815e0800000000000000
+      internalID: -1938693684737172509
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: safe_dial_sheet_36
+      rect:
+        serializedVersion: 2
+        x: 4033
+        y: 0
+        width: 111
+        height: 111
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6051a7b531ee12140800000000000000
+      internalID: 4693294053603284230
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: safe_dial_sheet_37
+      rect:
+        serializedVersion: 2
+        x: 4145
+        y: 0
+        width: 111
+        height: 111
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 11bfac26777626e90800000000000000
+      internalID: -7033945905543054575
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: safe_dial_sheet_38
+      rect:
+        serializedVersion: 2
+        x: 4257
+        y: 0
+        width: 111
+        height: 111
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bc60f6fa8015ea840800000000000000
+      internalID: 5237212514423342795
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: safe_dial_sheet_39
+      rect:
+        serializedVersion: 2
+        x: 4369
+        y: 0
+        width: 111
+        height: 111
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fe1a625ac51298130800000000000000
+      internalID: 3569420861459309039
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      safe_dial_sheet_0: -5711734491148207147
+      safe_dial_sheet_1: -1980624379218208668
+      safe_dial_sheet_10: 5861836931586392592
+      safe_dial_sheet_11: -4075889786819584095
+      safe_dial_sheet_12: 3021133840837312465
+      safe_dial_sheet_13: 2700340572331977361
+      safe_dial_sheet_14: -6750891888292920564
+      safe_dial_sheet_15: 6769577040547299949
+      safe_dial_sheet_16: 1065619629915903346
+      safe_dial_sheet_17: -794768445564433199
+      safe_dial_sheet_18: -4091512728607101688
+      safe_dial_sheet_19: -6814176899081705789
+      safe_dial_sheet_2: -2764361849614104073
+      safe_dial_sheet_20: 6253950488761424367
+      safe_dial_sheet_21: 718267960732252841
+      safe_dial_sheet_22: -8487431811424597085
+      safe_dial_sheet_23: 1971008160330699672
+      safe_dial_sheet_24: 8802662585819521501
+      safe_dial_sheet_25: -5715339353026590903
+      safe_dial_sheet_26: 5570471008189320490
+      safe_dial_sheet_27: -1460396727828746970
+      safe_dial_sheet_28: -8682612081122908086
+      safe_dial_sheet_29: -5670976726408188860
+      safe_dial_sheet_3: 2823199447321423418
+      safe_dial_sheet_30: 7414617600484874700
+      safe_dial_sheet_31: -124255756610881405
+      safe_dial_sheet_32: 3263865303714012963
+      safe_dial_sheet_33: 7054158323295567130
+      safe_dial_sheet_34: -1060485249037524909
+      safe_dial_sheet_35: -1938693684737172509
+      safe_dial_sheet_36: 4693294053603284230
+      safe_dial_sheet_37: -7033945905543054575
+      safe_dial_sheet_38: 5237212514423342795
+      safe_dial_sheet_39: 3569420861459309039
+      safe_dial_sheet_4: 5869526501678590978
+      safe_dial_sheet_5: -1656749604812796562
+      safe_dial_sheet_6: -2349219238695621243
+      safe_dial_sheet_7: 6570166813811884656
+      safe_dial_sheet_8: -3721808092947006763
+      safe_dial_sheet_9: 9189817754264396460
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

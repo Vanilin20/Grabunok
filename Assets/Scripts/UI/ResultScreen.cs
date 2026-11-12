@@ -1,4 +1,5 @@
 using Banda.Core;
+using Banda.Heist;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -6,14 +7,16 @@ using UnityEngine.UI;
 namespace Banda.UI
 {
     /// <summary>
-    /// Підсумок справи.
-    /// ЗАГЛУШКА (з ТЗ): газетна шпальта з трюками слави — етап 3. Зараз — сухі цифри, як і в Godot-версії.
+    /// Підсумок справи — газетна шпальта (ТЗ: «газетна шпальта про банду»): заголовок з того, що сталося,
+    /// цифри справи в колонці, штамп «СЕНСАЦІЯ» чи «ПРОВАЛ». Трюки слави й гроші — етап 3 (ТЗ), тут їх немає.
     /// </summary>
     public sealed class ResultScreen : MonoBehaviour
     {
-        [SerializeField] private TMP_Text _title;
-        [SerializeField] private TMP_Text _reason;
+        [SerializeField] private TMP_Text _headline;
         [SerializeField] private TMP_Text _stats;
+        [SerializeField] private Image _stamp;
+        [SerializeField] private Sprite _stampWin;
+        [SerializeField] private Sprite _stampFail;
         [SerializeField] private Button _againButton;
         [SerializeField] private Button _leaveButton;
         [SerializeField] private TMP_Text _waitLabel;
@@ -50,31 +53,30 @@ namespace Banda.UI
 
         private void Show(HeistSummary summary)
         {
+            bool win = summary.Outcome == HeistOutcome.Success;
             switch (summary.Outcome)
             {
                 case HeistOutcome.Success:
-                    _title.text = "СПРАВУ ЗРОБЛЕНО";
-                    _title.color = Palette.Safe;
-                    _reason.text = "Здобич винесли";
+                    _headline.text = summary.SafeMistakes == 0 && summary.MaxAlarm < 30
+                        ? "ТИХО ЯК ТІНЬ: СЕЙФ МАГАЗИНУ ПОРОЖНІЙ"
+                        : "БАНДА ВИНЕСЛА СЕЙФ МАГАЗИНУ НА РОЗІ";
                     break;
                 case HeistOutcome.Caught:
-                    _title.text = "ПРОВАЛ";
-                    _title.color = Palette.Danger;
-                    _reason.text = "Тривога 100% — спрацювала сигналізація";
+                    _headline.text = "СИГНАЛІЗАЦІЯ ЗІРВАЛА НІЧНЕ ПОГРАБУВАННЯ";
                     break;
                 case HeistOutcome.Timeout:
-                    _title.text = "ПРОВАЛ";
-                    _title.color = Palette.Danger;
-                    _reason.text = "Прийшла ранкова зміна";
+                    _headline.text = "РАНКОВА ЗМІНА ЗАСТАЛА ЗЛОДІЇВ НА ГАРЯЧОМУ";
                     break;
                 default:
-                    _title.text = "…";
-                    _reason.text = string.Empty;
+                    _headline.text = "…";
                     break;
             }
 
+            _stamp.sprite = win ? _stampWin : _stampFail;
+            _stamp.SetNativeSize();
             int seconds = summary.TimeUsedSeconds;
-            _stats.text = $"Час: {seconds / 60}:{seconds % 60:00}\nМакс. тривога: {summary.MaxAlarm}%\nПомилок на сейфі: {summary.SafeMistakes}";
+            _stats.text = $"ЧАС СПРАВИ: {seconds / 60}:{seconds % 60:00}\nМАКС. ТРИВОГА: {summary.MaxAlarm}%\n" +
+                          $"ПОМИЛОК НА СЕЙФІ: {summary.SafeMistakes}\nЗДОБИЧ: {(summary.Loot ? "Є" : "НЕМАЄ")}";
         }
     }
 }

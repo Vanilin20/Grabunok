@@ -59,6 +59,8 @@ namespace Banda.Heist
             SnapshotReceived?.Invoke(_session.SnapshotFor(_tokenByRole[LocalRole]));
         }
 
+        public void RequestState() => Begin();
+
         public void Send(HeistAction action)
         {
             _session.Submit(_tokenByRole[LocalRole], action);

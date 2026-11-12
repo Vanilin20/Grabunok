@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Banda.Heist;
 using UnityEngine;
 
 namespace Banda.Core
@@ -12,14 +13,6 @@ namespace Banda.Core
         Result,
     }
 
-    public enum HeistOutcome
-    {
-        None,
-        Success,
-        Caught,
-        Timeout,
-    }
-
     /// <summary>Рядок списку банди в лобі — те, що бачить кожен гравець.</summary>
     public sealed class LobbyPlayer
     {
@@ -28,15 +21,6 @@ namespace Banda.Core
         public bool IsHost;
         public bool IsMe;
         public bool Connected = true;
-    }
-
-    /// <summary>Підсумок справи для екрана результату.</summary>
-    public sealed class HeistSummary
-    {
-        public HeistOutcome Outcome = HeistOutcome.None;
-        public int TimeUsedSeconds;
-        public int MaxAlarm;
-        public int SafeMistakes;
     }
 
     /// <summary>
@@ -192,25 +176,33 @@ namespace Banda.Core
         }
 
         /// <summary>
-        /// Завершення справи. ЗАГЛУШКА ЛОГІКИ: симуляції пограбування (HeistSim) ще немає в Unity —
-        /// результат приходить з тестового екрана справи.
+        /// Завершення справи: підсумок приходить від HeistSession (через ITransport) на хості.
         /// </summary>
-        public void FinishHeist(HeistOutcome outcome)
+        public void FinishHeist(HeistSummary summary)
         {
-            if (Phase != GamePhase.Heist || !IsHost)
+            if (Phase != GamePhase.Heist || !IsHost || summary == null)
             {
                 return;
             }
 
-            LastResult = new HeistSummary
-            {
-                Outcome = outcome,
-                TimeUsedSeconds = Mathf.RoundToInt(Time.unscaledTime - _heistStartedAt),
-                MaxAlarm = outcome == HeistOutcome.Caught ? 100 : 0,
-                SafeMistakes = 0,
-            };
+            LastResult = summary;
             SetPhase(GamePhase.Result);
             ResultReceived?.Invoke(LastResult);
+        }
+
+        /// <summary>Здатися посеред справи (кнопка паузи) — як провал за тривогою, але чесно позначено.</summary>
+        public void AbortHeist()
+        {
+            if (Phase != GamePhase.Heist)
+            {
+                return;
+            }
+
+            FinishHeist(new HeistSummary
+            {
+                Outcome = HeistOutcome.Caught,
+                TimeUsedSeconds = Mathf.RoundToInt(Time.unscaledTime - _heistStartedAt),
+            });
         }
 
         public void BackToLobby()

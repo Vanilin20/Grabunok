@@ -43,3 +43,5 @@ Thumbs.db
 # .NET-обв'язка тестів
 tools/heist_tests/bin/
 tools/heist_tests/obj/
+tools/artgen/bin/
+tools/artgen/obj/

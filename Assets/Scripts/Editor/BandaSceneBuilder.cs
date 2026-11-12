@@ -21,7 +21,7 @@ namespace Banda.EditorTools
     /// Сцена генерується кодом, щоб її можна було відтворити з нуля однією командою:
     /// Banda → 2. Зібрати сцену Main. Ручні правки сцени перезапишуться при повторній збірці.
     /// </summary>
-    public static class BandaSceneBuilder
+    public static partial class BandaSceneBuilder
     {
         public const string ScenePath = "Assets/Scenes/Main.unity";
         private const string LayoutPath = "Assets/Data/menu_layout.json";
@@ -102,6 +102,7 @@ namespace Banda.EditorTools
         public static void Build()
         {
             BandaAssetSetup.RunAll();
+            BandaHeistArt.GenerateAndImport();
             _font = BandaAssetSetup.EnsureFontAsset();
             PrepareMaterials();
             ConfigureProject();
@@ -114,6 +115,7 @@ namespace Banda.EditorTools
             BuildVolume();
             BuildSystems();
             BuildBackdrop(layout, globalLight);
+            BuildHeistWorld(globalLight);
             BuildUi();
 
             EditorSceneManager.SaveScene(scene, ScenePath);
@@ -248,6 +250,7 @@ namespace Banda.EditorTools
         {
             GameObject systems = new GameObject("Systems");
             systems.AddComponent<GameState>();
+            systems.AddComponent<Banda.HeistRuntime.HeistDirector>();
             GameObject soundGo = new GameObject("UiSound");
             soundGo.transform.SetParent(systems.transform);
             AudioSource source = soundGo.AddComponent<AudioSource>();
@@ -852,54 +855,6 @@ namespace Banda.EditorTools
             so.FindProperty("_leaveButton").objectReferenceValue = leave;
             so.FindProperty("_hintLabel").objectReferenceValue = hint;
             so.FindProperty("_selectedSprite").objectReferenceValue = LoadUiSprite("fill");
-            so.ApplyModifiedPropertiesWithoutUndo();
-            return screen;
-        }
-
-        private static GameObject BuildHeistScreen(Transform canvas)
-        {
-            GameObject screen = Screen(canvas, "HeistScreen");
-            RectTransform panel = Panel(screen.transform, "Panel", 10);
-            Place(panel, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(340f, 0f));
-            Label(panel, "Title", "ЗАГЛУШКА: СПРАВА", 16, Palette.Neon3, TextAlignmentOptions.Center);
-            TMP_Text role = Label(panel, "RoleLabel", "Твоя роль: —", 8, Palette.Text, TextAlignmentOptions.Center);
-            Label(panel, "Explain", "Екрани ролей і симуляція пограбування ще не перенесені з Godot (крок 3).\nОбери, чим закінчити справу:",
-                8, Palette.Muted, TextAlignmentOptions.Center);
-            Button success = UiButton(panel, "SuccessButton", "ЗДОБИЧ ВИНЕСЛИ", 30f, false);
-            Button caught = UiButton(panel, "CaughtButton", "СПРАЦЮВАЛА ТРИВОГА", 30f, false);
-            Button timeout = UiButton(panel, "TimeoutButton", "ПРИЙШЛА РАНКОВА ЗМІНА", 30f, false);
-
-            HeistPlaceholderScreen logic = screen.AddComponent<HeistPlaceholderScreen>();
-            SerializedObject so = new SerializedObject(logic);
-            so.FindProperty("_roleLabel").objectReferenceValue = role;
-            so.FindProperty("_successButton").objectReferenceValue = success;
-            so.FindProperty("_caughtButton").objectReferenceValue = caught;
-            so.FindProperty("_timeoutButton").objectReferenceValue = timeout;
-            so.ApplyModifiedPropertiesWithoutUndo();
-            return screen;
-        }
-
-        private static GameObject BuildResultScreen(Transform canvas)
-        {
-            GameObject screen = Screen(canvas, "ResultScreen");
-            RectTransform panel = Panel(screen.transform, "Panel", 10);
-            Place(panel, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(340f, 0f));
-            TMP_Text title = Label(panel, "Title", "…", 16, Palette.Text, TextAlignmentOptions.Center);
-            TMP_Text reason = Label(panel, "Reason", string.Empty, 8, Palette.Text, TextAlignmentOptions.Center);
-            TMP_Text stats = Label(panel, "Stats", string.Empty, 8, Palette.Steel3, TextAlignmentOptions.Left);
-            Label(panel, "Placeholder", "газетна шпальта — етап 3", 8, Palette.Muted, TextAlignmentOptions.Center);
-            TMP_Text wait = Label(panel, "WaitLabel", "чекаємо хоста…", 8, Palette.Muted, TextAlignmentOptions.Center);
-            Button again = UiButton(panel, "AgainButton", "У ЛОБІ", 30f, false);
-            Button leave = UiButton(panel, "LeaveButton", "ВИЙТИ", 30f, true);
-
-            ResultScreen logic = screen.AddComponent<ResultScreen>();
-            SerializedObject so = new SerializedObject(logic);
-            so.FindProperty("_title").objectReferenceValue = title;
-            so.FindProperty("_reason").objectReferenceValue = reason;
-            so.FindProperty("_stats").objectReferenceValue = stats;
-            so.FindProperty("_againButton").objectReferenceValue = again;
-            so.FindProperty("_leaveButton").objectReferenceValue = leave;
-            so.FindProperty("_waitLabel").objectReferenceValue = wait;
             so.ApplyModifiedPropertiesWithoutUndo();
             return screen;
         }
