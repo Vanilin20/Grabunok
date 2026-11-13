@@ -70,7 +70,7 @@ namespace Banda.Heist
             "#.BBBBBBBB.......L....XX.#",
             "#.BBBBBBBBX......#.......b",
             "#............KKK.#.......b",
-            "#.EEEE.....o..kK.#..o....#",
+            "#.EEEE........kK.#..o....#",
             "#................#.......#",
             "#................#XXX....#",
             "#................#.......#",
@@ -100,15 +100,15 @@ namespace Banda.Heist
                 // Лампи з сітки: між ними справжня темрява (стандарт R5).
                 new LightSpot("lamp_corner", Center(13, 1), 44f, "fff2c4", 0.85f, LightFlicker.None),
                 new LightSpot("lamp_aisle", Center(6, 5), 50f, "fff2c4", 0.9f, LightFlicker.None),
-                new LightSpot("lamp_counter", Center(11, 9), 44f, "f7c95a", 0.85f, LightFlicker.Buzz),
+                new LightSpot("lamp_counter", Center(14, 8), 36f, "f7c95a", 0.85f, LightFlicker.Buzz), // над касою: світло на прилавку, а не на порожній підлозі
                 new LightSpot("backroom_bulb", Center(20, 9), 44f, "d8962f", 0.8f, LightFlicker.Dying),
                 // Холодильники світять холодним уздовж свого ряду.
                 new LightSpot("fridge_a", new Vec2(3 * t, 2.4f * t), 30f, "3de0ff", 0.7f, LightFlicker.None),
                 new LightSpot("fridge_b", new Vec2(7 * t, 2.4f * t), 30f, "3de0ff", 0.7f, LightFlicker.None),
                 // Неон вивіски «МАРКЕТ 24» на фасаді під вітринами (StoreSign): рожеве слово й бірюзові цифри.
                 // Радіус малий — світло лягає на тротуар і край вітрин, а не плямою на півзалу.
-                new LightSpot("street_neon_a", new Vec2(159f, 248f), 30f, "ff3d7f", 0.6f, LightFlicker.Buzz),
-                new LightSpot("street_neon_b", new Vec2(188f, 248f), 20f, "3de0ff", 0.45f, LightFlicker.None),
+                new LightSpot("street_neon_a", new Vec2(159f, 258f), 24f, "ff3d7f", 0.6f, LightFlicker.Buzz),
+                new LightSpot("street_neon_b", new Vec2(188f, 258f), 16f, "3de0ff", 0.45f, LightFlicker.None),
                 // Зелені покажчики «ВИХІД» над обома виходами.
                 new LightSpot("exit_front", new Vec2(3.5f * t, 13.6f * t), 22f, "5cf08a", 0.6f, LightFlicker.None),
                 new LightSpot("exit_back", new Vec2(24.6f * t, 8f * t), 22f, "5cf08a", 0.6f, LightFlicker.None),

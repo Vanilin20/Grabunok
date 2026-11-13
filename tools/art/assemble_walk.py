@@ -234,9 +234,22 @@ def flashlight(frame: Image.Image, direction: str, gpl: dict) -> tuple:
     return lens
 
 
+def rim_right(frame: Image.Image, color: tuple) -> Image.Image:
+    """Піксель під правим контуром у кожному рядку — колір rim (контур лишається темним)."""
+    out = frame.copy()
+    px = out.load()
+    for y in range(CELL):
+        for x in range(CELL - 1, 0, -1):
+            if px[x, y][3] >= 128:
+                if px[x - 1, y][3] >= 128:
+                    px[x - 1, y] = color
+                break
+    return out
+
+
 CONFIG = {
     # keys: індекси front/back/side у <id>_keys.png (side дивиться ліворуч); back_src — окрема генерація виду ззаду.
-    "shadow": {"keys": (0, 1, 2), "back_src": None, "side_replace": {3: 0}, "flashlight": False},
+    "shadow": {"keys": (0, 1, 2), "back_src": None, "side_replace": {3: 0}, "flashlight": False, "rim": "cyan_1"},
     "guard": {"keys": (0, None, 7), "back_src": "Assets/Art/Incoming/guard_back_spritecook.png", "side_replace": {}, "flashlight": True},
 }
 
@@ -292,6 +305,9 @@ def main() -> None:
     right = [f.transpose(Image.FLIP_LEFT_RIGHT) for f in left]
 
     rows = [down, right, up, left]
+    if cfg.get("rim"):
+        # Rim-світло праворуч (вітрини й неон за спиною): Тінь Unlit, тож кант запікається в спрайт.
+        rows = [[rim_right(f, gpl[cfg["rim"]]) for f in row] for row in rows]
     sheet = Image.new("RGBA", (8 * CELL, 4 * CELL), (0, 0, 0, 0))
     for r, row in enumerate(rows):
         for c, fr in enumerate(row):

@@ -25,6 +25,9 @@ namespace Banda.ArtGen
                 d["asphalt_" + v] = Asphalt(v);
             }
 
+            d["roof_4"] = Roof(4);
+            d["roof_glow_4"] = RoofGlow();
+
             d["curb"] = Curb();
             d["drain"] = Drain();
             for (int mask = 0; mask < 16; mask++)
@@ -211,6 +214,10 @@ namespace Banda.ArtGen
             return t;
         }
 
+        /// <summary>
+        /// Дах сусіднього будинку: гравій у 3 тони з дизерингом, варіанти — шов з калюжею, витяжка, кондиціонер з вентилятором,
+        /// світловий люк (тепле світло знизу — для шару світіння є roof_glow_4).
+        /// </summary>
         private static PixelCanvas Roof(int v)
         {
             PixelCanvas t = New();
@@ -219,24 +226,61 @@ namespace Banda.ArtGen
                 for (int x = 0; x < S; x++)
                 {
                     float n = H(x, y, 60 + v);
-                    t.Set(x, y, n < 0.1f ? P.Night3 : n > 0.92f ? P.Night0 : P.Night2);
+                    t.Set(x, y, n < 0.12f ? P.Night3 : n < 0.2f ? P.Night4 : n > 0.9f ? P.Night1 : P.Night2);
                 }
             }
 
-            if (v == 1)
+            switch (v)
             {
-                t.HLine(0, 15, 7, P.Night1); // шов покрівлі
-            }
-            else if (v == 2)
-            {
-                t.FillRect(4, 4, 8, 8, P.Steel0); // витяжка
-                t.Rect(4, 4, 8, 8, P.Night0);
-                for (int i = 6; i < 11; i += 2)
-                {
-                    t.HLine(5, 10, i, P.Night1);
-                }
+                case 1: // шов покрівлі й калюжа, у якій відбивається небо
+                    t.HLine(0, 15, 7, P.Night1);
+                    t.HLine(0, 15, 8, P.Night3);
+                    t.FillRect(3, 10, 7, 3, P.Cyan0);
+                    t.HLine(4, 8, 10, P.Night5);
+                    t.Set(5, 11, P.Steel1);
+                    break;
+                case 2: // витяжка
+                    t.FillRect(4, 4, 8, 8, P.Steel0);
+                    t.Rect(4, 4, 8, 8, P.Night0);
+                    t.HLine(5, 10, 5, P.Steel1);
+                    for (int i = 7; i < 11; i += 2)
+                    {
+                        t.HLine(5, 10, i, P.Night1);
+                    }
+
+                    t.HLine(5, 11, 12, P.Night0); // тінь від витяжки
+                    break;
+                case 3: // кондиціонер: корпус, решітка вентилятора, тінь
+                    t.FillRect(2, 3, 12, 9, P.Steel1);
+                    t.HLine(2, 13, 3, P.Steel2);
+                    t.VLine(2, 3, 11, P.Steel2);
+                    t.Rect(2, 3, 12, 9, P.Night0);
+                    t.Ring(8, 7, 3, P.Steel0);
+                    t.Set(8, 7, P.Night1);
+                    t.Line(6, 7, 10, 7, P.Steel0);
+                    t.Line(8, 5, 8, 9, P.Steel0);
+                    t.HLine(3, 14, 12, P.Night0);
+                    t.HLine(4, 14, 13, P.Night1);
+                    break;
+                case 4: // світловий люк: рама, скло, тепле світло знизу
+                    t.FillRect(3, 3, 10, 10, P.Steel0);
+                    t.FillRect(4, 4, 8, 8, P.Lamp1);
+                    t.FillRect(5, 5, 6, 3, P.Lamp2);
+                    t.VLine(8, 4, 11, P.Steel0);
+                    t.HLine(4, 11, 8, P.Steel0);
+                    t.HLine(3, 12, 3, P.Steel1);
+                    t.Rect(2, 2, 12, 12, P.Night0);
+                    break;
             }
 
+            return t;
+        }
+
+        private static PixelCanvas RoofGlow()
+        {
+            PixelCanvas t = New();
+            t.FillRect(4, 4, 8, 8, P.Lamp2.WithAlpha(150));
+            t.FillRect(5, 5, 6, 3, P.Lamp3.WithAlpha(200));
             return t;
         }
 
@@ -668,17 +712,30 @@ namespace Banda.ArtGen
         // --- Деталі підлоги ---------------------------------------------------------------------
 
         /// <summary>Килимок біля вхідних дверей: три тайли з написом «ВХІД» через увесь килимок.</summary>
+        /// <summary>Гумовий килимок біля входу: темна гума з рубчиками, затерті світлі літери «ВХІД» — лежить на підлозі, а не висить.</summary>
         private static PixelCanvas Mat(int part)
         {
             PixelCanvas full = new PixelCanvas(S * 3, S);
-            full.FillRect(1, 2, S * 3 - 2, S - 4, P.Brick1);
-            full.Rect(1, 2, S * 3 - 2, S - 4, P.Brick0);
-            for (int y = 4; y < S - 3; y += 2)
+            full.FillRect(2, 3, S * 3 - 4, S - 5, P.Night3);
+            full.Rect(2, 3, S * 3 - 4, S - 5, P.Night1);
+            full.HLine(3, S * 3 - 4, 3, P.Night4); // кромка, освітлена зверху
+            for (int y = 5; y < S - 3; y += 2)
             {
-                full.HLine(3, S * 3 - 4, y, P.Brick0.WithAlpha(110));
+                for (int x = 4; x < S * 3 - 4; x++)
+                {
+                    if ((x + y) % 4 == 0)
+                    {
+                        full.Set(x, y, P.Night2); // рубчики гуми
+                    }
+                }
             }
 
-            PixelFont.DrawCentered(full, "ВХІД", S * 3 / 2, 4, P.Brick3);
+            PixelFont.DrawCentered(full, "ВХІД", S * 3 / 2, 5, P.Night5); // затерті літери
+            for (int x = 6; x < S * 3 - 6; x += 5)
+            {
+                full.Set(x, 8 + x % 3, P.Night3); // затерті місця
+            }
+
             return full.Crop(part * S, 0, S, S);
         }
 

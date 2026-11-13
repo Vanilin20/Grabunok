@@ -315,7 +315,14 @@ namespace Banda.EditorTools
                     }
                     else
                     {
-                        outside.SetTile(cell, Get("roof_" + Variant(x, y, 3)));
+                        // Дах сусідів: здебільшого гравій, зрідка шов з калюжею, витяжка, кондиціонер чи світловий люк.
+                        float r = PixelCanvas.Hash(x, y, 616);
+                        int roof = r < 0.55f ? 0 : r < 0.7f ? 1 : r < 0.8f ? 2 : r < 0.92f ? 3 : 4;
+                        outside.SetTile(cell, Get("roof_" + roof));
+                        if (roof == 4)
+                        {
+                            glow.SetTile(cell, Get("roof_glow_4"));
+                        }
                     }
                 }
             }
@@ -409,6 +416,17 @@ namespace Banda.EditorTools
             Sprite(from, "StoreSign", $"{TileFolder}/store_sign.png", signPos, 3, lit);
             Sprite(from, "StoreSignGlow", $"{TileFolder}/store_sign_glow.png", signPos, 4,
                 AssetDatabase.LoadAssetAtPath<Material>("Assets/Art/Materials/Additive.mat"));
+            // Відблиск вивіски на мокрому тротуарі: віддзеркалена й притушена копія неону під нею.
+            SpriteRenderer reflection = Sprite(from, "StoreSignReflection", $"{TileFolder}/store_sign_glow.png", signPos + new Vector3(0f, -15f, 0f), 2,
+                AssetDatabase.LoadAssetAtPath<Material>("Assets/Art/Materials/Additive.mat"));
+            reflection.flipY = true;
+            reflection.color = new Color(1f, 1f, 1f, 0.28f);
+            // Дощ лише надворі: над тротуаром і дорогою, над дахами ліворуч і провулком праворуч.
+            int gw = HeistLevel.StoreGrid[0].Length;
+            int gh = HeistLevel.StoreGrid.Length;
+            AddRain(from, new Vec2(-Pad * T, gh * T), new Vec2((gw + 2 * Pad) * T, Street * T));
+            AddRain(from, new Vec2(-Pad * T, -Pad * T), new Vec2(Pad * T, (gh + Pad) * T));
+            AddRain(from, new Vec2(gw * T, -Pad * T), new Vec2(Pad * T, (gh + Pad) * T));
             AddSteam(from, HeistWorldView.ToWorld(new Vec2(6.5f * T, 16.4f * T)));
             AddSteam(from, HeistWorldView.ToWorld(new Vec2(19.5f * T, 16.6f * T)));
 
@@ -495,12 +513,12 @@ namespace Banda.EditorTools
             main.prewarm = true;
             main.startLifetime = new ParticleSystem.MinMaxCurve(2.5f, 4f);
             main.startSpeed = new ParticleSystem.MinMaxCurve(4f, 8f);
-            main.startSize = new ParticleSystem.MinMaxCurve(1f, 2f); // піксель-арт: клуби з дрібних пікселів, не квадрати
-            main.startColor = new Color(0.78f, 0.81f, 0.87f, 0.2f);
+            main.startSize = 1f; // піксель-арт: клуби з одиничних пікселів, без «квадратів»
+            main.startColor = new Color(0.86f, 0.8f, 0.9f, 0.22f); // ледь рожеві від неону вивіски
             main.maxParticles = 160;
             main.simulationSpace = ParticleSystemSimulationSpace.World;
             ParticleSystem.EmissionModule emission = ps.emission;
-            emission.rateOverTime = 40f;
+            emission.rateOverTime = 55f;
             ParticleSystem.ShapeModule shape = ps.shape;
             shape.shapeType = ParticleSystemShapeType.Box;
             shape.scale = new Vector3(8f, 2f, 1f);
@@ -511,7 +529,7 @@ namespace Banda.EditorTools
             noise.frequency = 0.25f;
             ParticleSystem.SizeOverLifetimeModule size = ps.sizeOverLifetime;
             size.enabled = true;
-            size.size = new ParticleSystem.MinMaxCurve(1f, AnimationCurve.Linear(0f, 1f, 1f, 1.5f));
+            size.enabled = false;
             ParticleSystem.ColorOverLifetimeModule col = ps.colorOverLifetime;
             col.enabled = true;
             Gradient g = new Gradient();
@@ -519,6 +537,42 @@ namespace Banda.EditorTools
                 new[] { new GradientAlphaKey(0f, 0f), new GradientAlphaKey(1f, 0.25f), new GradientAlphaKey(0f, 1f) });
             col.color = new ParticleSystem.MinMaxGradient(g);
             ParticleSystemRenderer r = go.GetComponent<ParticleSystemRenderer>();
+            r.sharedMaterial = DustMaterial();
+            r.sortingOrder = 8;
+        }
+
+        /// <summary>Дощ у прямокутнику рівня (x, y — лівий верхній кут, Y униз): косі струмені по 1 px, падають «на камеру» вниз екрана.</summary>
+        private static void AddRain(Transform parent, Vec2 origin, Vec2 size)
+        {
+            GameObject go = new GameObject("Rain");
+            go.transform.SetParent(parent, false);
+            go.transform.localPosition = HeistWorldView.ToWorld(new Vec2(origin.X + size.X / 2f, origin.Y));
+            ParticleSystem ps = go.AddComponent<ParticleSystem>();
+            ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+            ParticleSystem.MainModule main = ps.main;
+            main.loop = true;
+            main.prewarm = true;
+            main.startSpeed = 0f;
+            main.startLifetime = new ParticleSystem.MinMaxCurve(size.Y / 220f, size.Y / 160f);
+            main.startSize = 1f;
+            main.startColor = new Color(0.76f, 0.85f, 1f, 0.32f);
+            main.maxParticles = 600;
+            main.simulationSpace = ParticleSystemSimulationSpace.Local;
+            ParticleSystem.EmissionModule emission = ps.emission;
+            emission.rateOverTime = size.X * size.Y / 900f;
+            ParticleSystem.ShapeModule shape = ps.shape;
+            shape.shapeType = ParticleSystemShapeType.Box;
+            shape.scale = new Vector3(size.X, 1f, 1f);
+            ParticleSystem.VelocityOverLifetimeModule vel = ps.velocityOverLifetime;
+            vel.enabled = true;
+            vel.space = ParticleSystemSimulationSpace.Local;
+            vel.x = new ParticleSystem.MinMaxCurve(-30f);
+            vel.y = new ParticleSystem.MinMaxCurve(-190f);
+            vel.z = new ParticleSystem.MinMaxCurve(0f);
+            ParticleSystemRenderer r = go.GetComponent<ParticleSystemRenderer>();
+            r.renderMode = ParticleSystemRenderMode.Stretch;
+            r.velocityScale = 0.03f; // струмінь ~6 px
+            r.lengthScale = 1f;
             r.sharedMaterial = DustMaterial();
             r.sortingOrder = 8;
         }
