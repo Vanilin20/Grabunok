@@ -13,9 +13,12 @@ namespace Banda.HeistRuntime
         private const int WalkFirst = 2;
         private const float BreathFps = 1.4f;
         private const int Rows = 4;
-        private const int FrameSize = 16;
 
         [SerializeField] private Texture2D _sheet;
+        [Tooltip("Розмір кадру в пікселях: 16 — старі стрічки ArtGen, 32 — персонажі з ключових поз PixelLab.")]
+        [SerializeField] private int _frameSize = 16;
+        [Tooltip("Опора по вертикалі (0 — низ кадру). Для 32 px — біля ніг, щоб персонаж стояв на своїй клітинці.")]
+        [SerializeField, Range(0f, 1f)] private float _pivotY = 0.5f;
         [SerializeField] private float _walkFps = 10f;
         [SerializeField] private float _moveThreshold = 4f;
         [Tooltip("Прозорість, коли персонаж схований (Тінь за стелажем).")]
@@ -32,9 +35,9 @@ namespace Banda.HeistRuntime
         {
             _renderer = GetComponent<SpriteRenderer>();
             _frames = new Sprite[Rows, Columns];
-            if (_sheet == null)
+            if (_sheet == null || _frameSize <= 0 || _sheet.width < Columns * _frameSize || _sheet.height < Rows * _frameSize)
             {
-                Debug.LogError($"[CharacterSpriteAnimator] {name}: немає стрічки кадрів.");
+                Debug.LogError($"[CharacterSpriteAnimator] {name}: немає стрічки кадрів або вона менша за {Columns}×{Rows} кадрів по {_frameSize} px.");
                 enabled = false;
                 return;
             }
@@ -44,8 +47,8 @@ namespace Banda.HeistRuntime
                 for (int col = 0; col < Columns; col++)
                 {
                     // Рядок 0 у PNG — угорі, а координати текстури Unity — знизу.
-                    Rect rect = new Rect(col * FrameSize, _sheet.height - (row + 1) * FrameSize, FrameSize, FrameSize);
-                    _frames[row, col] = Sprite.Create(_sheet, rect, new Vector2(0.5f, 0.5f), 1f, 0, SpriteMeshType.FullRect);
+                    Rect rect = new Rect(col * _frameSize, _sheet.height - (row + 1) * _frameSize, _frameSize, _frameSize);
+                    _frames[row, col] = Sprite.Create(_sheet, rect, new Vector2(0.5f, _pivotY), 1f, 0, SpriteMeshType.FullRect);
                 }
             }
 
