@@ -23,6 +23,10 @@ namespace Banda.UI
         [SerializeField] private TMP_Text _hintLabel;
         [Tooltip("Суцільна заливка обраної ролі (фарбується кольором ролі).")]
         [SerializeField] private Sprite _selectedSprite;
+        [Tooltip("Портрети ролей у порядку Roles.All: звичайний, обраний (рамка світиться), заблокований (силует із замком).")]
+        [SerializeField] private Sprite[] _portraitNormal = new Sprite[0];
+        [SerializeField] private Sprite[] _portraitSelected = new Sprite[0];
+        [SerializeField] private Sprite[] _portraitLocked = new Sprite[0];
 
         private readonly Dictionary<RoleId, Button> _roleButtons = new Dictionary<RoleId, Button>();
         private readonly List<GameObject> _playerRows = new List<GameObject>();
@@ -76,6 +80,21 @@ namespace Banda.UI
                 button.onClick.AddListener(() => OnRolePressed(captured));
                 _roleButtons[role] = button;
             }
+        }
+
+        /// <summary>Портрет ролі в кнопці (дочірній Image «Portrait» шаблону кнопки).</summary>
+        private static void SetPortrait(Button button, RoleId role, Sprite[] set)
+        {
+            Transform child = button.transform.Find("Portrait");
+            int index = System.Array.IndexOf(Roles.All, role);
+            if (child == null || index < 0 || index >= set.Length)
+            {
+                return;
+            }
+
+            Image image = child.GetComponent<Image>();
+            image.sprite = set[index];
+            image.enabled = set[index] != null;
         }
 
         private void OnRoleChanged(RoleId _)
@@ -141,6 +160,7 @@ namespace Banda.UI
                     background.color = mine ? roleColor : Color.white;
                 }
 
+                SetPortrait(button, role, !available || taken ? _portraitLocked : mine ? _portraitSelected : _portraitNormal);
                 UiButtonFeedback feedback = button.GetComponent<UiButtonFeedback>();
                 if (feedback != null)
                 {
