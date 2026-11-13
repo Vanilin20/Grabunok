@@ -1,0 +1,15 @@
+Library/
+Temp/
+Obj/
+Logs/
+UserSettings/
+.vs/
+*.csproj
+*.sln
+*.userprefs
+Build/
+Builds/
+*.apk
+*.aab
+Captures/*.mp4
+Captures/*.webm
