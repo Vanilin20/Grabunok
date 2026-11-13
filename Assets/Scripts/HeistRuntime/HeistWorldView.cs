@@ -188,6 +188,9 @@ namespace Banda.HeistRuntime
                 // Ліхтарик Light2D світить уздовж локальної осі Y: поворот від напрямку погляду (Y униз у симуляції).
                 float degrees = -view.GuardFacing * Mathf.Rad2Deg - 90f;
                 _guardFlashlight.transform.localRotation = Quaternion.Euler(0f, 0f, degrees);
+                // Світло виходить з руки, у якій ліхтарик на спрайті (залежить від напрямку).
+                Vector2 handPoint = _guard.HandPoint;
+                _guardFlashlight.transform.localPosition = new Vector3(handPoint.x, handPoint.y, _guardFlashlight.transform.localPosition.z);
             }
 
             if (view.DoorVisible)

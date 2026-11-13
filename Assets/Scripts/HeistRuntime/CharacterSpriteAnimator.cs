@@ -19,6 +19,14 @@ namespace Banda.HeistRuntime
         [SerializeField] private int _frameSize = 16;
         [Tooltip("Опора по вертикалі (0 — низ кадру). Для 32 px — біля ніг, щоб персонаж стояв на своїй клітинці.")]
         [SerializeField, Range(0f, 1f)] private float _pivotY = 0.5f;
+        [Tooltip("Точка в руці (лінза ліхтарика) для кожного напрямку — вниз, праворуч, вгору, ліворуч; пікселі від опори, Y угору.")]
+        [SerializeField] private Vector2[] _handPoints = new Vector2[0];
+
+        /// <summary>Поточний напрямок: 0 — вниз, 1 — праворуч, 2 — вгору, 3 — ліворуч.</summary>
+        public int Direction => _direction;
+
+        /// <summary>Точка в руці для поточного напрямку (нуль, якщо не задано).</summary>
+        public Vector2 HandPoint => _direction < _handPoints.Length ? _handPoints[_direction] : Vector2.zero;
         [SerializeField] private float _walkFps = 10f;
         [SerializeField] private float _moveThreshold = 4f;
         [Tooltip("Прозорість, коли персонаж схований (Тінь за стелажем).")]

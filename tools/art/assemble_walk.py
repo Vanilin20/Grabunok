@@ -179,25 +179,94 @@ def shadow_back(key: Image.Image, pal: dict) -> Image.Image:
     return out
 
 
+def fit_to(src: Image.Image, ref: Image.Image, pal: list) -> Image.Image:
+    """Чужу генерацію (інший розмір) — у клітинку 32 з габаритами ref: більшість кольорів у вікні, зведення до палітри."""
+    src = src.crop(src.getbbox())
+    box = ref.getbbox()
+    tw, th = box[2] - box[0], box[3] - box[1]
+    sw, sh = src.size
+    out = Image.new("RGBA", (CELL, CELL), (0, 0, 0, 0))
+    px = out.load()
+    sp = src.load()
+    for ty in range(th):
+        for tx in range(tw):
+            x0 = tx * sw // tw
+            x1 = max(x0 + 1, (tx + 1) * sw // tw)
+            y0 = ty * sh // th
+            y1 = max(y0 + 1, (ty + 1) * sh // th)
+            cells = [sp[x, y] for x in range(x0, x1) for y in range(y0, y1)]
+            opaque = [c[:3] for c in cells if c[3] >= 128]
+            if len(opaque) * 2 < len(cells):
+                continue
+            r, g, b = max(set(opaque), key=opaque.count)
+            best = min(pal, key=lambda c: (c[0] - r) ** 2 * 3 + (c[1] - g) ** 2 * 4 + (c[2] - b) ** 2 * 2)
+            px[box[0] + tx, box[1] + ty] = best + (255,)
+    return out
+
+
+def hand(frame: Image.Image, xs: range, ys: range) -> tuple:
+    """Кисть: найнижчий непрозорий піксель у смузі руки (за рівності — крайній)."""
+    px = frame.load()
+    best = None
+    for y in ys:
+        for x in xs:
+            if px[x, y][3] >= 128:
+                best = (x, y)
+    return best
+
+
+def flashlight(frame: Image.Image, direction: str, gpl: dict) -> tuple:
+    """Ліхтарик у правій руці. Повертає точку лінзи (x, y) у пікселях кадру — туди ставиться Light2D."""
+    out = frame
+    if direction == "down":      # права рука — ліворуч на екрані, світить униз
+        h = hand(out, range(4, 9), range(16, 25))
+        body, lens = [(h[0], h[1] + 1)], (h[0], h[1] + 2)
+    elif direction == "up":      # права рука — праворуч на екрані, лінза від глядача, її не видно
+        h = hand(out, range(23, 28), range(16, 25))
+        body, lens = [(h[0], h[1] + 1)], (h[0], h[1] - 2)
+    else:                        # "left": профіль, світить уперед
+        h = hand(out, range(4, 12), range(16, 25))
+        body, lens = [(h[0] - 1, h[1])], (h[0] - 2, h[1])
+    put(out, body, gpl["steel_1"])
+    if direction != "up":
+        put(out, [lens], gpl["lamp_3"])
+    outline(out, body + ([lens] if direction != "up" else []), gpl["night_0"])
+    return lens
+
+
+CONFIG = {
+    # keys: індекси front/back/side у <id>_keys.png (side дивиться ліворуч); back_src — окрема генерація виду ззаду.
+    "shadow": {"keys": (0, 1, 2), "back_src": None, "side_replace": {3: 0}, "flashlight": False},
+    "guard": {"keys": (0, None, 7), "back_src": "Assets/Art/Incoming/guard_back_spritecook.png", "side_replace": {}, "flashlight": True},
+}
+
+
 def main() -> None:
     cid = sys.argv[1]
-    keys = load_strip(f"Assets/Art/Characters/{cid}_keys.png", 3)
-    pal = palette_of(keys)
+    cfg = CONFIG[cid]
+    strip = Image.open(f"Assets/Art/Characters/{cid}_keys.png").convert("RGBA")
+    all_keys = load_strip(f"Assets/Art/Characters/{cid}_keys.png", strip.width // CELL)
+    pal = palette_of(all_keys)
     gpl = load_palette()
-    front_key, back_key, side_key = keys
+    fi, bi, si = cfg["keys"]
+    front_key, side_key = all_keys[fi], all_keys[si]
+    if cfg["back_src"]:
+        back_key = fit_to(Image.open(cfg["back_src"]).convert("RGBA"), front_key, pal)
+    else:
+        back_key = all_keys[bi]
     if cid == "shadow":
         back_key = shadow_back(back_key, gpl)
-        pal = sorted(set(pal) | {gpl["steel_1"][:3], gpl["steel_2"][:3]})
+    pal = sorted(set(pal) | {gpl[n][:3] for n in ("steel_1", "steel_2", "lamp_3")})
 
-    walk = {d: load_strip(f"Assets/Art/Incoming/{cid}_walk_{d}_pixellab.png", 7)[1:] for d in ("front", "back", "side")}
+    walk = {d: load_strip(f"Assets/Art/Incoming/{cid}_walk_{d}_pixellab.png", 7)[1:] for d in ("front", "side")}
     walk = {d: [snap(f, pal) for f in fr] for d, fr in walk.items()}
 
     front = symmetric_legs([with_head(f, front_key) for f in walk["front"]])
     side = [with_head(f, side_key) for f in walk["side"]]
-    # Профіль: кадр 3 (рука злипається з тулубом, ноги одним стовпцем) — та сама фаза «прохід», що кадр 0.
-    side[3] = side[0]
+    for bad, good in cfg["side_replace"].items():
+        side[bad] = side[good]
 
-    # Спина: верх ключової пози + ноги з анфасу; руки махають у протифазі до ноги, що виходить уперед.
+    # Спина: верх виду ззаду + ноги з анфасу; руки махають у протифазі до ноги, що виходить уперед.
     swing = [(0, 0), (-1, 1), (-1, 1), (0, 0), (1, -1), (1, -1)]
     back = []
     for f, (ldy, rdy) in zip(front, swing):
@@ -207,12 +276,22 @@ def main() -> None:
         frame.paste(upper, (0, dy), upper)
         back.append(frame)
 
-    rows = [
-        [front_key, breath(front_key)] + front,
-        [k.transpose(Image.FLIP_LEFT_RIGHT) for k in [side_key, breath(side_key)] + side],
-        [back_key, breath(back_key)] + back,
-        [side_key, breath(side_key)] + side,
-    ]
+    down = [front_key, breath(front_key)] + front
+    up = [back_key, breath(back_key)] + back
+    left = [side_key, breath(side_key)] + [f.copy() for f in side]
+    if cfg["flashlight"]:
+        lenses = {}
+        for name, row in (("down", down), ("up", up), ("left", left)):
+            row[:] = [f.copy() for f in row]
+            lenses[name] = [flashlight(f, name, gpl) for f in row]
+        # Опора Light2D: середня точка лінзи, у пікселях від центру кадру (Y угору, як у Unity).
+        for name, pts in lenses.items():
+            ax = sum(p[0] for p in pts) / len(pts) + 0.5 - CELL / 2
+            ay = CELL / 2 - (sum(p[1] for p in pts) / len(pts) + 0.5)
+            print(f"lens {name}: ({ax:.1f}, {ay:.1f})")
+    right = [f.transpose(Image.FLIP_LEFT_RIGHT) for f in left]
+
+    rows = [down, right, up, left]
     sheet = Image.new("RGBA", (8 * CELL, 4 * CELL), (0, 0, 0, 0))
     for r, row in enumerate(rows):
         for c, fr in enumerate(row):
