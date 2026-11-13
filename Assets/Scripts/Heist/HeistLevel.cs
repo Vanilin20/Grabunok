@@ -57,7 +57,7 @@ namespace Banda.Heist
         /// <summary>
         /// Сітка «Магазину на розі» 26×15 (docs/levels/store.md; копія — docs/levels/store_grid.txt, тест стежить, щоб не розійшлись).
         /// # стіна, . підлога, F холодильники, = вітрини, D вхідні двері, b задні двері, L двері підсобки,
-        /// A B E стелажі, K прилавок, X коробки, m стіл охорони, S сейф, k записка, c камера, o лампа.
+        /// A B стелажі (3/4: 2 клітинки заввишки — верх і передня грань), E низький промо-стіл, K прилавок, X коробки, m стіл охорони, S сейф, k записка, c камера, o лампа.
         /// </summary>
         public static readonly string[] StoreGrid =
         {
@@ -65,12 +65,12 @@ namespace Banda.Heist
             "#FFFFFFFF....o...#XX.c..S#",
             "#................#X......#",
             "#.AAAAAAAA......c#..mk...#",
-            "#................#.......#",
+            "#.AAAAAAAAX......#.......#",
             "#.....o..........L.......#",
             "#.BBBBBBBB.......L....XX.#",
-            "#................#.......b",
-            "#.EEEE.......KKK.#.......b",
-            "#..........o..kK.#..o....#",
+            "#.BBBBBBBBX......#.......b",
+            "#............KKK.#.......b",
+            "#.EEEE.....o..kK.#..o....#",
             "#................#.......#",
             "#................#XXX....#",
             "#................#.......#",
@@ -105,9 +105,10 @@ namespace Banda.Heist
                 // Холодильники світять холодним уздовж свого ряду.
                 new LightSpot("fridge_a", new Vec2(3 * t, 2.4f * t), 30f, "3de0ff", 0.7f, LightFlicker.None),
                 new LightSpot("fridge_b", new Vec2(7 * t, 2.4f * t), 30f, "3de0ff", 0.7f, LightFlicker.None),
-                // Неон вулиці крізь вітрини.
-                new LightSpot("street_neon_a", new Vec2(9 * t, 15.2f * t), 56f, "ff3d7f", 0.75f, LightFlicker.None),
-                new LightSpot("street_neon_b", new Vec2(15 * t, 15.2f * t), 46f, "3de0ff", 0.55f, LightFlicker.None),
+                // Неон вивіски «МАРКЕТ 24» на фасаді під вітринами (StoreSign): рожеве слово й бірюзові цифри.
+                // Радіус малий — світло лягає на тротуар і край вітрин, а не плямою на півзалу.
+                new LightSpot("street_neon_a", new Vec2(159f, 248f), 30f, "ff3d7f", 0.6f, LightFlicker.Buzz),
+                new LightSpot("street_neon_b", new Vec2(188f, 248f), 20f, "3de0ff", 0.45f, LightFlicker.None),
                 // Зелені покажчики «ВИХІД» над обома виходами.
                 new LightSpot("exit_front", new Vec2(3.5f * t, 13.6f * t), 22f, "5cf08a", 0.6f, LightFlicker.None),
                 new LightSpot("exit_back", new Vec2(24.6f * t, 8f * t), 22f, "5cf08a", 0.6f, LightFlicker.None),

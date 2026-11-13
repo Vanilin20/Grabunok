@@ -206,8 +206,8 @@ namespace Banda.Tests
         public void Hidden_NearCover_IsNotSeen()
         {
             HeistSim sim = NewSim();
-            // Торцевий стенд E (2–5, 8) — найближче укриття до входу, прямий шлях без перешкод.
-            Box shelf = sim.Level.Covers.Find(c => c.X == 2 * 16 && c.Y == 8 * 16);
+            // Промо-стіл E (2–5, 9) — найближче укриття до входу, прямий шлях без перешкод.
+            Box shelf = sim.Level.Covers.Find(c => c.X == 2 * 16 && c.Y == 9 * 16);
             WalkTo(sim, new Vec2(shelf.X + 10f, shelf.Bottom + 6f));
             Assert.That(sim.NearCover(sim.ShadowPos), Is.True);
             sim.Apply(RoleId.Shadow, HeistAction.Hide());

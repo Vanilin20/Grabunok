@@ -39,6 +39,18 @@ namespace Banda.EditorTools
                 pair.Value.Save($"{TileFolder}/{pair.Key}.png");
             }
 
+            // Меблі 3/4 (стелажі, холодильники, промо-стіл) — унікальні тайли за клітинками сітки.
+            foreach (KeyValuePair<string, PixelCanvas> pair in StoreFurnitureArt.ForGrid(HeistLevel.StoreGrid))
+            {
+                pair.Value.Save($"{TileFolder}/{pair.Key}.png");
+            }
+
+            // Окремі спрайти рівня: вивіска на фасаді й стельові світильники (джерела світла, яке видно).
+            StoreFurnitureArt.Sign(false).Save($"{TileFolder}/store_sign.png");
+            StoreFurnitureArt.Sign(true).Save($"{TileFolder}/store_sign_glow.png");
+            StoreFurnitureArt.CeilingLamp(false).Save($"{TileFolder}/ceiling_lamp.png");
+            StoreFurnitureArt.CeilingLamp(true).Save($"{TileFolder}/ceiling_lamp_glow.png");
+
             AssetDatabase.Refresh();
             foreach (string guid in AssetDatabase.FindAssets("t:Texture2D", new[] { TileFolder }))
             {
@@ -146,6 +158,8 @@ namespace Banda.EditorTools
             }
 
             decor.SetTile(Cell(21, 7), Get("drain"));
+            outside.SetTile(Cell(6, h + 1), Get("drain")); // решітки вентиляції на тротуарі — звідти пара
+            outside.SetTile(Cell(19, h + 1), Get("drain"));
             ScatterLitter(grid, decor);
             PlaceFromLevel(level, view, data);
             SetCameraBounds(view, w, h);
@@ -186,6 +200,11 @@ namespace Banda.EditorTools
         {
             switch (c)
             {
+                case '#' when At(grid, x, y + 1) == 'F':
+                    // Верх холодильника, що стоїть під стіною (3/4): малюється замість стіни.
+                    props.SetTile(cell, Get($"fridge_{x}_{y}"));
+                    glow.SetTile(cell, Get($"fridge_glow_{x}_{y}"));
+                    break;
                 case '#':
                     int mask = (IsWall(At(grid, x, y - 1)) ? 0 : 1) | (IsWall(At(grid, x + 1, y)) ? 0 : 2)
                                | (IsWall(At(grid, x, y + 1)) ? 0 : 4) | (IsWall(At(grid, x - 1, y)) ? 0 : 8);
@@ -205,17 +224,16 @@ namespace Banda.EditorTools
                     walls.SetTile(cell, Get("door_back_" + (At(grid, x, y - 1) != 'b' ? 0 : 1)));
                     break;
                 case 'F':
-                    props.SetTile(cell, Get("fridge_" + Variant(x, y, 3)));
-                    glow.SetTile(cell, Get("fridge_glow"));
+                    props.SetTile(cell, Get($"fridge_{x}_{y}"));
+                    glow.SetTile(cell, Get($"fridge_glow_{x}_{y}"));
                     break;
                 case 'A':
                 case 'B':
-                    bool left = At(grid, x - 1, y) != c;
-                    bool right = At(grid, x + 1, y) != c;
-                    props.SetTile(cell, Get(left ? "shelf_end_l" : right ? "shelf_end_r" : "shelf_" + Variant(x, y, 3)));
+                    // Стелаж 3/4 на дві клітинки: тайл верхньої (кришка + верхній ярус) або нижньої (ярус + цоколь).
+                    props.SetTile(cell, Get($"rack_{x}_{y}"));
                     break;
                 case 'E':
-                    props.SetTile(cell, Get("promo_" + Variant(x, y, 3)));
+                    props.SetTile(cell, Get($"promo_{x}_{y}"));
                     break;
                 case 'K':
                     bool below = At(grid, x, y + 1) == 'K';
@@ -386,6 +404,14 @@ namespace Banda.EditorTools
                 field.targetSortingLayers = AllSortingLayers();
             }
 
+            // Вивіска «МАРКЕТ 24» на фасаді під вітринами: саме вона — джерело рожевого й бірюзового неону вулиці.
+            Vector3 signPos = HeistWorldView.ToWorld(StoreSignCenter);
+            Sprite(from, "StoreSign", $"{TileFolder}/store_sign.png", signPos, 3, lit);
+            Sprite(from, "StoreSignGlow", $"{TileFolder}/store_sign_glow.png", signPos, 4,
+                AssetDatabase.LoadAssetAtPath<Material>("Assets/Art/Materials/Additive.mat"));
+            AddSteam(from, HeistWorldView.ToWorld(new Vec2(6.5f * T, 16.4f * T)));
+            AddSteam(from, HeistWorldView.ToWorld(new Vec2(19.5f * T, 16.6f * T)));
+
             for (int i = 0; i < data.Notes.Count; i++)
             {
                 Sprite(from, "Note" + (i + 1), $"{TileFolder}/note.png", HeistWorldView.ToWorld(data.Notes[i]), 2, lit);
@@ -413,6 +439,10 @@ namespace Banda.EditorTools
                 if (lamp)
                 {
                     AddDust(go.transform, spot.Radius);
+                    // Видимий світильник на стелі — передній план, над персонажами.
+                    Sprite(go.transform, "Fixture", $"{TileFolder}/ceiling_lamp.png", new Vector3(0f, 10f, 0f), 9, unlit);
+                    Sprite(go.transform, "FixtureGlow", $"{TileFolder}/ceiling_lamp_glow.png", new Vector3(0f, 10f, 0f), 10,
+                        AssetDatabase.LoadAssetAtPath<Material>("Assets/Art/Materials/Additive.mat"));
                 }
                 if (spot.Flicker != LightFlicker.None)
                 {
@@ -447,6 +477,50 @@ namespace Banda.EditorTools
             so.FindProperty("m_ShapePathHash").intValue = 0;
             so.FindProperty("m_ShadowCastingSource").enumValueIndex = 1; // ShapeEditor
             so.ApplyModifiedPropertiesWithoutUndo();
+        }
+
+        /// <summary>Центр вивіски на фасаді (координати рівня): посередині вітрин, на тротуарі під ними.</summary>
+        public static readonly Vec2 StoreSignCenter = new Vec2(10.5f * HeistLevel.Tile, 15.5f * HeistLevel.Tile);
+
+        /// <summary>Пара з вентиляційної решітки тротуару: повільні напівпрозорі клуби (життя в нижній частині кадру).</summary>
+        private static void AddSteam(Transform parent, Vector3 pos)
+        {
+            GameObject go = new GameObject("Steam");
+            go.transform.SetParent(parent, false);
+            go.transform.localPosition = pos;
+            ParticleSystem ps = go.AddComponent<ParticleSystem>();
+            ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+            ParticleSystem.MainModule main = ps.main;
+            main.loop = true;
+            main.prewarm = true;
+            main.startLifetime = new ParticleSystem.MinMaxCurve(2.5f, 4f);
+            main.startSpeed = new ParticleSystem.MinMaxCurve(4f, 8f);
+            main.startSize = new ParticleSystem.MinMaxCurve(1f, 2f); // піксель-арт: клуби з дрібних пікселів, не квадрати
+            main.startColor = new Color(0.78f, 0.81f, 0.87f, 0.2f);
+            main.maxParticles = 160;
+            main.simulationSpace = ParticleSystemSimulationSpace.World;
+            ParticleSystem.EmissionModule emission = ps.emission;
+            emission.rateOverTime = 40f;
+            ParticleSystem.ShapeModule shape = ps.shape;
+            shape.shapeType = ParticleSystemShapeType.Box;
+            shape.scale = new Vector3(8f, 2f, 1f);
+            shape.rotation = new Vector3(-90f, 0f, 0f); // вгору по Y світу
+            ParticleSystem.NoiseModule noise = ps.noise;
+            noise.enabled = true;
+            noise.strength = 4f;
+            noise.frequency = 0.25f;
+            ParticleSystem.SizeOverLifetimeModule size = ps.sizeOverLifetime;
+            size.enabled = true;
+            size.size = new ParticleSystem.MinMaxCurve(1f, AnimationCurve.Linear(0f, 1f, 1f, 1.5f));
+            ParticleSystem.ColorOverLifetimeModule col = ps.colorOverLifetime;
+            col.enabled = true;
+            Gradient g = new Gradient();
+            g.SetKeys(new[] { new GradientColorKey(Color.white, 0f), new GradientColorKey(Color.white, 1f) },
+                new[] { new GradientAlphaKey(0f, 0f), new GradientAlphaKey(1f, 0.25f), new GradientAlphaKey(0f, 1f) });
+            col.color = new ParticleSystem.MinMaxGradient(g);
+            ParticleSystemRenderer r = go.GetComponent<ParticleSystemRenderer>();
+            r.sharedMaterial = DustMaterial();
+            r.sortingOrder = 8;
         }
 
         /// <summary>Пил, що кружляє в промені лампи: живий кадр без «шуму» (R4).</summary>
