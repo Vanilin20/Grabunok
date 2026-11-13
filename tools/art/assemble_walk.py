@@ -102,23 +102,108 @@ def bob(frame: Image.Image) -> int:
     return frame.getbbox()[1]
 
 
+def load_palette() -> dict:
+    """Кольори docs/art/palette.gpl за назвою."""
+    pal = {}
+    for line in open("docs/art/palette.gpl", encoding="utf-8"):
+        parts = line.split()
+        if len(parts) == 4 and parts[0].isdigit():
+            pal[parts[3]] = tuple(int(v) for v in parts[:3]) + (255,)
+    return pal
+
+
+def put(img: Image.Image, pixels: list, color: tuple) -> None:
+    px = img.load()
+    for x, y in pixels:
+        if 0 <= x < CELL and 0 <= y < CELL:
+            px[x, y] = color
+
+
+def outline(img: Image.Image, pixels: list, color: tuple) -> None:
+    """Контур навколо доданої деталі — лише там, де зараз прозоро."""
+    px = img.load()
+    own = set(pixels)
+    for x, y in pixels:
+        for nx, ny in ((x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)):
+            if (nx, ny) not in own and 0 <= nx < CELL and 0 <= ny < CELL and px[nx, ny][3] < 128:
+                px[nx, ny] = color
+
+
+def symmetric_legs(frames: list) -> list:
+    """Анфас: кадри 4–6 = кадри 1–3 з дзеркальними ногами — кроки обох ніг однакові."""
+    half = frames[:3]
+    out = list(half)
+    for f in half:
+        legs = region(f, LEG_SPLIT + 1, CELL).transpose(Image.FLIP_LEFT_RIGHT)
+        frame = region(f, 0, LEG_SPLIT + 1)
+        frame.paste(legs, (0, 0), legs)
+        out.append(frame)
+    return out
+
+
+def swing_arms(frame: Image.Image, left_dy: int, right_dy: int, left_max_x: int, right_min_x: int) -> Image.Image:
+    """Мах руками: кисть і передпліччя (рядки 19–23) зсуваються на dy, плече лишається."""
+    out = frame.copy()
+    src = frame.load()
+    px = out.load()
+    for x in range(CELL):
+        dy = left_dy if x <= left_max_x else right_dy if x >= right_min_x else 0
+        if dy == 0:
+            continue
+        for y in range(19, 25):
+            sy = y - dy
+            px[x, y] = src[x, sy] if 19 <= sy < 25 else ((0, 0, 0, 0) if dy < 0 else src[x, 19])
+    return out
+
+
+def shadow_back(key: Image.Image, pal: dict) -> Image.Image:
+    """Тінь ззаду: складки й шов капюшона, rim зверху-зліва, ломик з рюкзака за силуетом."""
+    out = key.copy()
+    # Rim від верхнього лівого світла: перший піксель усередині контуру.
+    put(out, [(14, 4), (12, 5), (11, 6), (11, 7), (11, 8), (10, 9), (10, 10)], pal["night_6"])
+    put(out, [(13, 5), (12, 6), (12, 7), (15, 4)], pal["night_7"])
+    # Освітлена ліва частка капюшона.
+    put(out, [(13, 6), (13, 7), (14, 6), (12, 8), (13, 8), (11, 9), (12, 9), (11, 10)], pal["night_5"])
+    # Шов посередині: темна лінія, праворуч від неї — затінений бік.
+    put(out, [(16, 5), (16, 6), (16, 7), (16, 8), (16, 9), (16, 10), (16, 11)], pal["night_2"])
+    put(out, [(17, 6), (17, 7), (17, 8), (18, 9), (18, 10), (19, 8), (19, 9), (19, 10), (19, 11), (20, 9), (20, 10), (20, 11)], pal["night_3"])
+    # Складка внизу капюшона, де він лягає на плечі.
+    put(out, [(13, 11), (14, 12), (18, 12)], pal["night_2"])
+    # Ломик із рюкзака, стирчить над правим плечем.
+    bar = [(19, 15), (20, 14), (21, 13), (22, 12), (23, 11), (23, 10)]
+    hook = [(24, 9), (25, 10)]
+    put(out, bar, pal["steel_1"])
+    put(out, [(22, 12), (23, 11), (23, 10)], pal["steel_2"])
+    put(out, hook, pal["steel_1"])
+    outline(out, bar + hook, pal["night_0"])
+    return out
+
+
 def main() -> None:
     cid = sys.argv[1]
     keys = load_strip(f"Assets/Art/Characters/{cid}_keys.png", 3)
     pal = palette_of(keys)
+    gpl = load_palette()
     front_key, back_key, side_key = keys
+    if cid == "shadow":
+        back_key = shadow_back(back_key, gpl)
+        pal = sorted(set(pal) | {gpl["steel_1"][:3], gpl["steel_2"][:3]})
 
     walk = {d: load_strip(f"Assets/Art/Incoming/{cid}_walk_{d}_pixellab.png", 7)[1:] for d in ("front", "back", "side")}
     walk = {d: [snap(f, pal) for f in fr] for d, fr in walk.items()}
 
-    front = [with_head(f, front_key) for f in walk["front"]]
+    front = symmetric_legs([with_head(f, front_key) for f in walk["front"]])
     side = [with_head(f, side_key) for f in walk["side"]]
+    # Профіль: кадр 3 (рука злипається з тулубом, ноги одним стовпцем) — та сама фаза «прохід», що кадр 0.
+    side[3] = side[0]
 
+    # Спина: верх ключової пози + ноги з анфасу; руки махають у протифазі до ноги, що виходить уперед.
+    swing = [(0, 0), (-1, 1), (-1, 1), (0, 0), (1, -1), (1, -1)]
     back = []
-    for f in front:
+    for f, (ldy, rdy) in zip(front, swing):
         dy = bob(f) - bob(front_key)
         frame = region(f, LEG_SPLIT, CELL)
-        upper = region(back_key, 0, LEG_SPLIT)
+        upper = swing_arms(region(back_key, 0, LEG_SPLIT), ldy, rdy, 10, 21)
         frame.paste(upper, (0, dy), upper)
         back.append(frame)
 
@@ -133,7 +218,7 @@ def main() -> None:
         for c, fr in enumerate(row):
             sheet.paste(fr, (c * CELL, r * CELL))
     sheet.save(f"Assets/Art/Characters/{cid}_sheet.png")
-    print(f"{cid}: палітра {len(pal)} кольорів, стрічка {sheet.size}")
+    print(f"{cid}: palette {len(pal)}, sheet {sheet.size}")
 
 
 if __name__ == "__main__":
