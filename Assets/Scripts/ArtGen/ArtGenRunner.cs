@@ -47,6 +47,7 @@ namespace Banda.ArtGen
                 Save(pair.Value, art, pair.Key + ".png", written);
             }
 
+            written.AddRange(IncomingCharacters.ExportKeys(projectRoot));
             written.AddRange(AudioArt.GenerateAll(projectRoot));
 
             return written;

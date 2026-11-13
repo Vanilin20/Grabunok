@@ -1,0 +1,1781 @@
+fileFormatVersion: 2
+guid: 27d98cd84ddf6a54188d6db1338465a3
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 4225740441744090061
+    second: pixellab-dark-noir-night-pixel-art--lim-1794487958312_0
+  - first:
+      213: 1580890639020269872
+    second: pixellab-dark-noir-night-pixel-art--lim-1794487958312_1
+  - first:
+      213: 4804291053909183965
+    second: pixellab-dark-noir-night-pixel-art--lim-1794487958312_2
+  - first:
+      213: -5679802581816304209
+    second: pixellab-dark-noir-night-pixel-art--lim-1794487958312_3
+  - first:
+      213: -596000414540036720
+    second: pixellab-dark-noir-night-pixel-art--lim-1794487958312_4
+  - first:
+      213: 1188586633971810089
+    second: pixellab-dark-noir-night-pixel-art--lim-1794487958312_5
+  - first:
+      213: -2045253968297505391
+    second: pixellab-dark-noir-night-pixel-art--lim-1794487958312_6
+  - first:
+      213: -1417470399791645618
+    second: pixellab-dark-noir-night-pixel-art--lim-1794487958312_7
+  - first:
+      213: -4299987158685853798
+    second: pixellab-dark-noir-night-pixel-art--lim-1794487958312_8
+  - first:
+      213: -8732200940423432352
+    second: pixellab-dark-noir-night-pixel-art--lim-1794487958312_9
+  - first:
+      213: -3894032070991753127
+    second: pixellab-dark-noir-night-pixel-art--lim-1794487958312_10
+  - first:
+      213: 4598913178441254388
+    second: pixellab-dark-noir-night-pixel-art--lim-1794487958312_11
+  - first:
+      213: -2577750609014490375
+    second: pixellab-dark-noir-night-pixel-art--lim-1794487958312_12
+  - first:
+      213: -4005345404160183096
+    second: pixellab-dark-noir-night-pixel-art--lim-1794487958312_13
+  - first:
+      213: -4299893376734203654
+    second: pixellab-dark-noir-night-pixel-art--lim-1794487958312_14
+  - first:
+      213: 2356532384278142650
+    second: pixellab-dark-noir-night-pixel-art--lim-1794487958312_15
+  - first:
+      213: 3069250183367936738
+    second: pixellab-dark-noir-night-pixel-art--lim-1794487958312_16
+  - first:
+      213: 4862385655148751672
+    second: pixellab-dark-noir-night-pixel-art--lim-1794487958312_17
+  - first:
+      213: 6580985314244571239
+    second: pixellab-dark-noir-night-pixel-art--lim-1794487958312_18
+  - first:
+      213: 2685666462750139543
+    second: pixellab-dark-noir-night-pixel-art--lim-1794487958312_19
+  - first:
+      213: -4282975937851492463
+    second: pixellab-dark-noir-night-pixel-art--lim-1794487958312_20
+  - first:
+      213: -6353433087087640059
+    second: pixellab-dark-noir-night-pixel-art--lim-1794487958312_21
+  - first:
+      213: 3714164968566827579
+    second: pixellab-dark-noir-night-pixel-art--lim-1794487958312_22
+  - first:
+      213: 1790927211978158169
+    second: pixellab-dark-noir-night-pixel-art--lim-1794487958312_23
+  - first:
+      213: 750005328086658529
+    second: pixellab-dark-noir-night-pixel-art--lim-1794487958312_24
+  - first:
+      213: 3414821030755239606
+    second: pixellab-dark-noir-night-pixel-art--lim-1794487958312_25
+  - first:
+      213: 8687324012568598923
+    second: pixellab-dark-noir-night-pixel-art--lim-1794487958312_26
+  - first:
+      213: 1002086729344792718
+    second: pixellab-dark-noir-night-pixel-art--lim-1794487958312_27
+  - first:
+      213: 6180919571045193378
+    second: pixellab-dark-noir-night-pixel-art--lim-1794487958312_28
+  - first:
+      213: -3846426365699240837
+    second: pixellab-dark-noir-night-pixel-art--lim-1794487958312_29
+  - first:
+      213: -8040196135145861804
+    second: pixellab-dark-noir-night-pixel-art--lim-1794487958312_30
+  - first:
+      213: -1389946199847112274
+    second: pixellab-dark-noir-night-pixel-art--lim-1794487958312_31
+  - first:
+      213: 7924189841788006514
+    second: pixellab-dark-noir-night-pixel-art--lim-1794487958312_32
+  - first:
+      213: 2022101403897207644
+    second: pixellab-dark-noir-night-pixel-art--lim-1794487958312_33
+  - first:
+      213: 6994803082411834456
+    second: pixellab-dark-noir-night-pixel-art--lim-1794487958312_34
+  - first:
+      213: 1832639592562171382
+    second: pixellab-dark-noir-night-pixel-art--lim-1794487958312_35
+  - first:
+      213: 6100195933264723456
+    second: pixellab-dark-noir-night-pixel-art--lim-1794487958312_36
+  - first:
+      213: -3954522700440161265
+    second: pixellab-dark-noir-night-pixel-art--lim-1794487958312_37
+  - first:
+      213: -4282388721359716434
+    second: pixellab-dark-noir-night-pixel-art--lim-1794487958312_38
+  - first:
+      213: 6643144571730780105
+    second: pixellab-dark-noir-night-pixel-art--lim-1794487958312_39
+  - first:
+      213: -5372355314825317777
+    second: pixellab-dark-noir-night-pixel-art--lim-1794487958312_40
+  - first:
+      213: 4190574189018151199
+    second: pixellab-dark-noir-night-pixel-art--lim-1794487958312_41
+  - first:
+      213: -5164943301568991780
+    second: pixellab-dark-noir-night-pixel-art--lim-1794487958312_42
+  - first:
+      213: 86995026197597390
+    second: pixellab-dark-noir-night-pixel-art--lim-1794487958312_43
+  - first:
+      213: -4010864743762871358
+    second: pixellab-dark-noir-night-pixel-art--lim-1794487958312_44
+  - first:
+      213: 1735574146332531699
+    second: pixellab-dark-noir-night-pixel-art--lim-1794487958312_45
+  - first:
+      213: -1601807594287430616
+    second: pixellab-dark-noir-night-pixel-art--lim-1794487958312_46
+  - first:
+      213: 6397347972920443047
+    second: pixellab-dark-noir-night-pixel-art--lim-1794487958312_47
+  - first:
+      213: -6819308028377454516
+    second: pixellab-dark-noir-night-pixel-art--lim-1794487958312_48
+  - first:
+      213: 4134821021403186754
+    second: pixellab-dark-noir-night-pixel-art--lim-1794487958312_49
+  - first:
+      213: -4994174897752060760
+    second: pixellab-dark-noir-night-pixel-art--lim-1794487958312_50
+  - first:
+      213: -136506935893024191
+    second: pixellab-dark-noir-night-pixel-art--lim-1794487958312_51
+  - first:
+      213: 3974309852164394402
+    second: pixellab-dark-noir-night-pixel-art--lim-1794487958312_52
+  - first:
+      213: 1034967543613296404
+    second: pixellab-dark-noir-night-pixel-art--lim-1794487958312_53
+  - first:
+      213: 7434865057048010032
+    second: pixellab-dark-noir-night-pixel-art--lim-1794487958312_54
+  - first:
+      213: -8994901569689382669
+    second: pixellab-dark-noir-night-pixel-art--lim-1794487958312_55
+  - first:
+      213: -7381707162871141462
+    second: pixellab-dark-noir-night-pixel-art--lim-1794487958312_56
+  - first:
+      213: 1513889569293767282
+    second: pixellab-dark-noir-night-pixel-art--lim-1794487958312_57
+  - first:
+      213: 3533566141454823049
+    second: pixellab-dark-noir-night-pixel-art--lim-1794487958312_58
+  - first:
+      213: -2726407282775176778
+    second: pixellab-dark-noir-night-pixel-art--lim-1794487958312_59
+  - first:
+      213: 1753674999081381539
+    second: pixellab-dark-noir-night-pixel-art--lim-1794487958312_60
+  - first:
+      213: 7329013092440080635
+    second: pixellab-dark-noir-night-pixel-art--lim-1794487958312_61
+  - first:
+      213: -3613504803712383749
+    second: pixellab-dark-noir-night-pixel-art--lim-1794487958312_62
+  - first:
+      213: -3622495859655901157
+    second: pixellab-dark-noir-night-pixel-art--lim-1794487958312_63
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: pixellab-dark-noir-night-pixel-art--lim-1794487958312_0
+      rect:
+        serializedVersion: 2
+        x: 8
+        y: 225
+        width: 16
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dc3a827fa88d4aa30800000000000000
+      internalID: 4225740441744090061
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: pixellab-dark-noir-night-pixel-art--lim-1794487958312_1
+      rect:
+        serializedVersion: 2
+        x: 38
+        y: 225
+        width: 18
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0312b8709a370f510800000000000000
+      internalID: 1580890639020269872
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: pixellab-dark-noir-night-pixel-art--lim-1794487958312_2
+      rect:
+        serializedVersion: 2
+        x: 71
+        y: 225
+        width: 18
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ddd08d162454ca240800000000000000
+      internalID: 4804291053909183965
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: pixellab-dark-noir-night-pixel-art--lim-1794487958312_3
+      rect:
+        serializedVersion: 2
+        x: 103
+        y: 225
+        width: 18
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fad1e7c05a94d21b0800000000000000
+      internalID: -5679802581816304209
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: pixellab-dark-noir-night-pixel-art--lim-1794487958312_4
+      rect:
+        serializedVersion: 2
+        x: 136
+        y: 225
+        width: 17
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0950b5dd7c49ab7f0800000000000000
+      internalID: -596000414540036720
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: pixellab-dark-noir-night-pixel-art--lim-1794487958312_5
+      rect:
+        serializedVersion: 2
+        x: 167
+        y: 225
+        width: 18
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 92fbaa60f35be7010800000000000000
+      internalID: 1188586633971810089
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: pixellab-dark-noir-night-pixel-art--lim-1794487958312_6
+      rect:
+        serializedVersion: 2
+        x: 199
+        y: 225
+        width: 18
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 19d4b202a5ccd93e0800000000000000
+      internalID: -2045253968297505391
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: pixellab-dark-noir-night-pixel-art--lim-1794487958312_7
+      rect:
+        serializedVersion: 2
+        x: 230
+        y: 225
+        width: 19
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e4cb9c47e22245ce0800000000000000
+      internalID: -1417470399791645618
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: pixellab-dark-noir-night-pixel-art--lim-1794487958312_8
+      rect:
+        serializedVersion: 2
+        x: 8
+        y: 193
+        width: 16
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a97d9c326706354c0800000000000000
+      internalID: -4299987158685853798
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: pixellab-dark-noir-night-pixel-art--lim-1794487958312_9
+      rect:
+        serializedVersion: 2
+        x: 40
+        y: 193
+        width: 17
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 067bab6828df0d680800000000000000
+      internalID: -8732200940423432352
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: pixellab-dark-noir-night-pixel-art--lim-1794487958312_10
+      rect:
+        serializedVersion: 2
+        x: 71
+        y: 193
+        width: 18
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 950de80867e95f9c0800000000000000
+      internalID: -3894032070991753127
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: pixellab-dark-noir-night-pixel-art--lim-1794487958312_11
+      rect:
+        serializedVersion: 2
+        x: 103
+        y: 193
+        width: 18
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4f58ad17b2f92df30800000000000000
+      internalID: 4598913178441254388
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: pixellab-dark-noir-night-pixel-art--lim-1794487958312_12
+      rect:
+        serializedVersion: 2
+        x: 136
+        y: 193
+        width: 16
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9faf4268a7df93cd0800000000000000
+      internalID: -2577750609014490375
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: pixellab-dark-noir-night-pixel-art--lim-1794487958312_13
+      rect:
+        serializedVersion: 2
+        x: 168
+        y: 193
+        width: 18
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8c4f94e73972a68c0800000000000000
+      internalID: -4005345404160183096
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: pixellab-dark-noir-night-pixel-art--lim-1794487958312_14
+      rect:
+        serializedVersion: 2
+        x: 198
+        y: 193
+        width: 19
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: af0f3b371c5b354c0800000000000000
+      internalID: -4299893376734203654
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: pixellab-dark-noir-night-pixel-art--lim-1794487958312_15
+      rect:
+        serializedVersion: 2
+        x: 230
+        y: 193
+        width: 19
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: abe5a92d7b514b020800000000000000
+      internalID: 2356532384278142650
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: pixellab-dark-noir-night-pixel-art--lim-1794487958312_16
+      rect:
+        serializedVersion: 2
+        x: 6
+        y: 161
+        width: 20
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2eac27ab7ca289a20800000000000000
+      internalID: 3069250183367936738
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: pixellab-dark-noir-night-pixel-art--lim-1794487958312_17
+      rect:
+        serializedVersion: 2
+        x: 38
+        y: 161
+        width: 20
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 83ba818cdf9aa7340800000000000000
+      internalID: 4862385655148751672
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: pixellab-dark-noir-night-pixel-art--lim-1794487958312_18
+      rect:
+        serializedVersion: 2
+        x: 72
+        y: 161
+        width: 17
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7603c97964b545b50800000000000000
+      internalID: 6580985314244571239
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: pixellab-dark-noir-night-pixel-art--lim-1794487958312_19
+      rect:
+        serializedVersion: 2
+        x: 102
+        y: 161
+        width: 20
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 794e6692b67654520800000000000000
+      internalID: 2685666462750139543
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: pixellab-dark-noir-night-pixel-art--lim-1794487958312_20
+      rect:
+        serializedVersion: 2
+        x: 134
+        y: 161
+        width: 20
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 197f0d2a310df84c0800000000000000
+      internalID: -4282975937851492463
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: pixellab-dark-noir-night-pixel-art--lim-1794487958312_21
+      rect:
+        serializedVersion: 2
+        x: 166
+        y: 161
+        width: 20
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5028debe44214d7a0800000000000000
+      internalID: -6353433087087640059
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: pixellab-dark-noir-night-pixel-art--lim-1794487958312_22
+      rect:
+        serializedVersion: 2
+        x: 198
+        y: 161
+        width: 23
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b3a20a44c5d5b8330800000000000000
+      internalID: 3714164968566827579
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: pixellab-dark-noir-night-pixel-art--lim-1794487958312_23
+      rect:
+        serializedVersion: 2
+        x: 231
+        y: 161
+        width: 18
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 950f9808fc6aad810800000000000000
+      internalID: 1790927211978158169
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: pixellab-dark-noir-night-pixel-art--lim-1794487958312_24
+      rect:
+        serializedVersion: 2
+        x: 5
+        y: 129
+        width: 21
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1ed61484fdd886a00800000000000000
+      internalID: 750005328086658529
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: pixellab-dark-noir-night-pixel-art--lim-1794487958312_25
+      rect:
+        serializedVersion: 2
+        x: 37
+        y: 129
+        width: 20
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6b603bd82a1e36f20800000000000000
+      internalID: 3414821030755239606
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: pixellab-dark-noir-night-pixel-art--lim-1794487958312_26
+      rect:
+        serializedVersion: 2
+        x: 70
+        y: 129
+        width: 20
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b895fd979239f8870800000000000000
+      internalID: 8687324012568598923
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: pixellab-dark-noir-night-pixel-art--lim-1794487958312_27
+      rect:
+        serializedVersion: 2
+        x: 102
+        y: 129
+        width: 19
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e88bab0329028ed00800000000000000
+      internalID: 1002086729344792718
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: pixellab-dark-noir-night-pixel-art--lim-1794487958312_28
+      rect:
+        serializedVersion: 2
+        x: 135
+        y: 129
+        width: 19
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2a698691a9907c550800000000000000
+      internalID: 6180919571045193378
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: pixellab-dark-noir-night-pixel-art--lim-1794487958312_29
+      rect:
+        serializedVersion: 2
+        x: 166
+        y: 129
+        width: 20
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b7cccc1899fbe9ac0800000000000000
+      internalID: -3846426365699240837
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: pixellab-dark-noir-night-pixel-art--lim-1794487958312_30
+      rect:
+        serializedVersion: 2
+        x: 199
+        y: 129
+        width: 18
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 45d8920c63c7b6090800000000000000
+      internalID: -8040196135145861804
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: pixellab-dark-noir-night-pixel-art--lim-1794487958312_31
+      rect:
+        serializedVersion: 2
+        x: 227
+        y: 129
+        width: 22
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ea17535ab4be5bce0800000000000000
+      internalID: -1389946199847112274
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: pixellab-dark-noir-night-pixel-art--lim-1794487958312_32
+      rect:
+        serializedVersion: 2
+        x: 8
+        y: 97
+        width: 18
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 270788c4da068fd60800000000000000
+      internalID: 7924189841788006514
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: pixellab-dark-noir-night-pixel-art--lim-1794487958312_33
+      rect:
+        serializedVersion: 2
+        x: 36
+        y: 97
+        width: 21
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c5b9c176382ff0c10800000000000000
+      internalID: 2022101403897207644
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: pixellab-dark-noir-night-pixel-art--lim-1794487958312_34
+      rect:
+        serializedVersion: 2
+        x: 71
+        y: 97
+        width: 18
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 85cf6f8e758821160800000000000000
+      internalID: 6994803082411834456
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: pixellab-dark-noir-night-pixel-art--lim-1794487958312_35
+      rect:
+        serializedVersion: 2
+        x: 102
+        y: 97
+        width: 21
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6fd1cfbeff7de6910800000000000000
+      internalID: 1832639592562171382
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: pixellab-dark-noir-night-pixel-art--lim-1794487958312_36
+      rect:
+        serializedVersion: 2
+        x: 135
+        y: 97
+        width: 18
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 00eb68e81ef38a450800000000000000
+      internalID: 6100195933264723456
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: pixellab-dark-noir-night-pixel-art--lim-1794487958312_37
+      rect:
+        serializedVersion: 2
+        x: 165
+        y: 98
+        width: 24
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f04bb005e86be19c0800000000000000
+      internalID: -3954522700440161265
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: pixellab-dark-noir-night-pixel-art--lim-1794487958312_38
+      rect:
+        serializedVersion: 2
+        x: 199
+        y: 97
+        width: 18
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: eaff631a526e194c0800000000000000
+      internalID: -4282388721359716434
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: pixellab-dark-noir-night-pixel-art--lim-1794487958312_39
+      rect:
+        serializedVersion: 2
+        x: 230
+        y: 97
+        width: 19
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9cfd3958ac0313c50800000000000000
+      internalID: 6643144571730780105
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: pixellab-dark-noir-night-pixel-art--lim-1794487958312_40
+      rect:
+        serializedVersion: 2
+        x: 7
+        y: 65
+        width: 18
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f62b7ac1e4f8175b0800000000000000
+      internalID: -5372355314825317777
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: pixellab-dark-noir-night-pixel-art--lim-1794487958312_41
+      rect:
+        serializedVersion: 2
+        x: 37
+        y: 65
+        width: 22
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f19f855b509e72a30800000000000000
+      internalID: 4190574189018151199
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: pixellab-dark-noir-night-pixel-art--lim-1794487958312_42
+      rect:
+        serializedVersion: 2
+        x: 69
+        y: 65
+        width: 21
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cdd62f8ae6f6258b0800000000000000
+      internalID: -5164943301568991780
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: pixellab-dark-noir-night-pixel-art--lim-1794487958312_43
+      rect:
+        serializedVersion: 2
+        x: 102
+        y: 65
+        width: 19
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ecccbb1f381153100800000000000000
+      internalID: 86995026197597390
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: pixellab-dark-noir-night-pixel-art--lim-1794487958312_44
+      rect:
+        serializedVersion: 2
+        x: 133
+        y: 65
+        width: 21
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2cb30e914cb8658c0800000000000000
+      internalID: -4010864743762871358
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: pixellab-dark-noir-night-pixel-art--lim-1794487958312_45
+      rect:
+        serializedVersion: 2
+        x: 165
+        y: 65
+        width: 23
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3fb90899d7ff51810800000000000000
+      internalID: 1735574146332531699
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: pixellab-dark-noir-night-pixel-art--lim-1794487958312_46
+      rect:
+        serializedVersion: 2
+        x: 195
+        y: 65
+        width: 26
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 82489ffca7c35c9e0800000000000000
+      internalID: -1601807594287430616
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: pixellab-dark-noir-night-pixel-art--lim-1794487958312_47
+      rect:
+        serializedVersion: 2
+        x: 231
+        y: 65
+        width: 17
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7a00d763612f7c850800000000000000
+      internalID: 6397347972920443047
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: pixellab-dark-noir-night-pixel-art--lim-1794487958312_48
+      rect:
+        serializedVersion: 2
+        x: 8
+        y: 33
+        width: 17
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c48a79a7a73fc51a0800000000000000
+      internalID: -6819308028377454516
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: pixellab-dark-noir-night-pixel-art--lim-1794487958312_49
+      rect:
+        serializedVersion: 2
+        x: 39
+        y: 33
+        width: 18
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2460e8ecfc5d16930800000000000000
+      internalID: 4134821021403186754
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: pixellab-dark-noir-night-pixel-art--lim-1794487958312_50
+      rect:
+        serializedVersion: 2
+        x: 72
+        y: 33
+        width: 17
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8acc059046021bab0800000000000000
+      internalID: -4994174897752060760
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: pixellab-dark-noir-night-pixel-art--lim-1794487958312_51
+      rect:
+        serializedVersion: 2
+        x: 103
+        y: 33
+        width: 18
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 14228b04aa70b1ef0800000000000000
+      internalID: -136506935893024191
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: pixellab-dark-noir-night-pixel-art--lim-1794487958312_52
+      rect:
+        serializedVersion: 2
+        x: 135
+        y: 33
+        width: 18
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2ad0895f0c5972730800000000000000
+      internalID: 3974309852164394402
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: pixellab-dark-noir-night-pixel-art--lim-1794487958312_53
+      rect:
+        serializedVersion: 2
+        x: 166
+        y: 33
+        width: 22
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 41f01275f71fc5e00800000000000000
+      internalID: 1034967543613296404
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: pixellab-dark-noir-night-pixel-art--lim-1794487958312_54
+      rect:
+        serializedVersion: 2
+        x: 199
+        y: 33
+        width: 19
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 03d9f46b062fd2760800000000000000
+      internalID: 7434865057048010032
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: pixellab-dark-noir-night-pixel-art--lim-1794487958312_55
+      rect:
+        serializedVersion: 2
+        x: 231
+        y: 33
+        width: 18
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3f09f0deda0bb2380800000000000000
+      internalID: -8994901569689382669
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: pixellab-dark-noir-night-pixel-art--lim-1794487958312_56
+      rect:
+        serializedVersion: 2
+        x: 5
+        y: 1
+        width: 20
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: aabeb110278ee8990800000000000000
+      internalID: -7381707162871141462
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: pixellab-dark-noir-night-pixel-art--lim-1794487958312_57
+      rect:
+        serializedVersion: 2
+        x: 38
+        y: 1
+        width: 19
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2729ce6da8a620510800000000000000
+      internalID: 1513889569293767282
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: pixellab-dark-noir-night-pixel-art--lim-1794487958312_58
+      rect:
+        serializedVersion: 2
+        x: 70
+        y: 1
+        width: 19
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 98e23cb1fafb90130800000000000000
+      internalID: 3533566141454823049
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: pixellab-dark-noir-night-pixel-art--lim-1794487958312_59
+      rect:
+        serializedVersion: 2
+        x: 102
+        y: 1
+        width: 20
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6b9c52d750bd92ad0800000000000000
+      internalID: -2726407282775176778
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: pixellab-dark-noir-night-pixel-art--lim-1794487958312_60
+      rect:
+        serializedVersion: 2
+        x: 133
+        y: 1
+        width: 22
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3aeaabbce1e465810800000000000000
+      internalID: 1753674999081381539
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: pixellab-dark-noir-night-pixel-art--lim-1794487958312_61
+      rect:
+        serializedVersion: 2
+        x: 166
+        y: 1
+        width: 22
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bf00419a392e5b560800000000000000
+      internalID: 7329013092440080635
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: pixellab-dark-noir-night-pixel-art--lim-1794487958312_62
+      rect:
+        serializedVersion: 2
+        x: 200
+        y: 1
+        width: 21
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bf44e84b6804addc0800000000000000
+      internalID: -3613504803712383749
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: pixellab-dark-noir-night-pixel-art--lim-1794487958312_63
+      rect:
+        serializedVersion: 2
+        x: 230
+        y: 1
+        width: 20
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b1003ec553f4abdc0800000000000000
+      internalID: -3622495859655901157
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      pixellab-dark-noir-night-pixel-art--lim-1794487958312_0: 4225740441744090061
+      pixellab-dark-noir-night-pixel-art--lim-1794487958312_1: 1580890639020269872
+      pixellab-dark-noir-night-pixel-art--lim-1794487958312_10: -3894032070991753127
+      pixellab-dark-noir-night-pixel-art--lim-1794487958312_11: 4598913178441254388
+      pixellab-dark-noir-night-pixel-art--lim-1794487958312_12: -2577750609014490375
+      pixellab-dark-noir-night-pixel-art--lim-1794487958312_13: -4005345404160183096
+      pixellab-dark-noir-night-pixel-art--lim-1794487958312_14: -4299893376734203654
+      pixellab-dark-noir-night-pixel-art--lim-1794487958312_15: 2356532384278142650
+      pixellab-dark-noir-night-pixel-art--lim-1794487958312_16: 3069250183367936738
+      pixellab-dark-noir-night-pixel-art--lim-1794487958312_17: 4862385655148751672
+      pixellab-dark-noir-night-pixel-art--lim-1794487958312_18: 6580985314244571239
+      pixellab-dark-noir-night-pixel-art--lim-1794487958312_19: 2685666462750139543
+      pixellab-dark-noir-night-pixel-art--lim-1794487958312_2: 4804291053909183965
+      pixellab-dark-noir-night-pixel-art--lim-1794487958312_20: -4282975937851492463
+      pixellab-dark-noir-night-pixel-art--lim-1794487958312_21: -6353433087087640059
+      pixellab-dark-noir-night-pixel-art--lim-1794487958312_22: 3714164968566827579
+      pixellab-dark-noir-night-pixel-art--lim-1794487958312_23: 1790927211978158169
+      pixellab-dark-noir-night-pixel-art--lim-1794487958312_24: 750005328086658529
+      pixellab-dark-noir-night-pixel-art--lim-1794487958312_25: 3414821030755239606
+      pixellab-dark-noir-night-pixel-art--lim-1794487958312_26: 8687324012568598923
+      pixellab-dark-noir-night-pixel-art--lim-1794487958312_27: 1002086729344792718
+      pixellab-dark-noir-night-pixel-art--lim-1794487958312_28: 6180919571045193378
+      pixellab-dark-noir-night-pixel-art--lim-1794487958312_29: -3846426365699240837
+      pixellab-dark-noir-night-pixel-art--lim-1794487958312_3: -5679802581816304209
+      pixellab-dark-noir-night-pixel-art--lim-1794487958312_30: -8040196135145861804
+      pixellab-dark-noir-night-pixel-art--lim-1794487958312_31: -1389946199847112274
+      pixellab-dark-noir-night-pixel-art--lim-1794487958312_32: 7924189841788006514
+      pixellab-dark-noir-night-pixel-art--lim-1794487958312_33: 2022101403897207644
+      pixellab-dark-noir-night-pixel-art--lim-1794487958312_34: 6994803082411834456
+      pixellab-dark-noir-night-pixel-art--lim-1794487958312_35: 1832639592562171382
+      pixellab-dark-noir-night-pixel-art--lim-1794487958312_36: 6100195933264723456
+      pixellab-dark-noir-night-pixel-art--lim-1794487958312_37: -3954522700440161265
+      pixellab-dark-noir-night-pixel-art--lim-1794487958312_38: -4282388721359716434
+      pixellab-dark-noir-night-pixel-art--lim-1794487958312_39: 6643144571730780105
+      pixellab-dark-noir-night-pixel-art--lim-1794487958312_4: -596000414540036720
+      pixellab-dark-noir-night-pixel-art--lim-1794487958312_40: -5372355314825317777
+      pixellab-dark-noir-night-pixel-art--lim-1794487958312_41: 4190574189018151199
+      pixellab-dark-noir-night-pixel-art--lim-1794487958312_42: -5164943301568991780
+      pixellab-dark-noir-night-pixel-art--lim-1794487958312_43: 86995026197597390
+      pixellab-dark-noir-night-pixel-art--lim-1794487958312_44: -4010864743762871358
+      pixellab-dark-noir-night-pixel-art--lim-1794487958312_45: 1735574146332531699
+      pixellab-dark-noir-night-pixel-art--lim-1794487958312_46: -1601807594287430616
+      pixellab-dark-noir-night-pixel-art--lim-1794487958312_47: 6397347972920443047
+      pixellab-dark-noir-night-pixel-art--lim-1794487958312_48: -6819308028377454516
+      pixellab-dark-noir-night-pixel-art--lim-1794487958312_49: 4134821021403186754
+      pixellab-dark-noir-night-pixel-art--lim-1794487958312_5: 1188586633971810089
+      pixellab-dark-noir-night-pixel-art--lim-1794487958312_50: -4994174897752060760
+      pixellab-dark-noir-night-pixel-art--lim-1794487958312_51: -136506935893024191
+      pixellab-dark-noir-night-pixel-art--lim-1794487958312_52: 3974309852164394402
+      pixellab-dark-noir-night-pixel-art--lim-1794487958312_53: 1034967543613296404
+      pixellab-dark-noir-night-pixel-art--lim-1794487958312_54: 7434865057048010032
+      pixellab-dark-noir-night-pixel-art--lim-1794487958312_55: -8994901569689382669
+      pixellab-dark-noir-night-pixel-art--lim-1794487958312_56: -7381707162871141462
+      pixellab-dark-noir-night-pixel-art--lim-1794487958312_57: 1513889569293767282
+      pixellab-dark-noir-night-pixel-art--lim-1794487958312_58: 3533566141454823049
+      pixellab-dark-noir-night-pixel-art--lim-1794487958312_59: -2726407282775176778
+      pixellab-dark-noir-night-pixel-art--lim-1794487958312_6: -2045253968297505391
+      pixellab-dark-noir-night-pixel-art--lim-1794487958312_60: 1753674999081381539
+      pixellab-dark-noir-night-pixel-art--lim-1794487958312_61: 7329013092440080635
+      pixellab-dark-noir-night-pixel-art--lim-1794487958312_62: -3613504803712383749
+      pixellab-dark-noir-night-pixel-art--lim-1794487958312_63: -3622495859655901157
+      pixellab-dark-noir-night-pixel-art--lim-1794487958312_7: -1417470399791645618
+      pixellab-dark-noir-night-pixel-art--lim-1794487958312_8: -4299987158685853798
+      pixellab-dark-noir-night-pixel-art--lim-1794487958312_9: -8732200940423432352
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

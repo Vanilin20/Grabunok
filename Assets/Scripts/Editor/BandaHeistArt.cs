@@ -13,6 +13,7 @@ namespace Banda.EditorTools
     public static class BandaHeistArt
     {
         public const string Folder = "Assets/Art/Heist";
+        public const string CharactersFolder = "Assets/Art/Characters";
 
         /// <summary>Світові спрайти (1 px = 1 одиниця) з опорою в лівому верхньому куті.</summary>
         private static readonly HashSet<string> WorldTopLeft = new HashSet<string>
@@ -41,6 +42,7 @@ namespace Banda.EditorTools
 
         public static void ConfigureImport()
         {
+            ConfigureCharacters();
             foreach (string guid in AssetDatabase.FindAssets("t:Texture2D", new[] { Folder }))
             {
                 string path = AssetDatabase.GUIDToAssetPath(guid);
@@ -69,6 +71,37 @@ namespace Banda.EditorTools
                 settings.spriteExtrude = 0;
                 importer.SetTextureSettings(settings);
                 importer.spriteBorder = Sliced.Contains(name) ? new Vector4(4f, 4f, 4f, 4f) : Vector4.zero;
+                importer.SaveAndReimport();
+            }
+        }
+
+        /// <summary>Стрічки персонажів (Assets/Art/Characters): світові, 1 px = 1 одиниця, опора в центрі.</summary>
+        private static void ConfigureCharacters()
+        {
+            if (!AssetDatabase.IsValidFolder(CharactersFolder))
+            {
+                return;
+            }
+
+            foreach (string guid in AssetDatabase.FindAssets("t:Texture2D", new[] { CharactersFolder }))
+            {
+                string path = AssetDatabase.GUIDToAssetPath(guid);
+                TextureImporter importer = (TextureImporter)AssetImporter.GetAtPath(path);
+                importer.textureType = TextureImporterType.Sprite;
+                importer.spriteImportMode = SpriteImportMode.Single;
+                importer.spritePixelsPerUnit = 1f;
+                importer.filterMode = FilterMode.Point;
+                importer.mipmapEnabled = false;
+                importer.textureCompression = TextureImporterCompression.Uncompressed;
+                importer.alphaIsTransparency = true;
+                importer.npotScale = TextureImporterNPOTScale.None;
+                importer.wrapMode = TextureWrapMode.Clamp;
+                TextureImporterSettings settings = new TextureImporterSettings();
+                importer.ReadTextureSettings(settings);
+                settings.spriteAlignment = (int)SpriteAlignment.Center;
+                settings.spriteMeshType = SpriteMeshType.FullRect;
+                settings.spriteExtrude = 0;
+                importer.SetTextureSettings(settings);
                 importer.SaveAndReimport();
             }
         }
