@@ -226,11 +226,12 @@ namespace Banda.HeistRuntime
         }
 
         /// <summary>
-        /// Rim від найближчого (найсильнішого в цій точці) джерела: колір лампи, альфа — за спадом світла.
-        /// У темряві — холодний нічний обвід, щоб силует не зливався з підлогою.
+        /// Rim від найсильнішого в цій точці джерела: колір лампи, альфа — за спадом світла, напрям — від персонажа до лампи.
+        /// У темряві — слабкий холодний нічний rim зверху-зліва (звідти падає нічне світло рівня).
         /// </summary>
-        private Color RimAt(Vector3 worldPos)
+        private Color RimAt(Vector3 worldPos, out Vector2 toLight)
         {
+            toLight = new Vector2(-0.7f, 0.7f);
             Color best = _nightRim;
             float bestStrength = 0f;
             foreach (Light2D light in _levelLights)
@@ -241,18 +242,18 @@ namespace Banda.HeistRuntime
                 }
 
                 float radius = Mathf.Max(1f, light.pointLightOuterRadius * 1.6f);
-                float d = Vector2.Distance(light.transform.position, worldPos);
-                float strength = Mathf.Clamp01(1f - d / radius) * light.intensity;
+                Vector2 d = (Vector2)(light.transform.position - worldPos);
+                float strength = Mathf.Clamp01(1f - d.magnitude / radius) * light.intensity;
                 if (strength > bestStrength)
                 {
                     bestStrength = strength;
                     best = light.color;
+                    toLight = d.sqrMagnitude > 1e-4f ? d.normalized : toLight;
                 }
             }
 
-            float a = Mathf.Clamp01(Mathf.Max(_nightRim.a, 0.55f + bestStrength * 0.25f));
             Color c = bestStrength > 0.05f ? Color.Lerp(_nightRim, best, Mathf.Clamp01(bestStrength)) : _nightRim;
-            c.a = a;
+            c.a = Mathf.Clamp01(Mathf.Max(_nightRim.a, 0.55f + bestStrength * 0.3f));
             return c;
         }
 
@@ -278,10 +279,12 @@ namespace Banda.HeistRuntime
                 bool guardInFront = g1.y < _shadow.transform.localPosition.y;
                 _guard.SetSortingOrder(guardInFront ? CharacterFrontOrder : CharacterBackOrder);
                 _shadow.SetSortingOrder(guardInFront ? CharacterBackOrder : CharacterFrontOrder);
-                _guard.SetRim(RimAt(_guard.transform.position));
+                Color guardRim = RimAt(_guard.transform.position, out Vector2 guardToLight);
+                _guard.SetRim(guardRim, guardToLight);
             }
 
-            _shadow.SetRim(RimAt(_shadow.transform.position));
+            Color shadowRim = RimAt(_shadow.transform.position, out Vector2 shadowToLight);
+            _shadow.SetRim(shadowRim, shadowToLight);
 
             if (_camera != null)
             {

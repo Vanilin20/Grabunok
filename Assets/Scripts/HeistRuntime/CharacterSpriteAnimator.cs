@@ -24,6 +24,11 @@ namespace Banda.HeistRuntime
         [Tooltip("Ореол: силует, розширений на 1 px (та сама сітка кадрів). Малюється під персонажем кольором найближчого світла.")]
         [SerializeField] private Texture2D _haloSheet;
         [SerializeField] private SpriteRenderer _halo;
+        [Tooltip("Власний відтінок rim: Тінь — холодний, охоронець — теплий.")]
+        [SerializeField] private Color _rimTint = new Color(0.45f, 0.85f, 1f);
+        [SerializeField, Range(0f, 1f)] private float _rimTintAmount = 0.5f;
+        [Tooltip("Сила rim (множник альфи): Тінь темніша, охоронець яскравіший.")]
+        [SerializeField, Range(0f, 1f)] private float _rimStrength = 0.8f;
 
         /// <summary>Поточний напрямок: 0 — вниз, 1 — праворуч, 2 — вгору, 3 — ліворуч.</summary>
         public int Direction => _direction;
@@ -152,10 +157,23 @@ namespace Banda.HeistRuntime
             ApplyRim();
         }
 
-        /// <summary>Колір кільця-ореолу (rim від найближчого джерела); альфа — сила світла.</summary>
-        public void SetRim(Color rim)
+        /// <summary>
+        /// Rim з боку джерела: колір і напрям (одиничний вектор від персонажа до світла, Y угору).
+        /// Силует під персонажем зсувається на 1 px до джерела — смужка світла лише з освітленого боку.
+        /// Колір змішується з власним відтінком персонажа (_rimTint), щоб Тінь і охоронець різнились біля однієї лампи.
+        /// </summary>
+        public void SetRim(Color rim, Vector2 toLight)
         {
-            _rim = rim;
+            Color tinted = Color.Lerp(rim, _rimTint, _rimTintAmount);
+            tinted.a = rim.a * _rimStrength;
+            _rim = tinted;
+            if (_halo != null)
+            {
+                float dx = Mathf.Abs(toLight.x) > 0.38f ? Mathf.Sign(toLight.x) : 0f;
+                float dy = Mathf.Abs(toLight.y) > 0.38f ? Mathf.Sign(toLight.y) : 0f;
+                _halo.transform.localPosition = new Vector3(dx, dy, 0f);
+            }
+
             ApplyRim();
         }
 

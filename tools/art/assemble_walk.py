@@ -235,22 +235,15 @@ def flashlight(frame: Image.Image, direction: str, gpl: dict) -> tuple:
 
 
 def halo(sheet: Image.Image) -> Image.Image:
-    """Ореол для динамічного rim: силует, розширений на 1 px (білий), кадр у кадр зі стрічкою.
-    Малюється під персонажем у колір найближчого джерела світла — видно лише кільце 1 px навколо силуету."""
+    """Силует для rim з боку джерела: точна маска персонажа (білий), кадр у кадр зі стрічкою.
+    Малюється під персонажем зі зсувом 1 px до найближчого джерела — кольорова смужка видна лише з освітленого боку."""
     src = sheet.load()
     out = Image.new("RGBA", sheet.size, (0, 0, 0, 0))
     px = out.load()
     w, h = sheet.size
     for y in range(h):
         for x in range(w):
-            cx, cy = x // CELL, y // CELL
-            hit = False
-            for dx, dy in ((0, 0), (1, 0), (-1, 0), (0, 1), (0, -1)):
-                nx, ny = x + dx, y + dy
-                if nx // CELL == cx and ny // CELL == cy and 0 <= nx < w and 0 <= ny < h and src[nx, ny][3] >= 128:
-                    hit = True
-                    break
-            if hit:
+            if src[x, y][3] >= 128:
                 px[x, y] = (255, 255, 255, 255)
     return out
 
