@@ -513,12 +513,12 @@ namespace Banda.EditorTools
             main.prewarm = true;
             main.startLifetime = new ParticleSystem.MinMaxCurve(2.5f, 4f);
             main.startSpeed = new ParticleSystem.MinMaxCurve(4f, 8f);
-            main.startSize = 1f; // піксель-арт: клуби з одиничних пікселів, без «квадратів»
-            main.startColor = new Color(0.86f, 0.8f, 0.9f, 0.14f); // ледь рожеві від неону вивіски
+            main.startSize = 6f; // клуб-спрайт puff 6×6 у масштабі 1:1 (як пара в меню), не квадрати
+            main.startColor = new Color(0.86f, 0.8f, 0.9f, 0.18f); // ледь рожеві від неону вивіски
             main.maxParticles = 160;
             main.simulationSpace = ParticleSystemSimulationSpace.World;
             ParticleSystem.EmissionModule emission = ps.emission;
-            emission.rateOverTime = 35f;
+            emission.rateOverTime = 5f;
             ParticleSystem.ShapeModule shape = ps.shape;
             shape.shapeType = ParticleSystemShapeType.Box;
             shape.scale = new Vector3(8f, 2f, 1f);
@@ -537,8 +537,22 @@ namespace Banda.EditorTools
                 new[] { new GradientAlphaKey(0f, 0f), new GradientAlphaKey(1f, 0.25f), new GradientAlphaKey(0f, 1f) });
             col.color = new ParticleSystem.MinMaxGradient(g);
             ParticleSystemRenderer r = go.GetComponent<ParticleSystemRenderer>();
-            r.sharedMaterial = DustMaterial();
+            r.sharedMaterial = SteamMaterial();
             r.sortingOrder = 8;
+        }
+
+        private static Material SteamMaterial()
+        {
+            const string path = "Assets/Art/Materials/Steam.mat";
+            Material m = AssetDatabase.LoadAssetAtPath<Material>(path);
+            if (m == null)
+            {
+                m = new Material(Shader.Find("Sprites/Default"));
+                m.mainTexture = AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/Art/Fx/puff.png");
+                AssetDatabase.CreateAsset(m, path);
+            }
+
+            return m;
         }
 
         /// <summary>Дощ у прямокутнику рівня (x, y — лівий верхній кут, Y униз): косі струмені по 1 px, падають «на камеру» вниз екрана.</summary>

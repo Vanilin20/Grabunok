@@ -407,8 +407,8 @@ namespace Banda.ArtGen
             int w = n * S;
             PixelCanvas t = new PixelCanvas(w, S);
             // Фасад столу (картон).
-            t.FillRect(0, 9, w, 7, P.Lamp1);
-            t.HLine(0, w - 1, 9, P.Lamp2);
+            t.FillRect(0, 9, w, 7, P.Lamp0); // темний картон: стіл не конкурує з гравцем
+            t.HLine(0, w - 1, 9, P.Lamp1);
             t.HLine(0, w - 1, 15, P.Lamp0);
             t.VLine(0, 9, 15, P.Lamp0);
             t.VLine(w - 1, 9, 15, P.Lamp0);
@@ -436,9 +436,9 @@ namespace Banda.ArtGen
             // Табличка «-30%» (шрифт 5×7 не влазить у 5 px фасаду — стоїть на столі, перекриває низ піраміди).
             int signW = PixelFont.Measure("-30%") + 4;
             int cx = w / 2 - signW / 2;
-            t.FillRect(cx, 7, signW, 9, P.Lamp2); // картон, а не лампа: не яскравіший за гравця
-            t.Rect(cx, 7, signW, 9, P.Brick1);
-            PixelFont.Draw(t, "-30%", cx + 2, 8, P.Brick1);
+            t.FillRect(cx, 6, signW, 10, P.Steel2); // біла картка цінника, притушена нічним світлом
+            t.Rect(cx, 6, signW, 10, P.Night1);
+            PixelFont.Draw(t, "-30%", cx + 2, 7, P.Alarm);
             return t;
         }
     }
