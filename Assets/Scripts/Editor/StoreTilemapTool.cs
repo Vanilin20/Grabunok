@@ -200,7 +200,7 @@ namespace Banda.EditorTools
 
         private static bool IsWall(char c) => c == '#' || c == '=' || c == 'D' || c == 'b';
 
-        private static bool IsSolid(char c) => IsWall(c) || "FABEKXmS".IndexOf(c) >= 0;
+        private static bool IsSolid(char c) => IsWall(c) || "FABCEKXmSPZ".IndexOf(c) >= 0;
 
         private static char At(string[] grid, int x, int y) =>
             y < 0 || y >= grid.Length || x < 0 || x >= grid[0].Length ? '#' : grid[y][x];
@@ -245,11 +245,19 @@ namespace Banda.EditorTools
                     break;
                 case 'A':
                 case 'B':
+                case 'C':
                     // Стелаж 3/4 на дві клітинки: тайл верхньої (кришка + верхній ярус) або нижньої (ярус + цоколь).
                     props.SetTile(cell, Get($"rack_{x}_{y}"));
                     break;
                 case 'E':
                     props.SetTile(cell, Get($"promo_{x}_{y}"));
+                    break;
+                case 'P':
+                    props.SetTile(cell, Get($"pallet_{x}_{y}"));
+                    break;
+                case 'Z':
+                    props.SetTile(cell, Get($"freezer_{x}_{y}"));
+                    glow.SetTile(cell, Get($"freezer_glow_{x}_{y}"));
                     break;
                 case 'K':
                     bool below = At(grid, x, y + 1) == 'K';
@@ -420,7 +428,7 @@ namespace Banda.EditorTools
                 Light2D field = go.AddComponent<Light2D>();
                 field.lightType = Light2D.LightType.Point;
                 field.color = Palette.Danger;
-                field.intensity = 0.45f; // поле камери — підказка, а не найяскравіша пляма кадру
+                field.intensity = 0.3f; // поле камери — підказка, а не найяскравіша пляма кадру
                 field.pointLightOuterRadius = HeistSim.CameraRange;
                 field.pointLightInnerRadius = HeistSim.CameraRange * 0.8f;
                 field.falloffIntensity = 0.8f;
@@ -472,8 +480,9 @@ namespace Banda.EditorTools
                 // Світло = геймплей: чітка пляма з ядром (inner) і коротким спадом, між плямами — справжня темрява.
                 light.intensity = spot.Intensity * LightGain;
                 light.pointLightOuterRadius = spot.Radius * 1.25f;
-                light.pointLightInnerRadius = spot.Radius * 0.35f;
-                light.falloffIntensity = 0.3f;
+                light.pointLightInnerRadius = spot.Radius * 0.45f;
+                // Лампи — чітка межа «світло/тінь» (стелс читає її миттєво); вікна, неон і екрани — м'який спад.
+                light.falloffIntensity = spot.Name.StartsWith("lamp") ? 0.7f : 0.3f;
                 light.targetSortingLayers = AllSortingLayers(); // без цього новий Light2D нічого не освітлює
                 // Лампи кидають чіткі тіні від стелажів і стін — межа світла читається як геймплей (R5).
                 bool lamp = spot.Name.StartsWith("lamp") || spot.Name.StartsWith("backroom");
@@ -539,12 +548,12 @@ namespace Banda.EditorTools
             main.prewarm = true;
             main.startLifetime = new ParticleSystem.MinMaxCurve(2.5f, 4f);
             main.startSpeed = new ParticleSystem.MinMaxCurve(4f, 8f);
-            main.startSize = new ParticleSystem.MinMaxCurve(8f, 14f); // м'які клуби, ростуть угору
-            main.startColor = new Color(0.9f, 0.78f, 0.88f, 0.1f); // ледь рожеві від неону вивіски
-            main.maxParticles = 160;
+            main.startSize = 10f; // спрайт-клуб 10×10 у масштабі 1:1: сходинки альфи, піксель-арт
+            main.startColor = new Color(0.95f, 0.75f, 0.88f, 0.35f); // рожеві від неону вивіски
+            main.maxParticles = 40;
             main.simulationSpace = ParticleSystemSimulationSpace.World;
             ParticleSystem.EmissionModule emission = ps.emission;
-            emission.rateOverTime = 9f;
+            emission.rateOverTime = 6f;
             ParticleSystem.ShapeModule shape = ps.shape;
             shape.shapeType = ParticleSystemShapeType.Box;
             shape.scale = new Vector3(8f, 2f, 1f);
@@ -577,8 +586,8 @@ namespace Banda.EditorTools
                 AssetDatabase.CreateAsset(m, path);
             }
 
-            // М'яка радіальна пляма: клуби з плавним спадом альфи (рецензія: puff на ×4 читався мозаїкою).
-            m.mainTexture = AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/Art/Fx/radial.png");
+            // Піксельний клуб з трьома рівнями альфи (не блюр і не одиничні квадрати).
+            m.mainTexture = AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/Art/Fx/steam_puff.png");
             EditorUtility.SetDirty(m);
             return m;
         }

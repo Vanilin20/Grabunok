@@ -42,6 +42,8 @@ namespace Banda.HeistRuntime
         private Color _menuLightColor;
         private float _menuLightIntensity;
         private Vector3 _shadowTarget;
+        [Tooltip("Наскільки камера дивиться вперед над Тінню (пікселі світу): у кадрі більше залу, менше вулиці.")]
+        [SerializeField] private float _cameraLeadY = 28f;
         private const int CharacterFrontOrder = 6;
         private const int CharacterBackOrder = 5;
         private SpriteRenderer _shadowRenderer;
@@ -237,7 +239,8 @@ namespace Banda.HeistRuntime
             if (_camera != null)
             {
                 // Камера не виїжджає за межі арту рівня — у кадрі ніколи немає порожнечі.
-                Vector3 local = _shadow.transform.localPosition;
+                // Винос уперед: Тінь трохи нижче центру кадру — видно зал попереду (вид 3/4, меблі ростуть угору).
+                Vector3 local = _shadow.transform.localPosition + new Vector3(0f, _cameraLeadY, 0f);
                 float halfH = _camera.orthographicSize;
                 float halfW = halfH * _camera.aspect;
                 local.x = ClampAxis(local.x, _artMin.x + halfW, _artMax.x - halfW);

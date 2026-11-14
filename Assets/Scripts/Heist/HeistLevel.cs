@@ -57,24 +57,24 @@ namespace Banda.Heist
         /// <summary>
         /// Сітка «Магазину на розі» 26×15 (docs/levels/store.md; копія — docs/levels/store_grid.txt, тест стежить, щоб не розійшлись).
         /// # стіна, . підлога, F холодильники, = вітрини, D вхідні двері, b задні двері, L двері підсобки,
-        /// A B стелажі (3/4: 2 клітинки заввишки — верх і передня грань), E низький промо-стіл, K прилавок, X коробки, m стіл охорони, S сейф, k записка, c камера, o лампа.
+        /// A B C стелажі (3/4: 2 клітинки заввишки — верх і передня грань; C — острівні й склад), E низький промо-стіл, P піддон з коробками, Z морозильна скриня, K прилавок, X коробки, m стіл охорони, S сейф, k записка, c камера, o лампа.
         /// </summary>
         public static readonly string[] StoreGrid =
         {
             "##########################",
             "#FFFFFFFF....o...#XX.c..S#",
             "#................#X......#",
-            "#.AAAAAAAA......c#..mk...#",
-            "#.AAAAAAAAX......#.......#",
+            "#.AAAAAAAA..CC..c#..mk...#",
+            "#.AAAAAAAAX.CC...#.......#",
             "#.....o..........L.......#",
-            "#.BBBBBBBB.......L....XX.#",
-            "#.BBBBBBBBX......#.......b",
+            "#.BBBBBBBB..CC...L....XX.#",
+            "#.BBBBBBBBX.CC...#.......b",
             "#............KKK.#.......b",
-            "#.EEEE........kK.#..o....#",
-            "#................#.......#",
+            "#.EEEE........kK.#..oCCC.#",
+            "#................#...CCC.#",
             "#................#XXX....#",
             "#................#.......#",
-            "#................#.......#",
+            "#.....PP..ZZZ....#.......#",
             "##DDD#===========#########",
         };
 
@@ -109,6 +109,8 @@ namespace Banda.Heist
                 new LightSpot("window_spill_a", new Vec2(8f * t, 13.7f * t), 26f, "c2f6ff", 0.6f, LightFlicker.None),
                 new LightSpot("window_spill_b", new Vec2(12f * t, 13.7f * t), 26f, "ffb3cf", 0.55f, LightFlicker.None),
                 new LightSpot("window_spill_c", new Vec2(15.5f * t, 13.7f * t), 24f, "c2f6ff", 0.55f, LightFlicker.None),
+                // Аварійна лампа над сейфом: холодне світло на ціль (з видимим плафоном).
+                new LightSpot("lamp_safe", new Vec2(23.5f * t, 2.2f * t), 26f, "c2f6ff", 0.7f, LightFlicker.None),
                 new LightSpot("backroom_bulb", Center(20, 9), 44f, "d8962f", 0.8f, LightFlicker.Dying),
                 // Холодильники світять холодним уздовж свого ряду.
                 new LightSpot("fridge_a", new Vec2(3 * t, 2.4f * t), 30f, "3de0ff", 0.7f, LightFlicker.None),
@@ -159,7 +161,10 @@ namespace Banda.Heist
                             break;
                         case 'A':
                         case 'B':
+                        case 'C':
                         case 'E':
+                        case 'P':
+                        case 'Z':
                         case 'K':
                         case 'X':
                         case 'm':

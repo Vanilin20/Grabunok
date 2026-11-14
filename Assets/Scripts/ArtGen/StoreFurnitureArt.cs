@@ -44,7 +44,7 @@ namespace Banda.ArtGen
                     }
 
                     int n = end - x + 1;
-                    bool topOfRack = (c == 'A' || c == 'B') && (y == 0 || grid[y - 1][x] != c);
+                    bool topOfRack = (c == 'A' || c == 'B' || c == 'C') && (y == 0 || grid[y - 1][x] != c);
                     if (topOfRack)
                     {
                         Cut(d, Rack(n, x * 31 + y * 7), "rack", x, y);
@@ -58,6 +58,15 @@ namespace Banda.ArtGen
                     else if (c == 'E')
                     {
                         Cut(d, Promo(n), "promo", x, y);
+                    }
+                    else if (c == 'P')
+                    {
+                        Cut(d, Pallet(n, x * 5 + y), "pallet", x, y);
+                    }
+                    else if (c == 'Z')
+                    {
+                        Cut(d, Freezer(n, false), "freezer", x, y);
+                        Cut(d, Freezer(n, true), "freezer_glow", x, y);
                     }
 
                     x = end + 1;
@@ -445,6 +454,92 @@ namespace Banda.ArtGen
                 }
             }
 
+            return t;
+        }
+
+        // --- Піддон і морозильна скриня ------------------------------------------------------------
+
+        /// <summary>Дерев'яний піддон з коробками (1 тайл заввишки, 3/4): стос коробок різної висоти зі скотчем і наліпками.</summary>
+        private static PixelCanvas Pallet(int n, int seed)
+        {
+            int w = n * S;
+            PixelCanvas t = new PixelCanvas(w, S);
+            t.FillRect(0, 13, w, 3, P.Lamp1); // піддон
+            t.HLine(0, w - 1, 13, P.Lamp2);
+            for (int x = 1; x < w; x += 5)
+            {
+                t.VLine(x, 14, 15, P.Lamp0); // щілини між дошками
+            }
+
+            int bx = 1;
+            int k = 0;
+            while (bx < w - 4)
+            {
+                int bw = 6 + (int)(H(k, 0, seed) * 4f);
+                bw = System.Math.Min(bw, w - 1 - bx);
+                int bh = 6 + (int)(H(k, 1, seed) * 6f);
+                int top = 13 - bh;
+                t.FillRect(bx, top, bw, bh, P.Lamp1); // фасад коробки
+                t.FillRect(bx, top, bw, 2, P.Lamp2); // кришка, видно згори
+                t.HLine(bx, bx + bw - 1, top, P.Lamp3);
+                t.VLine(bx + bw - 1, top, 12, P.Lamp0); // затінений правий бік
+                t.VLine(bx + bw / 2, top, top + 1, P.Steel2); // скотч
+                if (H(k, 2, seed) < 0.6f)
+                {
+                    t.FillRect(bx + 1, top + 3, 3, 2, P.Steel3); // наліпка
+                    t.Set(bx + 2, top + 4, P.Alarm);
+                }
+
+                t.Rect(bx, top, bw, bh, P.Night0);
+                bx += bw;
+                k++;
+            }
+
+            return t;
+        }
+
+        /// <summary>
+        /// Морозильна скриня (1 тайл, 3/4): білий корпус, скляна кришка, під нею морозиво й пачки; glow — холодне світло зсередини.
+        /// </summary>
+        private static PixelCanvas Freezer(int n, bool glow)
+        {
+            int w = n * S;
+            PixelCanvas t = new PixelCanvas(w, S);
+            if (glow)
+            {
+                for (int y = 2; y < 8; y++)
+                {
+                    t.HLine(2, w - 3, y, P.Cyan2.WithAlpha((byte)(150 - y * 14)));
+                }
+
+                return t;
+            }
+
+            t.FillRect(0, 1, w, 15, P.Steel2); // корпус
+            t.HLine(0, w - 1, 1, P.Steel3);
+            t.FillRect(0, 9, w, 6, P.Steel1); // фасад
+            t.HLine(0, w - 1, 9, P.Steel2);
+            t.FillRect(2, 2, w - 4, 6, P.Cyan0); // нутро під склом
+            int x = 3;
+            int k = 0;
+            while (x < w - 5)
+            {
+                Rgba[] ramp = Ramps[(int)(H(k, 3, 55) * 7f) % 7];
+                t.FillRect(x, 3 + (k % 2), 3, 3, ramp[1]); // пачки морозива
+                t.Set(x, 3 + (k % 2), ramp[2]);
+                x += 4;
+                k++;
+            }
+
+            for (int i = 0; i < 5; i++)
+            {
+                t.Blend(4 + i * 2, 7 - i, P.Steel3.WithAlpha(90)); // відблиск на склі
+            }
+
+            t.VLine(w / 2, 2, 7, P.Steel2); // стик розсувних кришок
+            t.FillRect(w / 2 - 6, 11, 12, 2, P.Neon1); // наліпка бренду
+            t.HLine(w / 2 - 5, w / 2 + 4, 11, P.Neon2);
+            t.Rect(0, 1, w, 15, P.Night0);
             return t;
         }
 

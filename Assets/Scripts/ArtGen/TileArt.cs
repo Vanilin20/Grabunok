@@ -90,8 +90,8 @@ namespace Banda.ArtGen
                 {
                     char ch = grid[y][x];
                     string tile = ch == '#' || ch == '=' || ch == 'D' || ch == 'b' ? "wall_15"
-                        : ch == 'F' ? "fridge_0" : ch == 'A' || ch == 'B' ? "shelf_" + (x % 3)
-                        : ch == 'E' ? "promo_0" : ch == 'K' ? "counter_register" : ch == 'X' ? "box_0"
+                        : ch == 'F' || ch == 'Z' ? "fridge_0" : ch == 'A' || ch == 'B' || ch == 'C' ? "shelf_" + (x % 3)
+                        : ch == 'E' ? "promo_0" : ch == 'K' ? "counter_register" : ch == 'X' || ch == 'P' ? "box_0"
                         : ch == 'm' ? "desk" : x > 17 ? "concrete_0" : "floor_" + ((x + y) % 4);
                     c.Blit(tiles[tile], x * S, y * S);
                 }
