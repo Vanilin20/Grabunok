@@ -350,9 +350,13 @@ namespace Banda.ArtGen
                 {
                     // Тінь від меблів і стін (світло зверху-зліва): 7 px, густа біля предмета, далі дизеринг.
                     int d = Math.Min(north ? y : 99, west ? x : 99);
-                    if (d < 3 || (d < 7 && (x + y) % (d - 1) == 0))
+                    if (d < 2)
                     {
-                        t.Set(x, y, P.Night0.WithAlpha((byte)(190 - d * 22)));
+                        t.Set(x, y, P.Night0.WithAlpha(235)); // контактна тінь 2 px — меблі стоять, а не висять
+                    }
+                    else if (d < 7 && (x + y) % (d - 1) == 0)
+                    {
+                        t.Set(x, y, P.Night0.WithAlpha((byte)(170 - d * 20)));
                     }
                 }
             }
@@ -581,11 +585,11 @@ namespace Banda.ArtGen
             {
                 for (int x = 0; x < S; x++)
                 {
-                    t.Set(x, y, H(x / 3, y, 71) < 0.3f ? P.Brick2 : P.Brick3);
+                    t.Set(x, y, H(x / 3, y, 71) < 0.3f ? P.Brick1 : P.Brick2); // притушено: каса не перебиває фокус
                 }
             }
 
-            t.HLine(0, 15, 0, P.Brick4);
+            t.HLine(0, 15, 0, P.Brick3);
             t.HLine(0, 15, 15, P.Brick0);
             switch (part)
             {
@@ -625,7 +629,7 @@ namespace Banda.ArtGen
         private static PixelCanvas RegisterGlow()
         {
             PixelCanvas t = New();
-            t.FillRect(5, 4, 6, 3, P.Ok.WithAlpha(210));
+            t.FillRect(5, 4, 6, 3, P.Ok.WithAlpha(120));
             t.Set(6, 5, P.Steel3);
             return t;
         }
@@ -741,7 +745,7 @@ namespace Banda.ArtGen
                     t.HLine(2, 12, 4, P.Lamp2);
                     t.VLine(7, 4, 11, P.Lamp0); // згин
                     t.HLine(3, 6, 7, P.Steel2); // скотч
-                    t.HLine(2, 12, 12, P.Night0.WithAlpha(150));
+                    t.HLine(2, 12, 12, P.Night0.WithAlpha(230));
                     break;
                 case 4: // калюжа газованки з відблиском лампи
                     t.FillRect(4, 6, 8, 4, P.Brick1);
@@ -769,7 +773,7 @@ namespace Banda.ArtGen
                     t.Line(4, 6, 6, 3, P.Steel2); // ручка
                     t.Line(6, 3, 10, 3, P.Steel2);
                     t.Line(10, 3, 12, 6, P.Steel1);
-                    t.HLine(3, 13, 13, P.Night0.WithAlpha(150));
+                    t.HLine(3, 13, 13, P.Night0.WithAlpha(230));
                     break;
                 case 7: // жовта табличка «мокра підлога» (А-подібна)
                     t.FillRect(5, 3, 6, 9, P.Lamp3);
@@ -779,7 +783,7 @@ namespace Banda.ArtGen
                     t.Set(6, 8, P.Night1);
                     t.Set(9, 9, P.Night1);
                     t.HLine(4, 11, 12, P.Lamp1); // ніжки
-                    t.HLine(5, 11, 13, P.Night0.WithAlpha(150));
+                    t.HLine(5, 11, 13, P.Night0.WithAlpha(230));
                     break;
                 default: // відро зі шваброю
                     t.FillRect(4, 8, 7, 5, P.Cyan1);
@@ -787,7 +791,7 @@ namespace Banda.ArtGen
                     t.FillRect(5, 9, 5, 2, P.Night2); // вода
                     t.VLine(10, 1, 9, P.Lamp1); // держак швабри
                     t.Set(10, 1, P.Lamp2);
-                    t.HLine(4, 11, 13, P.Night0.WithAlpha(150));
+                    t.HLine(4, 11, 13, P.Night0.WithAlpha(230));
                     break;
             }
 

@@ -100,7 +100,7 @@ namespace Banda.Heist
                 // Лампи з сітки: між ними справжня темрява (стандарт R5).
                 new LightSpot("lamp_corner", Center(13, 1), 44f, "fff2c4", 0.85f, LightFlicker.None),
                 new LightSpot("lamp_aisle", Center(6, 5), 50f, "fff2c4", 0.9f, LightFlicker.None),
-                new LightSpot("lamp_counter", Center(14, 8), 36f, "f7c95a", 0.85f, LightFlicker.Buzz), // над касою: світло на прилавку, а не на порожній підлозі
+                new LightSpot("lamp_counter", Center(14, 8), 32f, "f7c95a", 0.5f, LightFlicker.Buzz), // над касою: світло на прилавку, а не на порожній підлозі
                 // Над промо-столом біля входу: світло падає на товар «-30%», вхід лишається в напівтемряві.
                 new LightSpot("lamp_promo", new Vec2(4f * t, 9.2f * t), 38f, "fff2c4", 0.75f, LightFlicker.None),
                 // Світильник над входом — видиме джерело світла біля дверей.
@@ -123,7 +123,7 @@ namespace Banda.Heist
                 new LightSpot("exit_front", new Vec2(3.5f * t, 13.6f * t), 22f, "5cf08a", 0.6f, LightFlicker.None),
                 new LightSpot("exit_back", new Vec2(24.6f * t, 8f * t), 22f, "5cf08a", 0.6f, LightFlicker.None),
                 // Екрани: каса й монітор охорони.
-                new LightSpot("register", Center(14, 8), 14f, "5cf08a", 0.5f, LightFlicker.None),
+                new LightSpot("register", Center(14, 8), 10f, "5cf08a", 0.3f, LightFlicker.None),
                 new LightSpot("monitor", Center(20, 3), 18f, "3de0ff", 0.6f, LightFlicker.Buzz),
             };
             return level;

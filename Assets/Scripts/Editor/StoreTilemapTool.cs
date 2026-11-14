@@ -434,8 +434,8 @@ namespace Banda.EditorTools
                 field.color = Palette.Hex("e8433a");
                 field.intensity = 0.35f;
                 field.pointLightOuterRadius = HeistSim.CameraRange;
-                field.pointLightInnerRadius = HeistSim.CameraRange * 0.85f;
-                field.falloffIntensity = 0.95f;
+                field.pointLightInnerRadius = HeistSim.CameraRange * 0.96f; // різка межа: коло = дальність виявлення
+                field.falloffIntensity = 1f;
                 field.targetSortingLayers = AllSortingLayers();
             }
 
@@ -483,15 +483,17 @@ namespace Banda.EditorTools
                 light.color = Palette.Hex(spot.Color);
                 // Світло = геймплей: чітка пляма з ядром (inner) і коротким спадом, між плямами — справжня темрява.
                 light.intensity = spot.Intensity * LightGain;
-                light.pointLightOuterRadius = spot.Radius * 1.25f;
-                light.pointLightInnerRadius = spot.Radius * 0.45f;
+                // Лампи — острови світла (менший радіус, ніж у вікон і неону), між ними справжня ніч.
+                bool island = spot.Name.StartsWith("lamp");
+                light.pointLightOuterRadius = spot.Radius * (island ? 1.0f : 1.25f);
+                light.pointLightInnerRadius = spot.Radius * (island ? 0.5f : 0.45f);
                 // Лампи — чітка межа «світло/тінь» (стелс читає її миттєво); вікна, неон і екрани — м'який спад.
                 light.falloffIntensity = spot.Name.StartsWith("lamp") ? 0.7f : 0.3f;
                 light.targetSortingLayers = AllSortingLayers(); // без цього новий Light2D нічого не освітлює
                 // Лампи кидають чіткі тіні від стелажів і стін — межа світла читається як геймплей (R5).
                 bool lamp = spot.Name.StartsWith("lamp") || spot.Name.StartsWith("backroom");
                 light.shadowsEnabled = lamp;
-                light.shadowIntensity = 0.8f;
+                light.shadowIntensity = 1f; // жорсткі тіні від стелажів: межа «світло/тінь» видна на підлозі
                 light.shadowSoftness = 0f;
                 if (lamp)
                 {
