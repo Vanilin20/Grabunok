@@ -205,7 +205,7 @@ namespace Banda.EditorTools
 
         private static bool IsWall(char c) => c == '#' || c == '=' || c == 'D' || c == 'b';
 
-        private static bool IsSolid(char c) => IsWall(c) || "FABCEKXmSPZ".IndexOf(c) >= 0;
+        private static bool IsSolid(char c) => IsWall(c) || "FABCEKXmSPZHW".IndexOf(c) >= 0;
 
         private static char At(string[] grid, int x, int y) =>
             y < 0 || y >= grid.Length || x < 0 || x >= grid[0].Length ? '#' : grid[y][x];
@@ -259,6 +259,12 @@ namespace Banda.EditorTools
                     break;
                 case 'P':
                     props.SetTile(cell, Get($"pallet_{x}_{y}"));
+                    break;
+                case 'H':
+                    props.SetTile(cell, Get($"lockers_{x}_{y}"));
+                    break;
+                case 'W':
+                    props.SetTile(cell, Get($"sink_{x}_{y}"));
                     break;
                 case 'Z':
                     props.SetTile(cell, Get($"freezer_{x}_{y}"));

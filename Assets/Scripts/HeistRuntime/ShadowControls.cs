@@ -22,7 +22,15 @@ namespace Banda.HeistRuntime
         [SerializeField] private Button _hideButton;
         [SerializeField] private Button _takeButton;
 
+        [Tooltip("Підпис і підкладка кнопок дій (діти кнопок): текст пояснює, чого бракує, коли кнопка вимкнена.")]
+        [SerializeField] private TMPro.TMP_Text _takeCaption;
+        [SerializeField] private RectTransform _takePlate;
+        [SerializeField] private TMPro.TMP_Text _hideCaption;
+        [SerializeField] private RectTransform _hidePlate;
+        [SerializeField] private Image _takeIcon;
+
         private Vector2 _stick;
+        private bool _takeReady;
         private Vector2 _lastSent = new Vector2(9f, 9f);
         private float _sendTimer;
         private int _pointer = -1;
@@ -49,6 +57,30 @@ namespace Banda.HeistRuntime
             // Вимкнені кнопки пояснюють себе: «взяти» горить тільки біля відчиненого сейфа.
             _hideButton.interactable = view.CanHide || view.Hidden;
             _takeButton.interactable = view.CanTake;
+            _takeReady = view.CanTake;
+            // Кожен стан кнопки пояснює себе: вимкнена показує, чого бракує.
+            string take = view.CanTake ? "ВЗЯТИ"
+                : view.Carrying ? "ЗДОБИЧ У ТЕБЕ"
+                : view.SafeVisible && !view.SafeOpen ? "СЕЙФ ЗАЧИНЕНО"
+                : "ПІДІЙДИ ДО СЕЙФА";
+            string hide = view.Hidden ? "ВИЙТИ" : view.CanHide ? "СХОВАТИСЬ" : "НЕМА УКРИТТЯ";
+            SetCaption(_takeCaption, _takePlate, take);
+            SetCaption(_hideCaption, _hidePlate, hide);
+        }
+
+        private static void SetCaption(TMPro.TMP_Text caption, RectTransform plate, string text)
+        {
+            if (caption == null || caption.text == text)
+            {
+                return;
+            }
+
+            caption.text = text;
+            if (plate != null)
+            {
+                Vector2 size = caption.GetPreferredValues(text);
+                plate.sizeDelta = new Vector2(size.x + 10f, plate.sizeDelta.y);
+            }
         }
 
         protected override void OnShown(bool shown)
@@ -106,6 +138,14 @@ namespace Banda.HeistRuntime
             if (!IsShown)
             {
                 return;
+            }
+
+            // «ВЗЯТИ» світиться й пульсує, коли ціль поруч (сейф відчинено, Тінь біля нього).
+            float pulse = _takeReady ? 1f + 0.08f * Mathf.Sin(Time.unscaledTime * 6f) : 1f;
+            _takeButton.transform.localScale = new Vector3(pulse, pulse, 1f);
+            if (_takeIcon != null)
+            {
+                _takeIcon.color = _takeReady ? Palette.Hex("f7c95a") : Color.white;
             }
 
             Vector2 dir = _stick;

@@ -59,6 +59,14 @@ namespace Banda.ArtGen
                     {
                         Cut(d, Promo(n), "promo", x, y);
                     }
+                    else if (c == 'H' && (y == 0 || grid[y - 1][x] != c))
+                    {
+                        Cut(d, Lockers(n), "lockers", x, y);
+                    }
+                    else if (c == 'W')
+                    {
+                        Cut(d, Sink(n), "sink", x, y);
+                    }
                     else if (c == 'P')
                     {
                         Cut(d, Pallet(n, x * 5 + y), "pallet", x, y);
@@ -491,6 +499,54 @@ namespace Banda.ArtGen
                 }
             }
 
+            return t;
+        }
+
+        // --- Підсобка: шафки персоналу й мийка --------------------------------------------------
+
+        /// <summary>Шафки персоналу (3/4, 2 тайли): сталеві дверцята з вентиляційними щілинами, ручки, наліпки з іменами.</summary>
+        private static PixelCanvas Lockers(int n)
+        {
+            int w = n * S;
+            PixelCanvas t = new PixelCanvas(w, 2 * S);
+            t.FillRect(0, 0, w, 3, P.Steel1); // верх
+            t.HLine(0, w - 1, 0, P.Steel2);
+            for (int i = 0; i < w / 8; i++)
+            {
+                int x = i * 8;
+                t.FillRect(x, 3, 8, 27, P.Steel0); // дверцята
+                t.VLine(x, 3, 29, P.Steel1); // освітлений лівий край
+                t.VLine(x + 7, 3, 29, P.Night1);
+                for (int y = 5; y < 10; y += 2)
+                {
+                    t.HLine(x + 2, x + 5, y, P.Night1); // вентиляція
+                }
+
+                t.FillRect(x + 2, 12, 3, 2, i % 2 == 0 ? P.Lamp3 : P.Steel3); // наліпка з іменем
+                t.VLine(x + 5, 16, 19, P.Steel2); // ручка
+            }
+
+            t.FillRect(0, 30, w, 2, P.Night1); // цоколь
+            t.Rect(0, 0, w, 30, P.Night0);
+            return t;
+        }
+
+        /// <summary>Мийка (1 тайл, 3/4): шафка під раковиною, сталева чаша, кран з краплею.</summary>
+        private static PixelCanvas Sink(int n)
+        {
+            int w = n * S;
+            PixelCanvas t = new PixelCanvas(w, S);
+            t.FillRect(0, 6, w, 9, P.Steel0); // шафка
+            t.VLine(w / 2, 7, 14, P.Night1);
+            t.Set(w / 2 - 2, 10, P.Steel2);
+            t.Set(w / 2 + 2, 10, P.Steel2);
+            t.FillRect(1, 2, w - 2, 4, P.Steel2); // стільниця з чашею
+            t.FillRect(3, 3, w - 6, 2, P.Night2);
+            t.HLine(1, w - 2, 2, P.Steel3);
+            t.VLine(w - 4, 0, 2, P.Steel3); // кран
+            t.Set(w - 5, 0, P.Steel3);
+            t.Set(w - 5, 4, P.Cyan2); // крапля
+            t.Rect(0, 1, w, 14, P.Night0);
             return t;
         }
 
