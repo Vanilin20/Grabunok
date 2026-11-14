@@ -426,29 +426,27 @@ namespace Banda.ArtGen
             return t;
         }
 
+        /// <summary>Скляні вхідні двері (3 тайли): рама, скло з відблисками, наліпка «ВХІД» на склі, штанги-ручки.</summary>
         private static PixelCanvas FrontDoor(int part)
         {
-            PixelCanvas t = New();
-            t.FillRect(0, 0, S, S, P.Night1);
-            t.FillRect(0, 4, S, 8, P.Cyan0);
-            t.HLine(0, 15, 3, P.Steel2);
-            t.HLine(0, 15, 12, P.Steel2);
-            if (part == 0)
+            PixelCanvas full = new PixelCanvas(S * 3, S);
+            full.FillRect(0, 0, S * 3, S, P.Night1);
+            full.FillRect(0, 4, S * 3, 8, P.Cyan0);
+            for (int i = 0; i < 6; i++)
             {
-                t.VLine(0, 3, 12, P.Steel2);
-                t.HLine(5, 13, 2, P.Steel3); // штанга-ручка
-            }
-            else if (part == 1)
-            {
-                t.VLine(8, 3, 12, P.Steel2); // стик стулок
-            }
-            else
-            {
-                t.VLine(15, 3, 12, P.Steel2);
-                t.HLine(2, 10, 2, P.Steel3);
+                full.Set(4 + i, 11 - i, P.Cyan1); // відблиск на склі
+                full.Set(30 + i, 11 - i, P.Cyan1);
             }
 
-            return t;
+            full.HLine(0, S * 3 - 1, 3, P.Steel2);
+            full.HLine(0, S * 3 - 1, 12, P.Steel2);
+            full.VLine(0, 3, 12, P.Steel2);
+            full.VLine(S * 3 - 1, 3, 12, P.Steel2);
+            full.VLine(S * 3 / 2, 3, 12, P.Steel2); // стик стулок
+            full.HLine(5, 13, 2, P.Steel3); // штанги-ручки
+            full.HLine(S * 3 - 14, S * 3 - 6, 2, P.Steel3);
+            PixelFont.DrawCentered(full, "ВХІД", S * 3 / 2, 5, P.Cyan3); // наліпка на склі
+            return full.Crop(part * S, 0, S, S);
         }
 
         /// <summary>Задні двері в правій стіні: сталеве полотно з засувкою, вид згори — смуга в товщі стіни.</summary>
@@ -730,7 +728,6 @@ namespace Banda.ArtGen
                 }
             }
 
-            PixelFont.DrawCentered(full, "ВХІД", S * 3 / 2, 5, P.Night5); // затерті літери
             for (int x = 6; x < S * 3 - 6; x += 5)
             {
                 full.Set(x, 8 + x % 3, P.Night3); // затерті місця

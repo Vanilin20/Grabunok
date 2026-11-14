@@ -103,6 +103,12 @@ namespace Banda.Heist
                 new LightSpot("lamp_counter", Center(14, 8), 36f, "f7c95a", 0.85f, LightFlicker.Buzz), // над касою: світло на прилавку, а не на порожній підлозі
                 // Над промо-столом біля входу: світло падає на товар «-30%», вхід лишається в напівтемряві.
                 new LightSpot("lamp_promo", new Vec2(4f * t, 9.2f * t), 38f, "fff2c4", 0.75f, LightFlicker.None),
+                // Світильник над входом — видиме джерело світла біля дверей.
+                new LightSpot("lamp_entrance", new Vec2(3.5f * t, 12.3f * t), 26f, "ffe2a8", 0.55f, LightFlicker.None),
+                // Холодний відсвіт вулиці крізь вітрини: форма світла на підлозі біля скла (джерело — самі вітрини).
+                new LightSpot("window_spill_a", new Vec2(8f * t, 13.7f * t), 24f, "c2f6ff", 0.32f, LightFlicker.None),
+                new LightSpot("window_spill_b", new Vec2(12f * t, 13.7f * t), 24f, "ffb3cf", 0.3f, LightFlicker.None),
+                new LightSpot("window_spill_c", new Vec2(15.5f * t, 13.7f * t), 22f, "c2f6ff", 0.3f, LightFlicker.None),
                 new LightSpot("backroom_bulb", Center(20, 9), 44f, "d8962f", 0.8f, LightFlicker.Dying),
                 // Холодильники світять холодним уздовж свого ряду.
                 new LightSpot("fridge_a", new Vec2(3 * t, 2.4f * t), 30f, "3de0ff", 0.7f, LightFlicker.None),

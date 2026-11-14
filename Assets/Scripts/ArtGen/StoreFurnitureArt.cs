@@ -436,9 +436,9 @@ namespace Banda.ArtGen
             // Табличка «-30%» (шрифт 5×7 не влазить у 5 px фасаду — стоїть на столі, перекриває низ піраміди).
             int signW = PixelFont.Measure("-30%") + 4;
             int cx = w / 2 - signW / 2;
-            t.FillRect(cx, 7, signW, 9, P.Lamp4);
-            t.Rect(cx, 7, signW, 9, P.Alarm);
-            PixelFont.Draw(t, "-30%", cx + 2, 8, P.Alarm);
+            t.FillRect(cx, 7, signW, 9, P.Lamp2); // картон, а не лампа: не яскравіший за гравця
+            t.Rect(cx, 7, signW, 9, P.Brick1);
+            PixelFont.Draw(t, "-30%", cx + 2, 8, P.Brick1);
             return t;
         }
     }

@@ -514,11 +514,11 @@ namespace Banda.EditorTools
             main.startLifetime = new ParticleSystem.MinMaxCurve(2.5f, 4f);
             main.startSpeed = new ParticleSystem.MinMaxCurve(4f, 8f);
             main.startSize = 1f; // піксель-арт: клуби з одиничних пікселів, без «квадратів»
-            main.startColor = new Color(0.86f, 0.8f, 0.9f, 0.22f); // ледь рожеві від неону вивіски
+            main.startColor = new Color(0.86f, 0.8f, 0.9f, 0.14f); // ледь рожеві від неону вивіски
             main.maxParticles = 160;
             main.simulationSpace = ParticleSystemSimulationSpace.World;
             ParticleSystem.EmissionModule emission = ps.emission;
-            emission.rateOverTime = 55f;
+            emission.rateOverTime = 35f;
             ParticleSystem.ShapeModule shape = ps.shape;
             shape.shapeType = ParticleSystemShapeType.Box;
             shape.scale = new Vector3(8f, 2f, 1f);
@@ -556,10 +556,10 @@ namespace Banda.EditorTools
             main.startLifetime = new ParticleSystem.MinMaxCurve(size.Y / 220f, size.Y / 160f);
             main.startSize = 1f;
             main.startColor = new Color(0.76f, 0.85f, 1f, 0.32f);
-            main.maxParticles = 600;
+            main.maxParticles = 1200;
             main.simulationSpace = ParticleSystemSimulationSpace.Local;
             ParticleSystem.EmissionModule emission = ps.emission;
-            emission.rateOverTime = size.X * size.Y / 900f;
+            emission.rateOverTime = size.X * size.Y / 350f;
             ParticleSystem.ShapeModule shape = ps.shape;
             shape.shapeType = ParticleSystemShapeType.Box;
             shape.scale = new Vector3(size.X, 1f, 1f);
