@@ -420,7 +420,7 @@ namespace Banda.EditorTools
             SpriteRenderer reflection = Sprite(from, "StoreSignReflection", $"{TileFolder}/store_sign_glow.png", signPos + new Vector3(0f, -15f, 0f), 2,
                 AssetDatabase.LoadAssetAtPath<Material>("Assets/Art/Materials/Additive.mat"));
             reflection.flipY = true;
-            reflection.color = new Color(1f, 1f, 1f, 0.28f);
+            reflection.color = new Color(1f, 1f, 1f, 0.14f); // ледь помітно: мокрий тротуар, а не дзеркало
             // Дощ лише надворі: над тротуаром і дорогою, над дахами ліворуч і провулком праворуч.
             int gw = HeistLevel.StoreGrid[0].Length;
             int gh = HeistLevel.StoreGrid.Length;

@@ -226,7 +226,7 @@ namespace Banda.ArtGen
                 for (int x = 0; x < S; x++)
                 {
                     float n = H(x, y, 60 + v);
-                    t.Set(x, y, n < 0.12f ? P.Night3 : n < 0.2f ? P.Night4 : n > 0.9f ? P.Night1 : P.Night2);
+                    t.Set(x, y, n < 0.12f ? P.Night4 : n < 0.2f ? P.Night5 : n > 0.9f ? P.Night2 : P.Night3); // гравій світліший за вулицю — дах ловить небо
                 }
             }
 
