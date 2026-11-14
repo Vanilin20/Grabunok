@@ -112,6 +112,11 @@ namespace Banda.EditorTools
 
             // Камера, сортування й rim — тим самим кодом, що в грі.
             viewType.GetMethod("LateUpdate", Any).Invoke(view, null);
+            // Передній план з паралаксом рахується після камери — у знімку LateUpdate не біжить, тож викликаємо явно.
+            foreach (ForegroundParallax fg in Object.FindObjectsByType<ForegroundParallax>(FindObjectsSortMode.None))
+            {
+                fg.Apply();
+            }
             shadow.SendMessage("Update");
             if (guardVisible)
             {

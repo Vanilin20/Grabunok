@@ -100,7 +100,7 @@ namespace Banda.Heist
                 // Лампи з сітки: між ними справжня темрява (стандарт R5).
                 new LightSpot("lamp_corner", Center(13, 1), 44f, "fff2c4", 0.85f, LightFlicker.None),
                 new LightSpot("lamp_aisle", Center(6, 5), 50f, "fff2c4", 0.9f, LightFlicker.None),
-                new LightSpot("lamp_counter", Center(14, 8), 32f, "f7c95a", 0.5f, LightFlicker.Buzz), // над касою: світло на прилавку, а не на порожній підлозі
+                new LightSpot("lamp_counter", new Vec2(15.6f * t, 8.5f * t), 32f, "f7c95a", 0.5f, LightFlicker.Buzz), // над правим краєм прилавка: світло на касі, плафон не висить над маршрутом охоронця (стовпець 14)
                 // Над промо-столом біля входу: світло падає на товар «-30%», вхід лишається в напівтемряві.
                 new LightSpot("lamp_promo", new Vec2(4f * t, 9.2f * t), 38f, "fff2c4", 0.75f, LightFlicker.None),
                 // Світильник над входом — видиме джерело світла біля дверей.

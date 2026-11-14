@@ -51,6 +51,8 @@ namespace Banda.EditorTools
             StoreFurnitureArt.CeilingLamp(false).Save($"{TileFolder}/ceiling_lamp.png");
             StoreFurnitureArt.CeilingLamp(true).Save($"{TileFolder}/ceiling_lamp_glow.png");
             StoreFurnitureArt.StreetLamp(false).Save($"{TileFolder}/street_lamp.png");
+            StoreFurnitureArt.Duct(9 * 16).Save($"{TileFolder}/duct_hall.png");
+            StoreFurnitureArt.Duct(8 * 16).Save($"{TileFolder}/duct_backroom.png");
             StoreFurnitureArt.StreetLamp(true).Save($"{TileFolder}/street_lamp_glow.png");
             StoreFurnitureArt.Bollard().Save($"{TileFolder}/bollard.png");
 
@@ -465,6 +467,13 @@ namespace Banda.EditorTools
                 Sprite(from, "Bollard", $"{TileFolder}/bollard.png", HeistWorldView.ToWorld(new Vec2(bx * T, (gh + 2.4f) * T - 4f)), 11, litMat);
             }
 
+            // Передній план інтер'єру: вентиляційні короби (темні силуети, паралакс). Над маршрутом охоронця нічого не висить —
+            // передній план не має закривати загрозу.
+            Material unlitFg = AssetDatabase.LoadAssetAtPath<Material>("Packages/com.unity.render-pipelines.universal/Runtime/Materials/Sprite-Unlit-Default.mat");
+            Sprite(from, "DuctHall", $"{TileFolder}/duct_hall.png", HeistWorldView.ToWorld(new Vec2(12.5f * T, 11.2f * T)), 14, unlitFg)
+                .gameObject.AddComponent<ForegroundParallax>();
+            Sprite(from, "DuctBackroom", $"{TileFolder}/duct_backroom.png", HeistWorldView.ToWorld(new Vec2(21.5f * T, 0.4f * T)), 14, unlitFg)
+                .gameObject.AddComponent<ForegroundParallax>();
             AddSteam(from, HeistWorldView.ToWorld(new Vec2(6.5f * T, 16.4f * T)));
             AddSteam(from, HeistWorldView.ToWorld(new Vec2(19.5f * T, 16.6f * T)));
 
@@ -499,9 +508,12 @@ namespace Banda.EditorTools
                 {
                     AddDust(go.transform, spot.Radius);
                     // Видимий світильник на стелі — передній план, над персонажами.
-                    Sprite(go.transform, "Fixture", $"{TileFolder}/ceiling_lamp.png", new Vector3(0f, 10f, 0f), 9, unlit);
-                    Sprite(go.transform, "FixtureGlow", $"{TileFolder}/ceiling_lamp_glow.png", new Vector3(0f, 10f, 0f), 10,
+                    // Підвісний світильник — передній план: вище за персонажів (стеля ближче до камери) і з паралаксом.
+                    SpriteRenderer fixture = Sprite(go.transform, "Fixture", $"{TileFolder}/ceiling_lamp.png", new Vector3(0f, 26f, 0f), 14, unlit);
+                    fixture.gameObject.AddComponent<ForegroundParallax>();
+                    SpriteRenderer fixtureGlow = Sprite(go.transform, "FixtureGlow", $"{TileFolder}/ceiling_lamp_glow.png", new Vector3(0f, 26f, 0f), 15,
                         AssetDatabase.LoadAssetAtPath<Material>("Assets/Art/Materials/Additive.mat"));
+                    fixtureGlow.gameObject.AddComponent<ForegroundParallax>();
                 }
                 if (spot.Flicker != LightFlicker.None)
                 {

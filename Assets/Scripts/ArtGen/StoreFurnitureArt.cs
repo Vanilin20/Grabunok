@@ -113,24 +113,61 @@ namespace Banda.ArtGen
             return t;
         }
 
-        /// <summary>Стельовий світильник 3/4: плафон-«тарілка» на тросі (джерело світла лампи).</summary>
+        /// <summary>
+        /// Підвісний світильник переднього плану 20×30: трос, темний конічний плафон-силует (ближче до камери, ніж персонажі),
+        /// теплий підсвічений край знизу. glow — лампочка й світло під плафоном (адитивно).
+        /// </summary>
         public static PixelCanvas CeilingLamp(bool glow)
         {
-            PixelCanvas t = new PixelCanvas(12, 12);
-            if (!glow)
+            PixelCanvas t = new PixelCanvas(20, 30);
+            if (glow)
             {
-                t.VLine(5, 0, 4, P.Night2); // трос
-                t.FillRect(2, 5, 8, 3, P.Steel1);
-                t.HLine(2, 9, 5, P.Steel2);
-                t.Set(2, 6, P.Steel2);
-                t.HLine(1, 10, 7, P.Steel0);
-                t.Set(1, 7, P.Night0);
-                t.Set(10, 7, P.Night0);
+                t.HLine(5, 14, 25, P.Lamp3.WithAlpha(200));
+                t.HLine(7, 12, 26, P.Lamp4);
+                t.HLine(8, 11, 27, P.Lamp3.WithAlpha(160));
+                return t;
             }
-            else
+
+            t.VLine(10, 0, 14, P.Night1); // трос
+            t.FillRect(8, 14, 5, 3, P.Night1); // патрон
+            for (int y = 17; y < 26; y++)
             {
-                t.HLine(3, 8, 8, P.Lamp4);
-                t.HLine(4, 7, 9, P.Lamp3);
+                int half = 2 + (y - 17); // конус розширюється донизу
+                t.HLine(10 - half, 9 + half, y, P.Night1);
+                t.Set(10 - half, y, P.Night0);
+                t.Set(9 + half, y, P.Night0);
+            }
+
+            t.HLine(1, 18, 25, P.Lamp1); // нижній край, підсвічений лампою зсередини
+            t.HLine(4, 15, 24, P.Night2);
+            return t;
+        }
+
+        /// <summary>Підвісна вивіска переднього плану 48×22: темна дошка на двох тросах, приглушені літери.</summary>
+        public static PixelCanvas HangingSign(string text)
+        {
+            int w = 48;
+            PixelCanvas t = new PixelCanvas(w, 22);
+            t.VLine(6, 0, 9, P.Night1);
+            t.VLine(w - 7, 0, 9, P.Night1);
+            t.FillRect(0, 9, w, 12, P.Night1);
+            t.Rect(0, 9, w, 12, P.Night0);
+            t.HLine(1, w - 2, 20, P.Lamp0); // нижня кромка ловить тепле світло каси
+            PixelFont.DrawCentered(t, text, w / 2, 11, P.Night4);
+            return t;
+        }
+
+        /// <summary>Вентиляційний короб переднього плану: темна труба з фланцями й кріпленнями, довжина len.</summary>
+        public static PixelCanvas Duct(int len)
+        {
+            PixelCanvas t = new PixelCanvas(len, 12);
+            t.FillRect(0, 2, len, 8, P.Night1);
+            t.HLine(0, len - 1, 2, P.Night2); // верхня грань
+            t.HLine(0, len - 1, 9, P.Night0);
+            for (int x = 8; x < len; x += 24)
+            {
+                t.FillRect(x, 1, 2, 10, P.Night2); // фланець
+                t.VLine(x + 1, 0, 1, P.Night0); // підвіс
             }
 
             return t;
