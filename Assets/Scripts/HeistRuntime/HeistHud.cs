@@ -101,10 +101,19 @@ namespace Banda.HeistRuntime
             RoleId[] roles = HeistDirector.MvpRoles;
             for (int i = 0; i < _hotSeatButtons.Length && i < roles.Length; i++)
             {
+                // Активна вкладка — заливка кольором ролі й темний текст; решта — тьмяні, текст приглушений.
+                bool active = roles[i] == role;
+                Color roleColor = Roles.ColorOf(roles[i]);
                 Image back = _hotSeatButtons[i].targetGraphic as Image;
                 if (back != null)
                 {
-                    back.color = roles[i] == role ? Color.white : new Color(1f, 1f, 1f, 0.45f);
+                    back.color = active ? roleColor : new Color(0.35f, 0.33f, 0.45f, 0.75f);
+                }
+
+                TMP_Text label = _hotSeatButtons[i].GetComponentInChildren<TMP_Text>(true);
+                if (label != null)
+                {
+                    label.color = active ? Color.white : Color.Lerp(roleColor, Palette.Night0, 0.45f);
                 }
             }
         }

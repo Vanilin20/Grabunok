@@ -44,10 +44,11 @@ namespace Banda.HeistRuntime
         private Vector3 _shadowTarget;
         [Tooltip("Наскільки камера дивиться вперед над Тінню (пікселі світу): у кадрі більше залу, менше вулиці.")]
         [SerializeField] private float _cameraLeadY = 28f;
-        private const int CharacterFrontOrder = 6;
+        private const int CharacterFrontOrder = 7;
         private const int CharacterBackOrder = 5;
-        private SpriteRenderer _shadowRenderer;
-        private SpriteRenderer _guardRenderer;
+        [Tooltip("Rim у темряві (далеко від усіх джерел): холодний нічний обвід, щоб силует читався завжди.")]
+        [SerializeField] private Color _nightRim = new Color(0.45f, 0.5f, 0.75f, 0.55f);
+        private Light2D[] _levelLights = new Light2D[0];
         private Vector3 _guardTarget;
         private bool _hasShadow;
         private bool _active;
@@ -55,8 +56,6 @@ namespace Banda.HeistRuntime
         private void Awake()
         {
             _camera = Camera.main;
-            _shadowRenderer = _shadow.GetComponent<SpriteRenderer>();
-            _guardRenderer = _guard.GetComponent<SpriteRenderer>();
             gameObject.SetActive(true);
             _levelRoot.gameObject.SetActive(false);
         }
@@ -128,6 +127,20 @@ namespace Banda.HeistRuntime
 
             _active = active;
             _levelRoot.gameObject.SetActive(active);
+            if (active)
+            {
+                // Джерела світла рівня (Light_* з HeistLevel.Lights) — для rim персонажів від найближчого джерела.
+                List<Light2D> lights = new List<Light2D>();
+                foreach (Light2D light in _levelRoot.GetComponentsInChildren<Light2D>(true))
+                {
+                    if (light.name.StartsWith("Light_"))
+                    {
+                        lights.Add(light);
+                    }
+                }
+
+                _levelLights = lights.ToArray();
+            }
             if (_menuBackdrop != null)
             {
                 _menuBackdrop.SetActive(!active);
@@ -212,6 +225,37 @@ namespace Banda.HeistRuntime
             }
         }
 
+        /// <summary>
+        /// Rim від найближчого (найсильнішого в цій точці) джерела: колір лампи, альфа — за спадом світла.
+        /// У темряві — холодний нічний обвід, щоб силует не зливався з підлогою.
+        /// </summary>
+        private Color RimAt(Vector3 worldPos)
+        {
+            Color best = _nightRim;
+            float bestStrength = 0f;
+            foreach (Light2D light in _levelLights)
+            {
+                if (light == null || !light.isActiveAndEnabled)
+                {
+                    continue;
+                }
+
+                float radius = Mathf.Max(1f, light.pointLightOuterRadius * 1.6f);
+                float d = Vector2.Distance(light.transform.position, worldPos);
+                float strength = Mathf.Clamp01(1f - d / radius) * light.intensity;
+                if (strength > bestStrength)
+                {
+                    bestStrength = strength;
+                    best = light.color;
+                }
+            }
+
+            float a = Mathf.Clamp01(Mathf.Max(_nightRim.a, 0.55f + bestStrength * 0.25f));
+            Color c = bestStrength > 0.05f ? Color.Lerp(_nightRim, best, Mathf.Clamp01(bestStrength)) : _nightRim;
+            c.a = a;
+            return c;
+        }
+
         private void LateUpdate()
         {
             if (!_active || !_hasShadow)
@@ -232,9 +276,12 @@ namespace Banda.HeistRuntime
                 _guard.SetVelocity((g1 - g0) / Mathf.Max(Time.deltaTime, 1e-4f));
                 // Вид 3/4: хто нижче на екрані (ближче до камери), той малюється поверх — силуети не злипаються.
                 bool guardInFront = g1.y < _shadow.transform.localPosition.y;
-                _guardRenderer.sortingOrder = guardInFront ? CharacterFrontOrder : CharacterBackOrder;
-                _shadowRenderer.sortingOrder = guardInFront ? CharacterBackOrder : CharacterFrontOrder;
+                _guard.SetSortingOrder(guardInFront ? CharacterFrontOrder : CharacterBackOrder);
+                _shadow.SetSortingOrder(guardInFront ? CharacterBackOrder : CharacterFrontOrder);
+                _guard.SetRim(RimAt(_guard.transform.position));
             }
+
+            _shadow.SetRim(RimAt(_shadow.transform.position));
 
             if (_camera != null)
             {

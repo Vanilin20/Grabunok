@@ -21,6 +21,9 @@ namespace Banda.HeistRuntime
         [SerializeField, Range(0f, 1f)] private float _pivotY = 0.5f;
         [Tooltip("Точка в руці (лінза ліхтарика) для кожного напрямку — вниз, праворуч, вгору, ліворуч; пікселі від опори, Y угору.")]
         [SerializeField] private Vector2[] _handPoints = new Vector2[0];
+        [Tooltip("Ореол: силует, розширений на 1 px (та сама сітка кадрів). Малюється під персонажем кольором найближчого світла.")]
+        [SerializeField] private Texture2D _haloSheet;
+        [SerializeField] private SpriteRenderer _halo;
 
         /// <summary>Поточний напрямок: 0 — вниз, 1 — праворуч, 2 — вгору, 3 — ліворуч.</summary>
         public int Direction => _direction;
@@ -34,6 +37,9 @@ namespace Banda.HeistRuntime
 
         private SpriteRenderer _renderer;
         private Sprite[,] _frames;
+        private Sprite[,] _haloFrames;
+        private Color _rim = Color.clear;
+        private bool _hidden;
         private int _direction;
         private float _time;
         private float _speed;
@@ -60,6 +66,19 @@ namespace Banda.HeistRuntime
                 }
             }
 
+            if (_haloSheet != null && _halo != null)
+            {
+                _haloFrames = new Sprite[Rows, Columns];
+                for (int row = 0; row < Rows; row++)
+                {
+                    for (int col = 0; col < Columns; col++)
+                    {
+                        Rect rect = new Rect(col * _frameSize, _haloSheet.height - (row + 1) * _frameSize, _frameSize, _frameSize);
+                        _haloFrames[row, col] = Sprite.Create(_haloSheet, rect, new Vector2(0.5f, _pivotY), 1f, 0, SpriteMeshType.FullRect);
+                    }
+                }
+            }
+
             _renderer.sprite = _frames[0, 0];
             _breath = Random.value * 2f;
         }
@@ -76,6 +95,17 @@ namespace Banda.HeistRuntime
                 if (s != null)
                 {
                     Destroy(s);
+                }
+            }
+
+            if (_haloFrames != null)
+            {
+                foreach (Sprite s in _haloFrames)
+                {
+                    if (s != null)
+                    {
+                        Destroy(s);
+                    }
                 }
             }
         }
@@ -115,9 +145,40 @@ namespace Banda.HeistRuntime
 
         public void SetHidden(bool hidden)
         {
+            _hidden = hidden;
             Color c = _renderer.color;
             c.a = hidden ? _hiddenAlpha : 1f;
             _renderer.color = c;
+            ApplyRim();
+        }
+
+        /// <summary>Колір кільця-ореолу (rim від найближчого джерела); альфа — сила світла.</summary>
+        public void SetRim(Color rim)
+        {
+            _rim = rim;
+            ApplyRim();
+        }
+
+        /// <summary>Порядок малювання персонажа; ореол — одразу під ним.</summary>
+        public void SetSortingOrder(int order)
+        {
+            _renderer.sortingOrder = order;
+            if (_halo != null)
+            {
+                _halo.sortingOrder = order - 1;
+            }
+        }
+
+        private void ApplyRim()
+        {
+            if (_halo == null)
+            {
+                return;
+            }
+
+            Color c = _rim;
+            c.a *= _hidden ? _hiddenAlpha : 1f;
+            _halo.color = c;
         }
 
         private void Update()
@@ -141,6 +202,10 @@ namespace Banda.HeistRuntime
             }
 
             _renderer.sprite = _frames[_direction, col];
+            if (_haloFrames != null)
+            {
+                _halo.sprite = _haloFrames[_direction, col];
+            }
         }
     }
 }

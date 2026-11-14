@@ -234,6 +234,27 @@ def flashlight(frame: Image.Image, direction: str, gpl: dict) -> tuple:
     return lens
 
 
+def halo(sheet: Image.Image) -> Image.Image:
+    """Ореол для динамічного rim: силует, розширений на 1 px (білий), кадр у кадр зі стрічкою.
+    Малюється під персонажем у колір найближчого джерела світла — видно лише кільце 1 px навколо силуету."""
+    src = sheet.load()
+    out = Image.new("RGBA", sheet.size, (0, 0, 0, 0))
+    px = out.load()
+    w, h = sheet.size
+    for y in range(h):
+        for x in range(w):
+            cx, cy = x // CELL, y // CELL
+            hit = False
+            for dx, dy in ((0, 0), (1, 0), (-1, 0), (0, 1), (0, -1)):
+                nx, ny = x + dx, y + dy
+                if nx // CELL == cx and ny // CELL == cy and 0 <= nx < w and 0 <= ny < h and src[nx, ny][3] >= 128:
+                    hit = True
+                    break
+            if hit:
+                px[x, y] = (255, 255, 255, 255)
+    return out
+
+
 def rim_right(frame: Image.Image, color: tuple) -> Image.Image:
     """Піксель під правим контуром у кожному рядку — колір rim (контур лишається темним)."""
     out = frame.copy()
@@ -249,8 +270,8 @@ def rim_right(frame: Image.Image, color: tuple) -> Image.Image:
 
 CONFIG = {
     # keys: індекси front/back/side у <id>_keys.png (side дивиться ліворуч); back_src — окрема генерація виду ззаду.
-    "shadow": {"keys": (0, 1, 2), "back_src": None, "side_replace": {3: 0}, "flashlight": False, "rim": "cyan_1"},
-    "guard": {"keys": (0, None, 7), "back_src": "Assets/Art/Incoming/guard_back_spritecook.png", "side_replace": {}, "flashlight": True, "rim": "lamp_2"},
+    "shadow": {"keys": (0, 1, 2), "back_src": None, "side_replace": {3: 0}, "flashlight": False},
+    "guard": {"keys": (0, None, 7), "back_src": "Assets/Art/Incoming/guard_back_spritecook.png", "side_replace": {}, "flashlight": True},
 }
 
 
@@ -313,6 +334,7 @@ def main() -> None:
         for c, fr in enumerate(row):
             sheet.paste(fr, (c * CELL, r * CELL))
     sheet.save(f"Assets/Art/Characters/{cid}_sheet.png")
+    halo(sheet).save(f"Assets/Art/Characters/{cid}_halo.png")
     print(f"{cid}: palette {len(pal)}, sheet {sheet.size}")
 
 

@@ -1,0 +1,949 @@
+fileFormatVersion: 2
+guid: 5defa30ca96381145bb57f7edb7f1f92
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -4067146492448646433
+    second: guard_halo_0
+  - first:
+      213: 421744089477934631
+    second: guard_halo_1
+  - first:
+      213: -1996659935797081300
+    second: guard_halo_2
+  - first:
+      213: -4900601185598614778
+    second: guard_halo_3
+  - first:
+      213: 130398099167027841
+    second: guard_halo_4
+  - first:
+      213: 2852356325738684401
+    second: guard_halo_5
+  - first:
+      213: 7929644989173773566
+    second: guard_halo_6
+  - first:
+      213: -2251049441765508893
+    second: guard_halo_7
+  - first:
+      213: -4229585269030827301
+    second: guard_halo_8
+  - first:
+      213: -2500634508581537860
+    second: guard_halo_9
+  - first:
+      213: 4579143639787043850
+    second: guard_halo_10
+  - first:
+      213: 6635681088011276624
+    second: guard_halo_11
+  - first:
+      213: 2600397053753674391
+    second: guard_halo_12
+  - first:
+      213: -8446561851398992354
+    second: guard_halo_13
+  - first:
+      213: -7084446122734697847
+    second: guard_halo_14
+  - first:
+      213: 4128847542731809175
+    second: guard_halo_15
+  - first:
+      213: 5881785171902975825
+    second: guard_halo_16
+  - first:
+      213: -6063503747937336181
+    second: guard_halo_17
+  - first:
+      213: 1871778419740796981
+    second: guard_halo_18
+  - first:
+      213: -3635192820382410968
+    second: guard_halo_19
+  - first:
+      213: 285327333809969622
+    second: guard_halo_20
+  - first:
+      213: -6562759213287593203
+    second: guard_halo_21
+  - first:
+      213: 3760340149054767937
+    second: guard_halo_22
+  - first:
+      213: -3700479398345700444
+    second: guard_halo_23
+  - first:
+      213: -813998838589591510
+    second: guard_halo_24
+  - first:
+      213: -6426534795967776697
+    second: guard_halo_25
+  - first:
+      213: 2380868456804412280
+    second: guard_halo_26
+  - first:
+      213: -4453985890800733056
+    second: guard_halo_27
+  - first:
+      213: -5466524126136800530
+    second: guard_halo_28
+  - first:
+      213: 6206369767318979946
+    second: guard_halo_29
+  - first:
+      213: -4570142403965456424
+    second: guard_halo_30
+  - first:
+      213: -6157729365451838100
+    second: guard_halo_31
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 1
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 1
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: guard_halo_0
+      rect:
+        serializedVersion: 2
+        x: 5
+        y: 96
+        width: 21
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fda5f1450d79e87c0800000000000000
+      internalID: -4067146492448646433
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: guard_halo_1
+      rect:
+        serializedVersion: 2
+        x: 37
+        y: 96
+        width: 21
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 72ee37fc3065ad500800000000000000
+      internalID: 421744089477934631
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: guard_halo_2
+      rect:
+        serializedVersion: 2
+        x: 69
+        y: 96
+        width: 21
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c2b8f8dfd507a44e0800000000000000
+      internalID: -1996659935797081300
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: guard_halo_3
+      rect:
+        serializedVersion: 2
+        x: 100
+        y: 96
+        width: 23
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 603598aaf219dfbb0800000000000000
+      internalID: -4900601185598614778
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: guard_halo_4
+      rect:
+        serializedVersion: 2
+        x: 132
+        y: 98
+        width: 23
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 182ac3c51644fc100800000000000000
+      internalID: 130398099167027841
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: guard_halo_5
+      rect:
+        serializedVersion: 2
+        x: 165
+        y: 96
+        width: 21
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1ff1e7047fa959720800000000000000
+      internalID: 2852356325738684401
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: guard_halo_6
+      rect:
+        serializedVersion: 2
+        x: 196
+        y: 96
+        width: 23
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ef4b8a6ca12cb0e60800000000000000
+      internalID: 7929644989173773566
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: guard_halo_7
+      rect:
+        serializedVersion: 2
+        x: 228
+        y: 98
+        width: 23
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3e8b9b3957aa2c0e0800000000000000
+      internalID: -2251049441765508893
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: guard_halo_8
+      rect:
+        serializedVersion: 2
+        x: 6
+        y: 64
+        width: 21
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bda413c6b9e7d45c0800000000000000
+      internalID: -4229585269030827301
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: guard_halo_9
+      rect:
+        serializedVersion: 2
+        x: 37
+        y: 32
+        width: 22
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cb7f9e2d926fb4dd0800000000000000
+      internalID: -2500634508581537860
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: guard_halo_10
+      rect:
+        serializedVersion: 2
+        x: 38
+        y: 64
+        width: 21
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a0cfef801e26c8f30800000000000000
+      internalID: 4579143639787043850
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: guard_halo_11
+      rect:
+        serializedVersion: 2
+        x: 69
+        y: 32
+        width: 22
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 05190bdcacca61c50800000000000000
+      internalID: 6635681088011276624
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: guard_halo_12
+      rect:
+        serializedVersion: 2
+        x: 70
+        y: 64
+        width: 21
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 79ac5f7c757761420800000000000000
+      internalID: 2600397053753674391
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: guard_halo_13
+      rect:
+        serializedVersion: 2
+        x: 101
+        y: 32
+        width: 22
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e1e4ff97fb8c7ca80800000000000000
+      internalID: -8446561851398992354
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: guard_halo_14
+      rect:
+        serializedVersion: 2
+        x: 103
+        y: 64
+        width: 20
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 982410059cdfead90800000000000000
+      internalID: -7084446122734697847
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: guard_halo_15
+      rect:
+        serializedVersion: 2
+        x: 133
+        y: 34
+        width: 22
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 791264ce6fc9c4930800000000000000
+      internalID: 4128847542731809175
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: guard_halo_16
+      rect:
+        serializedVersion: 2
+        x: 135
+        y: 64
+        width: 20
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 15fcf68637c40a150800000000000000
+      internalID: 5881785171902975825
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: guard_halo_17
+      rect:
+        serializedVersion: 2
+        x: 165
+        y: 32
+        width: 22
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b8402f1977b1adba0800000000000000
+      internalID: -6063503747937336181
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: guard_halo_18
+      rect:
+        serializedVersion: 2
+        x: 166
+        y: 64
+        width: 20
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 53864ee3e84e9f910800000000000000
+      internalID: 1871778419740796981
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: guard_halo_19
+      rect:
+        serializedVersion: 2
+        x: 197
+        y: 32
+        width: 22
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8275e03d3633d8dc0800000000000000
+      internalID: -3635192820382410968
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: guard_halo_20
+      rect:
+        serializedVersion: 2
+        x: 198
+        y: 64
+        width: 20
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6d9d378c2bfa5f300800000000000000
+      internalID: 285327333809969622
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: guard_halo_21
+      rect:
+        serializedVersion: 2
+        x: 229
+        y: 34
+        width: 23
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d0b229934456ce4a0800000000000000
+      internalID: -6562759213287593203
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: guard_halo_22
+      rect:
+        serializedVersion: 2
+        x: 231
+        y: 64
+        width: 20
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1438c0341796f2430800000000000000
+      internalID: 3760340149054767937
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: guard_halo_23
+      rect:
+        serializedVersion: 2
+        x: 5
+        y: 32
+        width: 22
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4ab04fad79145acc0800000000000000
+      internalID: -3700479398345700444
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: guard_halo_24
+      rect:
+        serializedVersion: 2
+        x: 133
+        y: 0
+        width: 20
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a20794a7e5814b4f0800000000000000
+      internalID: -813998838589591510
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: guard_halo_25
+      rect:
+        serializedVersion: 2
+        x: 166
+        y: 0
+        width: 20
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 74837adf6ac50d6a0800000000000000
+      internalID: -6426534795967776697
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: guard_halo_26
+      rect:
+        serializedVersion: 2
+        x: 198
+        y: 0
+        width: 20
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 87b62c04f3b8a0120800000000000000
+      internalID: 2380868456804412280
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: guard_halo_27
+      rect:
+        serializedVersion: 2
+        x: 229
+        y: 0
+        width: 20
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 08478383e634032c0800000000000000
+      internalID: -4453985890800733056
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: guard_halo_28
+      rect:
+        serializedVersion: 2
+        x: 5
+        y: 0
+        width: 21
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: eea638925410324b0800000000000000
+      internalID: -5466524126136800530
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: guard_halo_29
+      rect:
+        serializedVersion: 2
+        x: 37
+        y: 0
+        width: 21
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a6585cdab64712650800000000000000
+      internalID: 6206369767318979946
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: guard_halo_30
+      rect:
+        serializedVersion: 2
+        x: 69
+        y: 0
+        width: 21
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8df60be72b79390c0800000000000000
+      internalID: -4570142403965456424
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: guard_halo_31
+      rect:
+        serializedVersion: 2
+        x: 101
+        y: 0
+        width: 20
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c6d604564c95b8aa0800000000000000
+      internalID: -6157729365451838100
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      guard_halo_0: -4067146492448646433
+      guard_halo_1: 421744089477934631
+      guard_halo_10: 4579143639787043850
+      guard_halo_11: 6635681088011276624
+      guard_halo_12: 2600397053753674391
+      guard_halo_13: -8446561851398992354
+      guard_halo_14: -7084446122734697847
+      guard_halo_15: 4128847542731809175
+      guard_halo_16: 5881785171902975825
+      guard_halo_17: -6063503747937336181
+      guard_halo_18: 1871778419740796981
+      guard_halo_19: -3635192820382410968
+      guard_halo_2: -1996659935797081300
+      guard_halo_20: 285327333809969622
+      guard_halo_21: -6562759213287593203
+      guard_halo_22: 3760340149054767937
+      guard_halo_23: -3700479398345700444
+      guard_halo_24: -813998838589591510
+      guard_halo_25: -6426534795967776697
+      guard_halo_26: 2380868456804412280
+      guard_halo_27: -4453985890800733056
+      guard_halo_28: -5466524126136800530
+      guard_halo_29: 6206369767318979946
+      guard_halo_3: -4900601185598614778
+      guard_halo_30: -4570142403965456424
+      guard_halo_31: -6157729365451838100
+      guard_halo_4: 130398099167027841
+      guard_halo_5: 2852356325738684401
+      guard_halo_6: 7929644989173773566
+      guard_halo_7: -2251049441765508893
+      guard_halo_8: -4229585269030827301
+      guard_halo_9: -2500634508581537860
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

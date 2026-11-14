@@ -94,7 +94,7 @@ namespace Banda.Heist
                 new Box(2 * t, 13 * t, 3 * t, t), // перед скляними дверима D
                 new Box(24 * t, 7 * t, t, 2 * t), // перед задніми дверима b
             };
-            level.ShadowStart = Center(3, 13);
+            level.ShadowStart = Center(8, 12); // кілька кроків від дверей: у першому кадрі — зал зі стелажами, а не вулиця
             level.Lights = new List<LightSpot>
             {
                 // Лампи з сітки: між ними справжня темрява (стандарт R5).

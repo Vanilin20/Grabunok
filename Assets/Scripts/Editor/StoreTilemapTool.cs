@@ -141,7 +141,10 @@ namespace Banda.EditorTools
                     Vector3Int cell = Cell(x, y);
                     if (!IsWall(c))
                     {
-                        floor.SetTile(cell, x > 17 ? Get("concrete_" + Variant(x, y, 4)) : Get("floor_" + Variant(x, y, 4)));
+                        // Поодинокі варіації: більшість плит чисті, щоб плями світла читались.
+                        float fv = PixelCanvas.Hash(x, y, 404);
+                        int floorVariant = fv < 0.82f ? 0 : 1 + (int)((fv - 0.82f) / 0.18f * 3f) % 3;
+                        floor.SetTile(cell, x > 17 ? Get("concrete_" + (floorVariant % 3)) : Get("floor_" + floorVariant));
                         string shadeTile = ShadeFor(grid, x, y);
                         if (shadeTile != null)
                         {
@@ -427,11 +430,12 @@ namespace Banda.EditorTools
                 go.transform.localPosition = HeistWorldView.ToWorld(data.Cameras[i]);
                 Light2D field = go.AddComponent<Light2D>();
                 field.lightType = Light2D.LightType.Point;
-                field.color = Palette.Danger;
-                field.intensity = 0.3f; // поле камери — підказка, а не найяскравіша пляма кадру
+                // Поле камери: червоне (тривога, не рожевий неон), чітка межа = дальність виявлення; джерело — купол з діодом.
+                field.color = Palette.Hex("e8433a");
+                field.intensity = 0.35f;
                 field.pointLightOuterRadius = HeistSim.CameraRange;
-                field.pointLightInnerRadius = HeistSim.CameraRange * 0.8f;
-                field.falloffIntensity = 0.8f;
+                field.pointLightInnerRadius = HeistSim.CameraRange * 0.85f;
+                field.falloffIntensity = 0.95f;
                 field.targetSortingLayers = AllSortingLayers();
             }
 

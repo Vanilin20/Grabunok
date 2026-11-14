@@ -109,53 +109,27 @@ namespace Banda.ArtGen
         /// <summary>Лінолеум залу: шахівниця 8×8 лише зерном (не суцільно), шов по краю тайла, варіанти зносу.</summary>
         private static PixelCanvas Linoleum(int v)
         {
+            // Спокійна плитка залу 16×16: холодний сірий (ряд steel), щоб фіолетові персонажі відділялись від підлоги.
+            // 3 тони: плита, шов (праворуч і знизу), світла кромка (зверху й зліва). Без зерна: світло ламп лягає чіткими плямами.
             PixelCanvas t = New();
-            for (int y = 0; y < S; y++)
-            {
-                for (int x = 0; x < S; x++)
-                {
-                    // Шахівниця 8×8 двома близькими тонами, зерно рідке — щоб на екрані не було «сітки з крапок».
-                    bool odd = (x / 8 + y / 8) % 2 == 0;
-                    float n = H(x, y, 10 + v);
-                    // Світлі плитки — лише наполовину зерном: шахівниця видна, але не кричить.
-                    Rgba c = odd && n < 0.45f ? P.Night5 : P.Night4;
-                    if (n > 0.97f)
-                    {
-                        c = P.Night3;
-                    }
-
-                    if (y == 15 && x % 8 != 0)
-                    {
-                        c = P.Night3; // лише нижній шов плити — світло падає згори
-                    }
-
-                    t.Set(x, y, c);
-                }
-            }
-
+            t.Fill(P.Steel0);
+            t.HLine(0, 15, 15, P.Night5); // шов — близький тон: плитку видно, але сітка не кричить
+            t.VLine(15, 0, 15, P.Night5);
+            t.HLine(0, 14, 0, P.Steel1); // світла верхня кромка (світло згори)
             switch (v)
             {
-                case 1: // потерта смуга від візків
-                    t.HLine(2, 13, 9, P.Night3);
-                    t.HLine(4, 11, 10, P.Night3);
+                case 1: // потертість від візків — кілька пікселів, не смуга шуму
+                    t.HLine(4, 9, 9, P.Night5);
+                    t.HLine(6, 11, 10, P.Night5);
                     break;
-                case 2: // скол плитки
-                    t.Set(11, 4, P.Night2);
-                    t.Set(12, 4, P.Night2);
-                    t.Set(12, 5, P.Night3);
+                case 2: // скол на куті плити
+                    t.Set(13, 2, P.Night3);
+                    t.Set(14, 2, P.Night3);
+                    t.Set(14, 3, P.Night5);
                     break;
-                case 3: // світліша нова плита
-                    for (int y = 1; y < S; y++)
-                    {
-                        for (int x = 1; x < S; x++)
-                        {
-                            if (H(x, y, 77) < 0.5f)
-                            {
-                                t.Set(x, y, P.Night5);
-                            }
-                        }
-                    }
-
+                case 3: // тріщина
+                    t.Line(3, 4, 7, 8, P.Night3);
+                    t.Line(7, 8, 8, 12, P.Night3);
                     break;
             }
 
@@ -164,16 +138,10 @@ namespace Banda.ArtGen
 
         private static PixelCanvas Concrete(int v)
         {
+            // Бетон підсобки: рівна темніша плита (2 тони + шов раз на 2 тайли), поодинокі тріщини й пляма — без зерна.
             PixelCanvas t = New();
-            for (int y = 0; y < S; y++)
-            {
-                for (int x = 0; x < S; x++)
-                {
-                    float n = H(x, y, 30 + v);
-                    t.Set(x, y, n < 0.12f ? P.Steel0 : n > 0.94f ? P.Night3 : P.Night4);
-                }
-            }
-
+            t.Fill(P.Night4);
+            t.HLine(0, 15, 15, P.Night3);
             if (v == 1)
             {
                 t.Line(1, 12, 7, 8, P.Night2); // тріщина
@@ -181,7 +149,7 @@ namespace Banda.ArtGen
             }
             else if (v == 2)
             {
-                t.Disc(9, 6, 3, P.Night3.WithAlpha(180)); // масляна пляма
+                t.Disc(9, 6, 3, P.Night3); // масляна пляма
                 t.Set(8, 5, P.Night5);
             }
 
