@@ -42,6 +42,10 @@ namespace Banda.HeistRuntime
         private Color _menuLightColor;
         private float _menuLightIntensity;
         private Vector3 _shadowTarget;
+        private const int CharacterFrontOrder = 6;
+        private const int CharacterBackOrder = 5;
+        private SpriteRenderer _shadowRenderer;
+        private SpriteRenderer _guardRenderer;
         private Vector3 _guardTarget;
         private bool _hasShadow;
         private bool _active;
@@ -49,6 +53,8 @@ namespace Banda.HeistRuntime
         private void Awake()
         {
             _camera = Camera.main;
+            _shadowRenderer = _shadow.GetComponent<SpriteRenderer>();
+            _guardRenderer = _guard.GetComponent<SpriteRenderer>();
             gameObject.SetActive(true);
             _levelRoot.gameObject.SetActive(false);
         }
@@ -222,6 +228,10 @@ namespace Banda.HeistRuntime
                 Vector3 g1 = Vector3.Lerp(g0, _guardTarget, k);
                 _guard.transform.localPosition = g1;
                 _guard.SetVelocity((g1 - g0) / Mathf.Max(Time.deltaTime, 1e-4f));
+                // Вид 3/4: хто нижче на екрані (ближче до камери), той малюється поверх — силуети не злипаються.
+                bool guardInFront = g1.y < _shadow.transform.localPosition.y;
+                _guardRenderer.sortingOrder = guardInFront ? CharacterFrontOrder : CharacterBackOrder;
+                _shadowRenderer.sortingOrder = guardInFront ? CharacterBackOrder : CharacterFrontOrder;
             }
 
             if (_camera != null)

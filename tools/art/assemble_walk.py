@@ -250,7 +250,7 @@ def rim_right(frame: Image.Image, color: tuple) -> Image.Image:
 CONFIG = {
     # keys: індекси front/back/side у <id>_keys.png (side дивиться ліворуч); back_src — окрема генерація виду ззаду.
     "shadow": {"keys": (0, 1, 2), "back_src": None, "side_replace": {3: 0}, "flashlight": False, "rim": "cyan_1"},
-    "guard": {"keys": (0, None, 7), "back_src": "Assets/Art/Incoming/guard_back_spritecook.png", "side_replace": {}, "flashlight": True},
+    "guard": {"keys": (0, None, 7), "back_src": "Assets/Art/Incoming/guard_back_spritecook.png", "side_replace": {}, "flashlight": True, "rim": "lamp_2"},
 }
 
 

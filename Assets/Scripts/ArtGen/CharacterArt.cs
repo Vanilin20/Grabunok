@@ -220,37 +220,70 @@ namespace Banda.ArtGen
         }
 
         /// <summary>Сейф згори 20×20: важкий корпус, диск, ручка. Відчинений — дверцята відкинуті, усередині золото.</summary>
+        /// <summary>
+        /// Сейф у виді 3/4, 24×28: кришка згори, фасад з фаскою, двері з колесом-кодом і штурвалом, петлі ліворуч,
+        /// заклепки, ніжки. Світло зверху-зліва. Відчинений — двері відкинуті ліворуч, усередині гроші й злитки.
+        /// </summary>
         public static PixelCanvas Safe(bool open)
         {
-            PixelCanvas s = new PixelCanvas(20, 20);
-            s.FillRect(1, 1, 18, 18, P.Steel0);
-            s.Rect(1, 1, 18, 18, P.Night0);
-            s.HLine(2, 17, 2, P.Steel2);
-            s.VLine(2, 2, 17, P.Steel1);
-            // Заклепки по кутах.
-            foreach ((int x, int y) in new[] { (3, 4), (16, 4), (3, 16), (16, 16) })
+            PixelCanvas s = new PixelCanvas(24, 28);
+            // Кришка (видно згори в 3/4).
+            s.FillRect(1, 0, 22, 5, P.Steel1);
+            s.HLine(1, 22, 0, P.Steel3);
+            s.HLine(2, 21, 1, P.Steel2);
+            s.HLine(1, 22, 4, P.Steel0);
+            // Фасад.
+            s.FillRect(1, 5, 22, 20, P.Steel0);
+            s.VLine(1, 5, 24, P.Steel1); // освітлена ліва грань
+            s.HLine(1, 22, 5, P.Steel1);
+            s.VLine(22, 5, 24, P.Night1);
+            // Ніжки й тінь під сейфом.
+            s.FillRect(2, 25, 3, 2, P.Night1);
+            s.FillRect(19, 25, 3, 2, P.Night1);
+            s.HLine(1, 22, 27, P.Night0.WithAlpha(160));
+            s.Rect(0, 0, 24, 25, P.Night0);
+            foreach ((int x, int y) in new[] { (3, 7), (20, 7), (3, 22), (20, 22) })
             {
-                s.Set(x, y, P.Steel3);
+                s.Set(x, y, P.Steel2); // заклепки
+                s.Set(x + 1, y + 1, P.Night1);
             }
 
             if (!open)
             {
-                s.Disc(10, 10, 4, P.Steel1);
-                s.Ring(10, 10, 4, P.Night0);
-                s.Set(10, 7, P.Steel3);
-                s.Line(10, 10, 13, 13, P.Steel3); // ручка
+                s.FillRect(5, 8, 14, 14, P.Steel1); // двері
+                s.Rect(5, 8, 14, 14, P.Night0);
+                s.HLine(6, 17, 9, P.Steel2);
+                s.VLine(6, 9, 20, P.Steel2);
+                s.FillRect(4, 10, 2, 3, P.Steel3); // петлі
+                s.FillRect(4, 17, 2, 3, P.Steel3);
+                s.Disc(12, 15, 4, P.Steel2); // колесо коду
+                s.Ring(12, 15, 4, P.Night0);
+                for (int a = 0; a < 8; a++)
+                {
+                    double r = a * Math.PI / 4.0;
+                    s.Set(12 + (int)Math.Round(Math.Cos(r) * 3), 15 + (int)Math.Round(Math.Sin(r) * 3), P.Steel0); // поділки
+                }
+
+                s.Disc(12, 15, 1.2f, P.Steel0);
+                s.Set(11, 12, P.Steel3); // відблиск на колесі
+                s.Set(10, 13, P.Steel3);
+                s.Set(12, 11, P.Alarm); // мітка коду
+                s.Line(15, 12, 17, 10, P.Steel3); // штурвал
+                s.Line(15, 18, 17, 20, P.Steel2);
             }
             else
             {
-                s.FillRect(4, 4, 12, 12, P.Night0);
-                // Злитки й пачки грошей.
-                s.FillRect(5, 6, 4, 2, P.Lamp3);
-                s.FillRect(9, 6, 4, 2, P.Lamp2);
-                s.FillRect(6, 9, 5, 3, P.Ok);
-                s.HLine(6, 10, 10, P.Night3);
-                s.FillRect(11, 11, 4, 2, P.Lamp3);
-                // Дверцята відкинуті праворуч.
-                s.FillRect(17, 2, 3, 16, P.Steel1);
+                s.FillRect(5, 8, 14, 14, P.Night0); // нутро
+                s.FillRect(6, 11, 5, 2, P.Lamp3); // злитки
+                s.FillRect(11, 11, 5, 2, P.Lamp2);
+                s.HLine(6, 15, 11, P.Lamp4);
+                s.FillRect(6, 15, 6, 4, P.Ok); // пачки грошей
+                s.HLine(6, 11, 16, P.Cyan0);
+                s.FillRect(13, 16, 4, 3, P.Ok);
+                s.HLine(5, 18, 14, P.Steel0); // полиця
+                s.FillRect(0, 7, 5, 17, P.Steel1); // дверцята відкинуті ліворуч
+                s.VLine(0, 7, 23, P.Steel2);
+                s.Rect(0, 7, 5, 17, P.Night0);
             }
 
             return s;

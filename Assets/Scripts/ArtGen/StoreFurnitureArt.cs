@@ -127,6 +127,55 @@ namespace Banda.ArtGen
             return t;
         }
 
+        /// <summary>
+        /// Вуличний ліхтар 3/4, 16×56: стовп з rim від вивіски праворуч, консоль, плафон; glow — тепле світло плафона.
+        /// Опора — центр спрайта; основа стовпа внизу, плафон угорі.
+        /// </summary>
+        public static PixelCanvas StreetLamp(bool glow)
+        {
+            PixelCanvas t = new PixelCanvas(16, 56);
+            if (glow)
+            {
+                t.HLine(2, 7, 6, P.Lamp4);
+                t.HLine(3, 6, 7, P.Lamp3);
+                t.Set(4, 8, P.Lamp2.WithAlpha(160));
+                return t;
+            }
+
+            t.FillRect(10, 4, 3, 50, P.Night2); // стовп
+            t.VLine(10, 4, 53, P.Night4); // освітлена ліва грань
+            t.VLine(12, 4, 53, P.Neon0); // rim від рожевої вивіски праворуч
+            t.Rect(9, 4, 5, 50, P.Night0);
+            t.FillRect(8, 50, 7, 5, P.Night1); // основа
+            t.HLine(8, 14, 50, P.Night3);
+            t.Rect(8, 50, 7, 6, P.Night0);
+            t.HLine(4, 11, 3, P.Night3); // консоль
+            t.HLine(4, 11, 4, P.Night1);
+            t.FillRect(1, 4, 8, 3, P.Steel0); // плафон
+            t.HLine(1, 8, 4, P.Steel1);
+            t.Rect(0, 3, 10, 5, P.Night0);
+            for (int y = 20; y < 44; y += 9)
+            {
+                t.FillRect(9, y, 5, 3, P.Lamp0); // наліпки й оголошення на стовпі
+                t.HLine(10, 12, y + 1, P.Steel1);
+            }
+
+            return t;
+        }
+
+        /// <summary>Стовпчик біля бордюру 6×12: темний, світла маківка й rim.</summary>
+        public static PixelCanvas Bollard()
+        {
+            PixelCanvas t = new PixelCanvas(6, 12);
+            t.FillRect(1, 1, 4, 10, P.Night2);
+            t.VLine(1, 1, 10, P.Night4);
+            t.VLine(4, 1, 10, P.Neon0);
+            t.HLine(1, 4, 1, P.Steel1);
+            t.HLine(1, 4, 4, P.Lamp2); // світловідбивна смуга
+            t.Rect(0, 0, 6, 12, P.Night0);
+            return t;
+        }
+
         private static void Cut(Dictionary<string, PixelCanvas> d, PixelCanvas run, string kind, int x0, int y0)
         {
             int cols = run.Width / S;

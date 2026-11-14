@@ -68,9 +68,10 @@ namespace Banda.ArtGen
             d["mat_0"] = Mat(0);
             d["mat_1"] = Mat(1);
             d["mat_2"] = Mat(2);
-            d["litter_0"] = Litter(0);
-            d["litter_1"] = Litter(1);
-            d["litter_2"] = Litter(2);
+            for (int v = 0; v < 9; v++)
+            {
+                d["litter_" + v] = Litter(v);
+            }
             d["stain"] = Stain();
             d["puddle_glow_0"] = PuddleGlow(P.Neon2, 0);
             d["puddle_glow_1"] = PuddleGlow(P.Cyan2, 1);
@@ -379,10 +380,11 @@ namespace Banda.ArtGen
             {
                 for (int x = 0; x < S; x++)
                 {
+                    // Тінь від меблів і стін (світло зверху-зліва): 7 px, густа біля предмета, далі дизеринг.
                     int d = Math.Min(north ? y : 99, west ? x : 99);
-                    if (d < 4)
+                    if (d < 3 || (d < 7 && (x + y) % (d - 1) == 0))
                     {
-                        t.Set(x, y, P.Night0.WithAlpha((byte)(120 - d * 30)));
+                        t.Set(x, y, P.Night0.WithAlpha((byte)(190 - d * 22)));
                     }
                 }
             }
@@ -736,22 +738,88 @@ namespace Banda.ArtGen
             return full.Crop(part * S, 0, S, S);
         }
 
+        /// <summary>
+        /// Дрібниці на підлозі (читаються з 1x, без білих «цяток»): 0 зім'ятий чек, 1 обгортка цукерки, 2 мокрі сліди,
+        /// 3 розплющена коробка, 4 калюжа газованки, 5 тріщина в плитці, 6 кошик для покупок, 7 табличка «мокра підлога», 8 відро зі шваброю.
+        /// </summary>
         private static PixelCanvas Litter(int v)
         {
             PixelCanvas t = New();
             switch (v)
             {
-                case 0: // чек
-                    t.FillRect(5, 6, 3, 5, P.Steel3);
-                    t.Set(6, 8, P.Steel1);
+                case 0: // зім'ятий чек: тіньова складка, не біла пляма
+                    t.FillRect(5, 7, 4, 3, P.Steel1);
+                    t.Set(5, 7, P.Steel2);
+                    t.Set(6, 8, P.Steel0);
+                    t.HLine(6, 8, 10, P.Night1);
                     break;
-                case 1: // обгортка
-                    t.FillRect(9, 4, 3, 2, P.Neon1);
-                    t.Set(10, 5, P.Lamp3);
+                case 1: // обгортка: кольорова з закрученими кінцями
+                    t.FillRect(8, 5, 3, 2, P.Neon1);
+                    t.Set(8, 5, P.Neon2);
+                    t.Set(7, 6, P.Neon0);
+                    t.Set(11, 5, P.Neon0);
+                    t.HLine(8, 10, 7, P.Night1);
                     break;
-                default: // мокрі сліди
-                    t.FillRect(3, 10, 2, 3, P.Night2);
-                    t.FillRect(8, 4, 2, 3, P.Night2);
+                case 2: // мокрі сліди від входу
+                    foreach ((int x, int y) in new[] { (3, 12), (8, 9), (4, 5), (9, 2) })
+                    {
+                        t.FillRect(x, y, 2, 3, P.Night5.WithAlpha(150));
+                        t.Set(x, y, P.Night6.WithAlpha(150));
+                    }
+
+                    break;
+                case 3: // розплющена коробка
+                    t.FillRect(2, 4, 11, 8, P.Lamp1);
+                    t.HLine(2, 12, 4, P.Lamp2);
+                    t.VLine(7, 4, 11, P.Lamp0); // згин
+                    t.HLine(3, 6, 7, P.Steel2); // скотч
+                    t.HLine(2, 12, 12, P.Night0.WithAlpha(150));
+                    break;
+                case 4: // калюжа газованки з відблиском лампи
+                    t.FillRect(4, 6, 8, 4, P.Brick1);
+                    t.HLine(5, 10, 5, P.Brick1);
+                    t.HLine(5, 10, 10, P.Brick1);
+                    t.HLine(5, 8, 7, P.Brick3);
+                    t.Set(6, 7, P.Lamp4);
+                    break;
+                case 5: // тріщина в плитці
+                    t.Line(2, 3, 7, 8, P.Night0);
+                    t.Line(7, 8, 12, 9, P.Night0);
+                    t.Line(7, 8, 8, 13, P.Night1);
+                    t.Set(3, 3, P.Night4);
+                    break;
+                case 6: // кошик для покупок (3/4): червоний пластик, ручка
+                    t.FillRect(3, 6, 10, 7, P.Alarm);
+                    t.FillRect(4, 7, 8, 4, P.Brick1); // нутро
+                    t.HLine(3, 12, 6, P.Neon3);
+                    t.HLine(3, 12, 12, P.Brick2);
+                    for (int x = 4; x < 12; x += 2)
+                    {
+                        t.Set(x, 11, P.Brick2); // ґратка
+                    }
+
+                    t.Line(4, 6, 6, 3, P.Steel2); // ручка
+                    t.Line(6, 3, 10, 3, P.Steel2);
+                    t.Line(10, 3, 12, 6, P.Steel1);
+                    t.HLine(3, 13, 13, P.Night0.WithAlpha(150));
+                    break;
+                case 7: // жовта табличка «мокра підлога» (А-подібна)
+                    t.FillRect(5, 3, 6, 9, P.Lamp3);
+                    t.VLine(5, 3, 11, P.Lamp4);
+                    t.VLine(10, 3, 11, P.Lamp2);
+                    t.FillRect(7, 5, 2, 3, P.Night1); // піктограма людини, що послизнулась
+                    t.Set(6, 8, P.Night1);
+                    t.Set(9, 9, P.Night1);
+                    t.HLine(4, 11, 12, P.Lamp1); // ніжки
+                    t.HLine(5, 11, 13, P.Night0.WithAlpha(150));
+                    break;
+                default: // відро зі шваброю
+                    t.FillRect(4, 8, 7, 5, P.Cyan1);
+                    t.HLine(4, 10, 8, P.Cyan2);
+                    t.FillRect(5, 9, 5, 2, P.Night2); // вода
+                    t.VLine(10, 1, 9, P.Lamp1); // держак швабри
+                    t.Set(10, 1, P.Lamp2);
+                    t.HLine(4, 11, 13, P.Night0.WithAlpha(150));
                     break;
             }
 

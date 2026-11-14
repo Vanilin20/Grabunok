@@ -50,6 +50,9 @@ namespace Banda.EditorTools
             StoreFurnitureArt.Sign(true).Save($"{TileFolder}/store_sign_glow.png");
             StoreFurnitureArt.CeilingLamp(false).Save($"{TileFolder}/ceiling_lamp.png");
             StoreFurnitureArt.CeilingLamp(true).Save($"{TileFolder}/ceiling_lamp_glow.png");
+            StoreFurnitureArt.StreetLamp(false).Save($"{TileFolder}/street_lamp.png");
+            StoreFurnitureArt.StreetLamp(true).Save($"{TileFolder}/street_lamp_glow.png");
+            StoreFurnitureArt.Bollard().Save($"{TileFolder}/bollard.png");
 
             AssetDatabase.Refresh();
             foreach (string guid in AssetDatabase.FindAssets("t:Texture2D", new[] { TileFolder }))
@@ -158,6 +161,19 @@ namespace Banda.EditorTools
             }
 
             decor.SetTile(Cell(21, 7), Get("drain"));
+            // Розставлені дрібниці: зміст у порожніх зонах підлоги (без колізії — дрібні предмети, крізь них проходять).
+            (int X, int Y, int Kind)[] floorProps =
+            {
+                (5, 13, 6), (5, 12, 6), (3, 12, 2), (4, 11, 2), (7, 11, 7), (8, 11, 4), (12, 11, 3), (14, 12, 5),
+                (12, 3, 3), (15, 6, 5), (12, 2, 0), (10, 12, 1), (23, 10, 3), (21, 12, 8), (19, 6, 5), (23, 5, 0),
+            };
+            foreach ((int X, int Y, int Kind) p in floorProps)
+            {
+                if (grid[p.Y][p.X] == '.')
+                {
+                    decor.SetTile(Cell(p.X, p.Y), Get("litter_" + p.Kind));
+                }
+            }
             outside.SetTile(Cell(6, h + 1), Get("drain")); // решітки вентиляції на тротуарі — звідти пара
             outside.SetTile(Cell(19, h + 1), Get("drain"));
             ScatterLitter(grid, decor);
@@ -340,9 +356,9 @@ namespace Banda.EditorTools
                     }
 
                     float n = PixelCanvas.Hash(x, y, 909);
-                    if (n < 0.05f)
+                    if (n < 0.06f)
                     {
-                        decor.SetTile(Cell(x, y), Get("litter_" + Variant(x, y, 3)));
+                        decor.SetTile(Cell(x, y), Get("litter_" + Variant(x, y, 6)));
                     }
                     else if (n > 0.965f)
                     {
@@ -404,7 +420,7 @@ namespace Banda.EditorTools
                 Light2D field = go.AddComponent<Light2D>();
                 field.lightType = Light2D.LightType.Point;
                 field.color = Palette.Danger;
-                field.intensity = 0.9f;
+                field.intensity = 0.45f; // поле камери — підказка, а не найяскравіша пляма кадру
                 field.pointLightOuterRadius = HeistSim.CameraRange;
                 field.pointLightInnerRadius = HeistSim.CameraRange * 0.8f;
                 field.falloffIntensity = 0.8f;
@@ -427,6 +443,16 @@ namespace Banda.EditorTools
             AddRain(from, new Vec2(-Pad * T, gh * T), new Vec2((gw + 2 * Pad) * T, Street * T));
             AddRain(from, new Vec2(-Pad * T, -Pad * T), new Vec2(Pad * T, (gh + Pad) * T));
             AddRain(from, new Vec2(gw * T, -Pad * T), new Vec2(Pad * T, (gh + Pad) * T));
+            // Передній план вулиці: ліхтарний стовп (джерело теплого світла на тротуарі) і стовпчики біля бордюру.
+            Material litMat = AssetDatabase.LoadAssetAtPath<Material>("Packages/com.unity.render-pipelines.universal/Runtime/Materials/Sprite-Lit-Default.mat");
+            Sprite(from, "StreetLamp", $"{TileFolder}/street_lamp.png", HeistWorldView.ToWorld(new Vec2(14.5f * T, (gh + 2.2f) * T - 26f)), 11, litMat);
+            Sprite(from, "StreetLampGlow", $"{TileFolder}/street_lamp_glow.png", HeistWorldView.ToWorld(new Vec2(14.5f * T, (gh + 2.2f) * T - 26f)), 12,
+                AssetDatabase.LoadAssetAtPath<Material>("Assets/Art/Materials/Additive.mat"));
+            foreach (float bx in new[] { 1.5f, 7.5f, 21.5f })
+            {
+                Sprite(from, "Bollard", $"{TileFolder}/bollard.png", HeistWorldView.ToWorld(new Vec2(bx * T, (gh + 2.4f) * T - 4f)), 11, litMat);
+            }
+
             AddSteam(from, HeistWorldView.ToWorld(new Vec2(6.5f * T, 16.4f * T)));
             AddSteam(from, HeistWorldView.ToWorld(new Vec2(19.5f * T, 16.6f * T)));
 
@@ -513,12 +539,12 @@ namespace Banda.EditorTools
             main.prewarm = true;
             main.startLifetime = new ParticleSystem.MinMaxCurve(2.5f, 4f);
             main.startSpeed = new ParticleSystem.MinMaxCurve(4f, 8f);
-            main.startSize = 6f; // клуб-спрайт puff 6×6 у масштабі 1:1 (як пара в меню), не квадрати
-            main.startColor = new Color(0.86f, 0.8f, 0.9f, 0.18f); // ледь рожеві від неону вивіски
+            main.startSize = new ParticleSystem.MinMaxCurve(8f, 14f); // м'які клуби, ростуть угору
+            main.startColor = new Color(0.9f, 0.78f, 0.88f, 0.1f); // ледь рожеві від неону вивіски
             main.maxParticles = 160;
             main.simulationSpace = ParticleSystemSimulationSpace.World;
             ParticleSystem.EmissionModule emission = ps.emission;
-            emission.rateOverTime = 5f;
+            emission.rateOverTime = 9f;
             ParticleSystem.ShapeModule shape = ps.shape;
             shape.shapeType = ParticleSystemShapeType.Box;
             shape.scale = new Vector3(8f, 2f, 1f);
@@ -548,10 +574,12 @@ namespace Banda.EditorTools
             if (m == null)
             {
                 m = new Material(Shader.Find("Sprites/Default"));
-                m.mainTexture = AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/Art/Fx/puff.png");
                 AssetDatabase.CreateAsset(m, path);
             }
 
+            // М'яка радіальна пляма: клуби з плавним спадом альфи (рецензія: puff на ×4 читався мозаїкою).
+            m.mainTexture = AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/Art/Fx/radial.png");
+            EditorUtility.SetDirty(m);
             return m;
         }
 
