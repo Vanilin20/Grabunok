@@ -129,6 +129,8 @@ namespace Banda.Net
             _nm.OnClientConnectedCallback += OnConnected;
             _nm.OnClientDisconnectCallback += OnDisconnected;
             _nm.CustomMessagingManager?.RegisterNamedMessageHandler(NgoFraming.MessageName, OnNamedMessage);
+            // Сесія сервісів повертає керування, коли клієнт уже підключений: події Connected не буде.
+            _connected = _nm.IsConnectedClient;
         }
 
         /// <summary>Підключення не вдалося ще до початку (StartClient повернув false): повідомити екран як звичайний розрив.</summary>

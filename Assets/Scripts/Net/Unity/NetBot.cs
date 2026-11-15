@@ -20,7 +20,8 @@ namespace Banda.Net
         private static string _ip = "127.0.0.1";
         private static string _roomCode = "4242";
         private static int _exitCode = -1;
-        private static bool _foundByBeacon;
+        private static bool _foundByCode;
+        private static string _profile;
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         private static void Boot()
@@ -41,6 +42,7 @@ namespace Banda.Net
 
             _ip = Arg(args, "-botip") ?? _ip;
             _roomCode = Arg(args, "-botcode") ?? _roomCode;
+            _relay = Arg(args, "-botmode") == "relay";
             Application.runInBackground = true;
             Application.targetFrameRate = 60;
             IEnumerator body;
@@ -175,34 +177,65 @@ namespace Banda.Net
 
         // ------------------------------------------------------------------ клієнти
 
-        private static IEnumerator ConnectAndJoin(string token, string name, RoleId role, Action<ClientSession> result)
+        private static bool _relay;
+
+        private static IRoomService MakeService(string profile)
         {
-            // Хост-бот може стартувати трохи пізніше: до 12 спроб. Спершу пошук за кодом через маяк, потім запасний шлях — 127.0.0.1.
-            LanRoomService service = new LanRoomService();
-            for (int attempt = 0; attempt < 12; attempt++)
+            return _relay ? (IRoomService)new RelayRoomService(profile) : new LanRoomService();
+        }
+
+        /// <summary>Одна спроба зайти в кімнату: пошук за кодом (маяк чи сесія Relay); у Wi-Fi-режимі запасний шлях — прямий IP.</summary>
+        private static IEnumerator JoinOnce(IRoomService service, string token, string name, Action<ClientSession> result)
+        {
+            System.Threading.Tasks.Task<ServiceResult<ClientSession>> find = service.JoinRoomAsync(_roomCode, name, token);
+            yield return Until(() => find.IsCompleted, 40f, "пошук кімнати за кодом");
+            ClientSession session = find.IsCompleted && find.Result.Ok ? find.Result.Value : null;
+            if (session != null)
             {
-                System.Threading.Tasks.Task<ServiceResult<ClientSession>> find = service.JoinRoomAsync(_roomCode, name, token);
-                yield return Until(() => find.IsCompleted, 30f, "пошук кімнати за кодом");
-                ClientSession session = find.IsCompleted && find.Result.Ok ? find.Result.Value : null;
-                if (session != null)
+                Log("кімнату знайдено за кодом " + _roomCode + (_relay ? " через сервіс Relay" : " через маяк"));
+                _foundByCode = true;
+            }
+            else
+            {
+                if (find.IsCompleted)
                 {
-                    Log("кімнату знайдено за кодом через маяк: " + _roomCode);
-                    _foundByBeacon = true;
-                }
-                else
-                {
-                    session = ClientSession.Connect(_ip, _port, token, name);
-                    yield return Until(() => session.Client.State != ClientState.Connecting, 10f, "відповідь хоста");
+                    Log("пошук за кодом не вдався: " + find.Result.Error);
                 }
 
-                if (session.Client.State == ClientState.Joined)
+                if (_relay)
+                {
+                    result(null);
+                    yield break;
+                }
+
+                session = ClientSession.Connect(_ip, _port, token, name);
+                yield return Until(() => session.Client.State != ClientState.Connecting, 10f, "відповідь хоста");
+                if (session.Client.State != ClientState.Joined)
+                {
+                    session.Dispose();
+                    session = null;
+                }
+            }
+
+            result(session);
+        }
+
+        private static IEnumerator ConnectAndJoin(string token, string name, RoleId role, Action<ClientSession> result)
+        {
+            IRoomService service = MakeService(_name); // профіль автентифікації — лише ASCII (shadow/safe)
+            // Хост-бот може стартувати трохи пізніше: до 12 спроб.
+            for (int attempt = 0; attempt < 12; attempt++)
+            {
+                ClientSession session = null;
+                yield return JoinOnce(service, token, name, s => session = s);
+                if (session != null && session.Client.State == ClientState.Joined)
                 {
                     session.Client.PickRole(role);
                     result(session);
                     yield break;
                 }
 
-                session.Dispose();
+                session?.Dispose();
                 yield return Wait(1.0f);
             }
 
@@ -214,10 +247,10 @@ namespace Banda.Net
 
         private static IEnumerator HostBot()
         {
-            System.Threading.Tasks.Task<ServiceResult<HostSession>> create = new LanRoomService().CreateRoomAsync("Хакер", "tok-hacker", _roomCode);
+            System.Threading.Tasks.Task<ServiceResult<HostSession>> create = MakeService("host").CreateRoomAsync("Хакер", "tok-hacker", _roomCode);
             yield return Until(() => create.IsCompleted, 10f, "створення кімнати");
             HostSession host = create.IsCompleted && create.Result.Ok ? create.Result.Value : null;
-            Check("1. хост відкрив кімнату " + _roomCode + " і оголошує її маяком", host != null, create.IsCompleted ? create.Result.Error ?? string.Empty : string.Empty);
+            Check("1. хост відкрив кімнату " + _roomCode + " і оголошує її (" + (_relay ? "Relay" : "маяк") + ")", host != null, create.IsCompleted ? create.Result.Error ?? string.Empty : string.Empty);
             if (host == null)
             {
                 yield break;
@@ -277,7 +310,7 @@ namespace Banda.Net
 
             RoomClient client = session.Client;
             Probe probe = new Probe(client);
-            Check("1. Тінь знайшла кімнату за кодом (UDP-маяк) і зайняла роль", client.State == ClientState.Joined && _foundByBeacon);
+            Check("1. Тінь знайшла кімнату за кодом (код кімнати) і зайняла роль", client.State == ClientState.Joined && _foundByCode);
             yield return Until(() => probe.Static != null && probe.Snapshot != null, 45f, "початок справи");
             ShadowStatic st = probe.Static as ShadowStatic;
             ShadowView view = probe.Snapshot != null ? probe.Snapshot.View as ShadowView : null;
@@ -312,7 +345,7 @@ namespace Banda.Net
 
             RoomClient client = session.Client;
             Probe probe = new Probe(client);
-            Check("1. Зломщик знайшов кімнату за кодом (UDP-маяк) і зайняв роль", client.State == ClientState.Joined && _foundByBeacon);
+            Check("1. Зломщик знайшов кімнату за кодом (код кімнати) і зайняв роль", client.State == ClientState.Joined && _foundByCode);
             yield return Until(() => probe.Static != null && probe.Snapshot != null, 45f, "початок справи");
             SafecrackerStatic st = probe.Static as SafecrackerStatic;
             Check("4. Зломщик має комбінацію", st != null && st.Combo.Length == HeistSim.ComboLength);
@@ -346,19 +379,20 @@ namespace Banda.Net
             // Той самий токен, нове з'єднання: нова сесія → нова роль-клієнт із тим самим tok-safe.
             ClientSession back = null;
             RoomClient backClient = null;
+            IRoomService service = MakeService("safe");
             for (int attempt = 0; attempt < 6 && back == null; attempt++)
             {
-                ClientSession s2 = ClientSession.Connect(_ip, _port, "tok-safe", "Зломщик");
-                yield return Until(() => s2.Client.State != ClientState.Connecting, 10f, "повернення");
-                if (s2.Client.State == ClientState.Joined)
+                ClientSession s2 = null;
+                yield return JoinOnce(service, "tok-safe", "Зломщик", s => s2 = s);
+                if (s2 != null && s2.Client.State == ClientState.Joined)
                 {
                     back = s2;
                     backClient = s2.Client;
                 }
                 else
                 {
-                    s2.Dispose();
-                    yield return Wait(1f);
+                    s2?.Dispose();
+                    yield return Wait(1.5f);
                 }
             }
 

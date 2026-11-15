@@ -74,10 +74,7 @@ namespace Banda.Net
                 return ServiceResult<ClientSession>.Fail("Кімнату " + code + " не знайдено в цій Wi-Fi. Перевір код і що телефони в одній мережі.");
             }
 
-            if (!room.Info.Open)
-            {
-                return ServiceResult<ClientSession>.Fail("Справа в цій кімнаті вже почалась.");
-            }
+            // Чи пускати в кімнату, вирішує хост (новим — ні, а гравцеві, що повертається після обриву — так).
 
             return await JoinByIpAsync(room.Address, playerName, token);
         }

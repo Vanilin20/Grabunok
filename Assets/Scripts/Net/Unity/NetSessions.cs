@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Banda.Heist;
 using Unity.Netcode;
 using Unity.Netcode.Transports.UTP;
@@ -6,14 +8,16 @@ using Unity.Netcode.Transports.UTP;
 namespace Banda.Net
 {
     /// <summary>
-    /// Хост кімнати на цьому телефоні: NGO-сервер (без власного клієнта) + RoomHost + місце самого хоста повз мережу.
-    /// Транспорт тут один — UnityTransport на заданій адресі. Як гравці знайдуть цю адресу (Wi-Fi-маяк, Relay), вирішує IRoomService.
+    /// Хост кімнати на цьому телефоні: NGO + RoomHost + місце самого хоста повз мережу.
+    /// Звідки береться з'єднання (прямий UnityTransport для Wi-Fi чи Relay-сесія сервісів) — справа сервісу кімнат, не хоста.
     /// </summary>
     public sealed class HostSession : IDisposable
     {
         private readonly NetworkManager _manager;
         private readonly NgoServerLink _link;
-        private readonly System.Collections.Generic.List<IDisposable> _attached = new System.Collections.Generic.List<IDisposable>();
+        private readonly List<IDisposable> _attached = new List<IDisposable>();
+        private readonly List<IDisposable> _attachedLate = new List<IDisposable>();
+        private bool _sessionManaged;
         private bool _disposed;
 
         private HostSession(NetworkManager manager, NgoServerLink link, RoomHost room, RoomClient local)
@@ -32,29 +36,20 @@ namespace Banda.Net
 
         public NetworkManager Manager => _manager;
 
-        /// <summary>Прикріпити те, що живе стільки ж, скільки кімната (маяк Wi-Fi, сесія Relay): знищується разом із нею.</summary>
+        /// <summary>Прикріпити те, що живе стільки ж, скільки кімната (маяк Wi-Fi): знищується одразу, як хост закриває кімнату.</summary>
         public void Attach(IDisposable resource) => _attached.Add(resource);
 
-        /// <summary>
-        /// Запустити хост. listen — адреса, на якій слухати (0.0.0.0 — усі інтерфейси). Для Relay сюди замість цього
-        /// передається вже налаштований транспорт (див. StartWithTransport).
-        /// </summary>
+        /// <summary>Те саме, але знищується вже ПІСЛЯ того, як клієнти отримали причину закриття (сесія Relay).</summary>
+        public void AttachLate(IDisposable resource) => _attachedLate.Add(resource);
+
+        /// <summary>NetworkManager запущено сесією сервісів: гасити її через LeaveAsync (AttachLate), а не Shutdown.</summary>
+        public void MarkSessionManaged() => _sessionManaged = true;
+
+        /// <summary>Wi-Fi: прямий транспорт. Слухає на всіх інтерфейсах, порт — port.</summary>
         public static HostSession Start(ushort port, string roomCode, string hostName, string token, out string error)
         {
             NetworkManager nm = NetRuntime.CreateManager(out UnityTransport transport);
             transport.SetConnectionData("127.0.0.1", port, "0.0.0.0");
-            return Finish(nm, roomCode, hostName, token, out error);
-        }
-
-        /// <summary>Хост на вже створеному й налаштованому транспорті (Relay: SetRelayServerData зроблено викликачем).</summary>
-        public static HostSession StartWithManager(NetworkManager nm, string roomCode, string hostName, string token, out string error)
-        {
-            return Finish(nm, roomCode, hostName, token, out error);
-        }
-
-        private static HostSession Finish(NetworkManager nm, string roomCode, string hostName, string token, out string error)
-        {
-            error = null;
             bool started;
             try
             {
@@ -73,6 +68,20 @@ namespace Banda.Net
                 return null;
             }
 
+            error = null;
+            return Create(nm, roomCode, hostName, token);
+        }
+
+        /// <summary>Хост на NetworkManager, який уже запущено (сесія Relay викликає StartHost сама).</summary>
+        public static HostSession StartOnRunningManager(NetworkManager nm, string roomCode, string hostName, string token)
+        {
+            HostSession session = Create(nm, roomCode, hostName, token);
+            session.MarkSessionManaged();
+            return session;
+        }
+
+        private static HostSession Create(NetworkManager nm, string roomCode, string hostName, string token)
+        {
             NgoServerLink link = new NgoServerLink(nm);
             RoomHost room = new RoomHost(link, roomCode, HeistLevel.CornerStore, () => Environment.TickCount & 0x7fffffff);
             RoomClient local = new RoomClient(room.CreateLocalLink(), token, hostName);
@@ -104,10 +113,16 @@ namespace Banda.Net
                 d.Dispose();
             }
 
+            bool managed = _sessionManaged;
             NetDriver.After(0.5f, () =>
             {
                 _link.Dispose();
-                NetRuntime.DestroyManager();
+                foreach (IDisposable d in _attachedLate)
+                {
+                    d.Dispose();
+                }
+
+                NetDriver.After(managed ? 1.0f : 0f, () => NetRuntime.DestroyManager(_manager, managed));
             });
         }
     }
@@ -116,9 +131,14 @@ namespace Banda.Net
     public sealed class ClientSession : IDisposable
     {
         private readonly Func<NetworkManager> _managerFactory;
+        private readonly Func<Task<NetworkManager>> _reconnectAsync;
+        private readonly List<IDisposable> _attached = new List<IDisposable>();
         private NgoClientLink _link;
+        private NetworkManager _nm;
+        private bool _sessionManaged;
         private bool _disposed;
 
+        /// <summary>Прямий транспорт (Wi-Fi): NetworkManager створюється й запускається тут.</summary>
         private ClientSession(Func<NetworkManager> managerFactory, string token, string name)
         {
             _managerFactory = managerFactory;
@@ -126,14 +146,26 @@ namespace Banda.Net
             StartError = error;
         }
 
+        /// <summary>Сесія сервісів: NetworkManager уже запущено й підключено; для повернення після обриву — reconnectAsync.</summary>
+        private ClientSession(NetworkManager running, Func<Task<NetworkManager>> reconnectAsync, string token, string name)
+        {
+            _reconnectAsync = reconnectAsync;
+            _sessionManaged = true;
+            _nm = running;
+            _link = new NgoClientLink(running);
+            Client = new RoomClient(_link, token, name);
+        }
+
         public RoomClient Client { get; }
 
         /// <summary>Не null, якщо клієнт не зміг навіть почати з'єднання (до Hello).</summary>
         public string StartError { get; private set; }
 
+        public void Attach(IDisposable resource) => _attached.Add(resource);
+
         public static ClientSession Connect(string ip, ushort port, string token, string name)
         {
-            return ConnectWith(() =>
+            return new ClientSession(() =>
             {
                 NetworkManager nm = NetRuntime.CreateManager(out UnityTransport transport);
                 transport.SetConnectionData(ip, port);
@@ -141,10 +173,9 @@ namespace Banda.Net
             }, token, name);
         }
 
-        /// <summary>Клієнт на довільному транспорті: фабрика щоразу створює й налаштовує NetworkManager (Relay: нове JoinAllocation).</summary>
-        public static ClientSession ConnectWith(Func<NetworkManager> managerFactory, string token, string name)
+        public static ClientSession OnRunningManager(NetworkManager running, Func<Task<NetworkManager>> reconnectAsync, string token, string name)
         {
-            return new ClientSession(managerFactory, token, name);
+            return new ClientSession(running, reconnectAsync, token, name);
         }
 
         private IClientLink StartLink(out string error)
@@ -152,6 +183,7 @@ namespace Banda.Net
             error = null;
             _link?.Dispose();
             NetworkManager nm = _managerFactory();
+            _nm = nm;
             bool ok;
             try
             {
@@ -178,11 +210,36 @@ namespace Banda.Net
             return link;
         }
 
-        /// <summary>Підключитися знову (після обриву). Новий NetworkManager створюється наступного кадру: старий має встигнути згаснути.</summary>
-        public void Reconnect()
+        /// <summary>Підключитися знову (після обриву). Той самий токен: хост поверне роль і стан.</summary>
+        public async void Reconnect()
         {
             if (_disposed)
             {
+                return;
+            }
+
+            if (_reconnectAsync != null)
+            {
+                try
+                {
+                    _link?.Dispose();
+                    NetworkManager nm = await _reconnectAsync();
+                    if (_disposed || nm == null)
+                    {
+                        return;
+                    }
+
+                    _nm = nm;
+                    _link = new NgoClientLink(nm);
+                    Client.Rebind(_link);
+                }
+                catch (Exception e)
+                {
+                    StartError = RelayErrors.Describe(e);
+                    UnityEngine.Debug.LogWarning("Reconnect: " + e.Message);
+                    // Лишаємо стан Lost: екран покаже «зв'язок пропав» і запропонує спробувати ще.
+                }
+
                 return;
             }
 
@@ -209,7 +266,21 @@ namespace Banda.Net
 
             _disposed = true;
             _link?.Dispose();
-            NetRuntime.DestroyManager();
+            foreach (IDisposable d in _attached)
+            {
+                d.Dispose();
+            }
+
+            if (_sessionManaged)
+            {
+                // Сесію гасить LeaveAsync (прикріплений вище); обʼєкт мережі знищуємо після нього.
+                NetworkManager old = _nm;
+                NetDriver.After(1.0f, () => NetRuntime.DestroyManager(old, true));
+            }
+            else
+            {
+                NetRuntime.DestroyManager(_nm, false);
+            }
         }
     }
 }

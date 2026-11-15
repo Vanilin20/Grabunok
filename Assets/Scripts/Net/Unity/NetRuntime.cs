@@ -37,15 +37,21 @@ namespace Banda.Net
             return nm;
         }
 
-        public static void DestroyManager()
+        /// <param name="sessionManaged">true, якщо NetworkManager запускала сесія сервісів: її гасить ISession.LeaveAsync, а не Shutdown.</param>
+        public static void DestroyManager(bool sessionManaged = false)
         {
-            NetworkManager existing = NetworkManager.Singleton;
+            DestroyManager(NetworkManager.Singleton, sessionManaged);
+        }
+
+        /// <summary>Знищити саме цей менеджер (відкладене знищення не має зачепити новий, створений за цей час).</summary>
+        public static void DestroyManager(NetworkManager existing, bool sessionManaged)
+        {
             if (existing == null)
             {
                 return;
             }
 
-            if (existing.IsListening)
+            if (existing.IsListening && !sessionManaged)
             {
                 existing.Shutdown();
             }

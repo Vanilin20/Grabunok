@@ -5,7 +5,10 @@
         "Banda.Heist",
         "Banda.Net.Core",
         "UnityEngine.TestRunner",
-        "UnityEditor.TestRunner"
+        "UnityEditor.TestRunner",
+        "Banda.Net",
+        "Unity.Services.Core",
+        "Unity.Services.Multiplayer"
     ],
     "includePlatforms": [
         "Editor"

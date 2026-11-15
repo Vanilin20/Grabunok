@@ -690,7 +690,7 @@ namespace Banda.Net
 
         public bool IsConnected => !_host.IsClosed;
 
-        public event Action Connected;
+        public event Action Connected { add { } remove { } } // місце хоста підключене від створення
         public event Action Disconnected;
         public event Action<byte[]> MessageReceived;
 
