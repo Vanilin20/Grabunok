@@ -18,6 +18,38 @@ namespace Banda.Net
         public const ushort Game = 7777;
     }
 
+    /// <summary>IP цього пристрою в локальній мережі (для запасного підключення вручну).</summary>
+    public static class LanAddress
+    {
+        public static string Find()
+        {
+            try
+            {
+                foreach (NetworkInterface nic in NetworkInterface.GetAllNetworkInterfaces())
+                {
+                    if (nic.OperationalStatus != OperationalStatus.Up || nic.NetworkInterfaceType == NetworkInterfaceType.Loopback)
+                    {
+                        continue;
+                    }
+
+                    foreach (UnicastIPAddressInformation ua in nic.GetIPProperties().UnicastAddresses)
+                    {
+                        if (ua.Address.AddressFamily == AddressFamily.InterNetwork && !ua.Address.ToString().StartsWith("169.254"))
+                        {
+                            return ua.Address.ToString();
+                        }
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                // Адреси не видно (обмеження системи): лобі просто не покаже IP.
+            }
+
+            return string.Empty;
+        }
+    }
+
     /// <summary>MulticastLock на Android: без нього багато телефонів не віддають застосунку broadcast-пакети. Поза Android — нічого не робить.</summary>
     public static class AndroidMulticast
     {

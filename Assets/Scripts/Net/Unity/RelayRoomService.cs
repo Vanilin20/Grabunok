@@ -171,7 +171,7 @@ namespace Banda.Net
                     if (info == null)
                     {
                         NetRuntime.DestroyManager(true);
-                        return ServiceResult<ClientSession>.Fail("Кімнату " + code + " не знайдено онлайн. Перевір код: можливо, хост уже вийшов або кімната повна.");
+                        return ServiceResult<ClientSession>.Fail("Кімнату " + code + " не знайдено онлайн. Перевір код: можливо, хост уже вийшов або кімната повна.", true);
                     }
 
                     string id = info.Id;

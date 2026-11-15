@@ -50,8 +50,7 @@ namespace Banda.UI
             state.RoleChanged += OnRoleChanged;
             _startButton.onClick.AddListener(OnStartPressed);
             _leaveButton.onClick.AddListener(OnLeavePressed);
-            // НЕ ПЕРЕНЕСЕНО (крок 2): локальні IP для ручного підключення — частина мережевого модуля.
-            _ipLabel.text = state.IsHost ? "IP: мережа — крок 2" : string.Empty;
+            _ipLabel.text = ConnectionHint(state);
             _startButton.gameObject.SetActive(state.IsHost);
             Refresh();
         }
@@ -112,6 +111,22 @@ namespace Banda.UI
 
             // Повторне натискання своєї ролі — відмовитися від неї.
             state.RequestPickRole(state.MyRole == role ? RoleId.None : role);
+        }
+
+        /// <summary>Під кодом: як підключитись вручну (Wi-Fi: IP хоста) чи де кімната (онлайн / локально).</summary>
+        private static string ConnectionHint(GameState state)
+        {
+            if (state.NetKind == Banda.Net.RoomKind.Lan)
+            {
+                return state.IsHost && !string.IsNullOrEmpty(state.LocalAddress) ? "Wi-Fi · IP: " + state.LocalAddress : "Wi-Fi";
+            }
+
+            if (state.NetKind == Banda.Net.RoomKind.Relay)
+            {
+                return "онлайн";
+            }
+
+            return state.IsHost ? "лише цей пристрій" : string.Empty;
         }
 
         private void OnStartPressed() => GameState.Instance?.StartHeist();

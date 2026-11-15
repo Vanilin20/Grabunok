@@ -2,6 +2,7 @@ using System.Collections;
 using Banda.Core;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Banda.UI
 {
@@ -74,6 +75,13 @@ namespace Banda.UI
                 Instance = null;
             }
         }
+
+        /// <summary>Спрайт панелі й шрифт — для діалогів мережі, що мають виглядати як решта інтерфейсу.</summary>
+        public Sprite PanelSprite => _toastGroup != null ? _toastGroup.GetComponent<Image>()?.sprite : null;
+
+        public TMP_FontAsset Font => _toastLabel != null ? _toastLabel.font : null;
+
+        public Color LabelColor => _toastLabel != null ? _toastLabel.color : Color.white;
 
         public void ShowMenu() => ShowOnly(_menuScreen);
 

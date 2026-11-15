@@ -17,21 +17,25 @@ namespace Banda.Net
     /// <summary>Результат дії сервісу кімнат: або значення, або людське пояснення українською.</summary>
     public sealed class ServiceResult<T> where T : class
     {
-        private ServiceResult(T value, string error)
+        private ServiceResult(T value, string error, bool notFound)
         {
             Value = value;
             Error = error;
+            NotFound = notFound;
         }
 
         public T Value { get; }
 
         public string Error { get; }
 
+        /// <summary>Кімнату з таким кодом не знайдено (на відміну від «знайдено, але не пустили» чи збою мережі).</summary>
+        public bool NotFound { get; }
+
         public bool Ok => Value != null;
 
-        public static ServiceResult<T> Success(T value) => new ServiceResult<T>(value, null);
+        public static ServiceResult<T> Success(T value) => new ServiceResult<T>(value, null, false);
 
-        public static ServiceResult<T> Fail(string error) => new ServiceResult<T>(null, error);
+        public static ServiceResult<T> Fail(string error, bool notFound = false) => new ServiceResult<T>(null, error, notFound);
     }
 
     /// <summary>

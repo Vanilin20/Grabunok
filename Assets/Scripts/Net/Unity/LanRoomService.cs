@@ -71,7 +71,7 @@ namespace Banda.Net
 
             if (room == null)
             {
-                return ServiceResult<ClientSession>.Fail("Кімнату " + code + " не знайдено в цій Wi-Fi. Перевір код і що телефони в одній мережі.");
+                return ServiceResult<ClientSession>.Fail("Кімнату " + code + " не знайдено в цій Wi-Fi. Перевір код і що телефони в одній мережі.", true);
             }
 
             // Чи пускати в кімнату, вирішує хост (новим — ні, а гравцеві, що повертається після обриву — так).

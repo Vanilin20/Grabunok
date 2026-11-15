@@ -28,13 +28,14 @@ namespace Banda.HeistRuntime
         /// <summary>Справа закінчилась або перервана — екрани відписуються.</summary>
         public event Action HeistStopped;
 
-        public ITransport Transport => _transport;
+        public ITransport Transport => _active;
 
         public bool IsHotSeat { get; private set; }
 
         public IReadOnlyList<RoleId> HotSeatRoles => _hotSeatRoles;
 
         private LocalTransport _transport;
+        private ITransport _active; // локальний чи мережевий транспорт — екрани бачать лише цей інтерфейс
         private readonly List<RoleId> _hotSeatRoles = new List<RoleId>();
 
         private void Awake()
@@ -72,7 +73,7 @@ namespace Banda.HeistRuntime
             {
                 StartHeist();
             }
-            else if (_transport != null)
+            else if (_active != null)
             {
                 StopHeist();
             }
@@ -81,6 +82,17 @@ namespace Banda.HeistRuntime
         private void StartHeist()
         {
             GameState state = GameState.Instance;
+            if (state.IsNetworked)
+            {
+                // Мережева справа крутиться на хості; тут лише екран ролі, що отримує знімки через NetworkTransport.
+                _hotSeatRoles.Clear();
+                IsHotSeat = false;
+                _active = state.NetTransport;
+                HeistStarted?.Invoke(_active);
+                _active.RequestState();
+                return;
+            }
+
             // Сід справи — випадковий; у мережевій версії його знатиме лише хост.
             HeistSession session = new HeistSession(HeistLevel.CornerStore(), UnityEngine.Random.Range(1, int.MaxValue));
             RoleId myRole = RoleId.None;
@@ -117,6 +129,7 @@ namespace Banda.HeistRuntime
             }
 
             _transport = new LocalTransport(session, myRole);
+            _active = _transport;
             _transport.Finished += OnFinished;
             HeistStarted?.Invoke(_transport);
             _transport.Begin();
@@ -137,8 +150,13 @@ namespace Banda.HeistRuntime
 
         private void StopHeist()
         {
-            _transport.Finished -= OnFinished;
+            if (_transport != null)
+            {
+                _transport.Finished -= OnFinished;
+            }
+
             _transport = null;
+            _active = null;
             HeistStopped?.Invoke();
         }
 
@@ -160,7 +178,7 @@ namespace Banda.HeistRuntime
         {
             if (_transport == null)
             {
-                return;
+                return; // мережева справа: час веде хост
             }
 
             if (IsHotSeat)

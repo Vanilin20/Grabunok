@@ -15,6 +15,9 @@ namespace Banda.UI
         [SerializeField] private TMP_Text _nameTitle;
         [SerializeField] private TMP_Text _versionLabel;
 
+        /// <summary>Кнопка меню як шаблон стилю для діалогів мережі.</summary>
+        public Button ButtonTemplate => _hostButton;
+
         private void OnEnable()
         {
             GameState state = GameState.Instance;
@@ -63,7 +66,7 @@ namespace Banda.UI
         private void OnHostPressed()
         {
             CommitName();
-            GameState.Instance?.HostRoom(); // далі GameState переведе в лобі, а Router покаже екран лобі
+            NetDialog.Instance?.ShowHostChoice(); // Wi-Fi, інтернет чи локальна кімната; далі GameState переведе в лобі
         }
 
         private void OnJoinPressed()
