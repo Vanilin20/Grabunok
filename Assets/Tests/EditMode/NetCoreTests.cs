@@ -359,7 +359,15 @@ namespace Banda.Tests
 
             _hostClient.Transport.Send(HeistAction.CameraOff(0));
             Step(3);
-            Assert.That(((HackerView)_hostProbe.Snapshot.View).CamerasOff[0], Is.GreaterThan(0f), "камера вимкнена дією Хакера");
+            Assert.That(((HackerView)_hostProbe.Snapshot.View).CamerasOff[0], Is.EqualTo(0f), "пряма дія камеру не вимикає");
+
+            _hostClient.Transport.Send(HeistAction.HackStart(0));
+            Step(3);
+            HackerView puzzle = (HackerView)_hostProbe.Snapshot.View;
+            Assert.That(puzzle.HackActive && puzzle.HackRight.Length == HeistSim.HackWiresCamera, Is.True, "головоломка дійшла Хакеру мережею");
+            _hostClient.Transport.Send(HeistAction.HackSolve(HackPuzzle.Solution(puzzle.HackRight)));
+            Step(3);
+            Assert.That(((HackerView)_hostProbe.Snapshot.View).CamerasOff[0], Is.GreaterThan(0f), "камера вимкнена розвʼязаною головоломкою");
         }
 
         [Test]

@@ -77,6 +77,33 @@ namespace Banda.Heist
         public Vec2 Guard;
         public float GuardFacing;
         public bool Alert;
+
+        // --- Головоломка з дротами (її бачить лише Хакер) ---
+        /// <summary>Чи зараз на екрані відкрита головоломка.</summary>
+        public bool HackActive;
+        /// <summary>Номер головоломки: росте з кожною новою (клієнт скидає дроти, коли він змінився).</summary>
+        public int HackId;
+        /// <summary>Що ламаємо: індекс камери або -1 для дверей.</summary>
+        public int HackTarget = -1;
+        /// <summary>Кольори правих гнізд зверху вниз; лівий дріт i має колір i.</summary>
+        public int[] HackRight = System.Array.Empty<int>();
+        public float HackTimeLeft;
+        /// <summary>Скільки секунд ще триває блокування після провалу (0 — можна пробувати).</summary>
+        public float HackLockLeft;
+        /// <summary>Лічильник результатів: росте з кожним завершеним розвʼязком/провалом.</summary>
+        public int HackResultSeq;
+        public HackResult HackLastResult;
+    }
+
+    public enum HackResult
+    {
+        None,
+        /// <summary>Розвʼязано: камеру/двері вимкнено.</summary>
+        Solved,
+        /// <summary>Хибний розвʼязок: блокування й тривога.</summary>
+        Wrong,
+        /// <summary>Вийшов час: блокування.</summary>
+        TimedOut,
     }
 
     // --- Тінь: лише коло навколо себе. Без камер на схемі, без комбінації. ---

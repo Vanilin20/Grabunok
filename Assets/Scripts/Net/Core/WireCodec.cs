@@ -80,6 +80,7 @@ namespace Banda.Net
         public const byte Version = 1;
         public const int MaxList = 4096;
         public const int MaxStringBytes = 512;
+        public const int MaxHackWires = 16;
 
         // ------------------------------------------------------------------ пакет
 
@@ -422,6 +423,19 @@ namespace Banda.Net
                     WriteVec(w, h.Guard);
                     w.Write(h.GuardFacing);
                     w.Write(h.Alert);
+                    w.Write(h.HackActive);
+                    w.Write(h.HackId);
+                    w.Write(h.HackTarget);
+                    w.Write(h.HackRight.Length);
+                    foreach (int c in h.HackRight)
+                    {
+                        w.Write(c);
+                    }
+
+                    w.Write(h.HackTimeLeft);
+                    w.Write(h.HackLockLeft);
+                    w.Write(h.HackResultSeq);
+                    w.Write((int)h.HackLastResult);
                     break;
                 case ShadowView s:
                     WriteVec(w, s.Position);
@@ -481,6 +495,26 @@ namespace Banda.Net
                     h.Guard = ReadVec(r);
                     h.GuardFacing = r.ReadSingle();
                     h.Alert = r.ReadBoolean();
+                    h.HackActive = r.ReadBoolean();
+                    h.HackId = r.ReadInt32();
+                    h.HackTarget = r.ReadInt32();
+                    int sockets = r.ReadInt32();
+                    if (sockets < 0 || sockets > MaxHackWires)
+                    {
+                        throw new ProtocolException("Задовга головоломка " + sockets);
+                    }
+
+                    h.HackRight = new int[sockets];
+                    for (int i = 0; i < sockets; i++)
+                    {
+                        h.HackRight[i] = r.ReadInt32();
+                    }
+
+                    h.HackTimeLeft = r.ReadSingle();
+                    h.HackLockLeft = r.ReadSingle();
+                    h.HackResultSeq = r.ReadInt32();
+                    int hackResult = r.ReadInt32();
+                    h.HackLastResult = Enum.IsDefined(typeof(HackResult), hackResult) ? (HackResult)hackResult : HackResult.None;
                     snap.View = h;
                     break;
                 case RoleId.Shadow:

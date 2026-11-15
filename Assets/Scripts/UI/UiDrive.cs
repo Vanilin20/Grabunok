@@ -4,6 +4,7 @@ using System.IO;
 using Banda.Core;
 using Banda.Net;
 using Banda.Heist;
+using Banda.HeistRuntime;
 using UnityEngine;
 
 namespace Banda.UI
@@ -130,8 +131,9 @@ namespace Banda.UI
             yield return Until(() => state.Phase == GamePhase.Heist, 8f, "справа почалась");
             yield return new WaitForSecondsRealtime(4f);
             yield return Shot("h05_heist_hacker");
+            yield return HackDemo();
             // Клієнт-Тінь у цей час рве зв'язок і повертається; хост бачить обрив у списку банди.
-            yield return new WaitForSecondsRealtime(14f);
+            yield return new WaitForSecondsRealtime(6f);
             yield return Shot("h06_heist_later");
             yield return new WaitForSecondsRealtime(14f);
             state.LeaveRoom();
@@ -139,6 +141,68 @@ namespace Banda.UI
             Verify("після виходу хост у меню", state.Phase == GamePhase.Menu);
             yield return Shot("h07_menu_after");
             yield return Quit();
+        }
+
+        /// <summary>Хакер: головоломка з дротами від відкриття до результату (успіх і провал), зі скріншотами.</summary>
+        private static IEnumerator HackDemo()
+        {
+            HackerScreen screen = UnityEngine.Object.FindFirstObjectByType<HackerScreen>(FindObjectsInactive.Include);
+            ITransport transport = HeistDirector.Instance != null ? HeistDirector.Instance.Transport : null;
+            Verify("екран Хакера й транспорт на місці", screen != null && transport != null && screen.Board != null);
+            if (screen == null || transport == null || screen.Board == null)
+            {
+                yield break;
+            }
+
+            HackBoard board = screen.Board;
+            RoleSnapshot last = null;
+            transport.SnapshotReceived += s => last = s;
+            yield return new WaitForSecondsRealtime(0.5f);
+
+            screen.TapTarget(0);
+            yield return Until(() => board.IsOpen && board.Mode == HackMode.Puzzle, 5f, "вікно взлому відкрилось після тапу по камері");
+            yield return new WaitForSecondsRealtime(0.5f);
+            yield return Shot("h10_hack_open");
+            int[] sol = HackPuzzle.Solution(board.Right);
+            Verify("головоломка прийшла від хоста (4 дроти)", board.Wires == HeistSim.HackWiresCamera);
+            board.DebugConnect(0, sol[0]);
+            board.DebugConnect(1, sol[1]);
+            board.DebugDragHalf(2, sol[2], 0.55f);
+            yield return new WaitForSecondsRealtime(0.25f);
+            yield return Shot("h11_hack_dragging");
+            board.DebugDrop(sol[2]);
+            board.DebugConnect(3, sol[3]);
+            yield return new WaitForSecondsRealtime(0.4f);
+            yield return Shot("h12_hack_ready");
+            board.DebugPressSubmit();
+            yield return Until(() => board.Mode == HackMode.Solved, 5f, "хост прийняв розвʼязок");
+            yield return new WaitForSecondsRealtime(0.25f);
+            yield return Shot("h13_hack_solved");
+            yield return Until(() => !board.IsOpen, 4f, "вікно закрилось після успіху");
+            yield return new WaitForSecondsRealtime(0.4f);
+            yield return Shot("h14_camera_off");
+            Verify("камера 1 вимкнена розвʼязаною головоломкою", last != null && last.View is HackerView hv && hv.CamerasOff.Count > 0 && hv.CamerasOff[0] > 0f);
+
+            // Провал: дроти навхрест.
+            screen.TapTarget(1);
+            yield return Until(() => board.IsOpen && board.Mode == HackMode.Puzzle, 5f, "друге вікно взлому");
+            int[] sol2 = HackPuzzle.Solution(board.Right);
+            for (int w = 0; w < board.Wires; w++)
+            {
+                board.DebugConnect(w, sol2[(w + 1) % board.Wires]);
+            }
+
+            yield return new WaitForSecondsRealtime(0.2f);
+            board.DebugPressSubmit();
+            yield return Until(() => board.Mode == HackMode.Locked, 5f, "хост відхилив хибний розвʼязок");
+            yield return new WaitForSecondsRealtime(0.2f);
+            yield return Shot("h15_hack_wrong");
+            Verify("хибний розвʼязок: тривога піднялась, камера 2 працює", last != null && last.Shared.Alarm > 0f && last.View is HackerView hw && hw.CamerasOff[1] <= 0f && hw.HackLockLeft > 0f);
+            board.PointerDown(new Vector2(HackBoardPainter.CancelRect.center.x, HackBoardPainter.CancelRect.center.y));
+            screen.TapTarget(1);
+            yield return new WaitForSecondsRealtime(0.3f);
+            Verify("під час блокування тап показує відлік, а не нову головоломку", board.Mode == HackMode.Locked);
+            yield return Shot("h16_hack_locked");
         }
 
         // ------------------------------------------------------------------ клієнт (Тінь)

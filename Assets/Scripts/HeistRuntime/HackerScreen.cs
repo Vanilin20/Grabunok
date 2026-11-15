@@ -8,7 +8,8 @@ using UnityEngine.UI;
 namespace Banda.HeistRuntime
 {
     /// <summary>
-    /// Екран Хакера: схема поверху на ноутбуці, камери й двері — тапом (ТЗ). Охоронець — червона точка з променем погляду.
+    /// Екран Хакера: схема поверху на ноутбуці. Тап по камері чи дверях відкриває вікно «Взлом» (HackBoard): головоломку
+    /// з дротами видає хост, розвʼязок перевіряє теж він — камера вимикається лише після цього. Охоронець — червона точка з променем погляду.
     /// Стрічка з камери шумить; коли камеру вимкнено — «ВИМКНЕНО» і зворотний відлік.
     /// Хакер не отримує позиції Тіні й комбінації — їх немає в HackerView (перевірено тестами).
     /// </summary>
@@ -33,14 +34,57 @@ namespace Banda.HeistRuntime
         private readonly List<TMP_Text> _cameraTimers = new List<TMP_Text>();
         private Vector2 _guardTarget;
         private float _noiseTime;
+        private HackBoard _board;
+        private TMP_Text _hint;
 
         protected override RoleId Role => RoleId.Hacker;
+
+        /// <summary>Вікно головоломки (для автоводія й тестів).</summary>
+        public HackBoard Board => _board;
 
         protected override void Awake()
         {
             base.Awake();
             _cameraTemplate.gameObject.SetActive(false);
-            _doorButton.onClick.AddListener(() => Send(HeistAction.DoorToggle()));
+            _doorButton.onClick.AddListener(() => StartHack(-1));
+
+            // Вікно «Взлом» лягає на місце схеми, під сканлайни й віньєтку ноутбука (вони мають лишатися поверх).
+            RectTransform laptop = (RectTransform)_schemeRoot.parent;
+            Transform scan = laptop.Find("Scanlines");
+            int index = scan != null ? scan.GetSiblingIndex() : laptop.childCount;
+            _board = HackBoard.Create(laptop, _schemeRoot.anchoredPosition, _feedStatus, index);
+            _board.Submitted += sockets => Send(HeistAction.HackSolve(sockets));
+            _board.Cancelled += () => Send(HeistAction.HackCancel());
+            Transform hint = laptop.Find("Hint");
+            if (hint != null && hint.TryGetComponent(out TMP_Text hintText))
+            {
+                _hint = hintText;
+                hintText.text = "ТАП ПО КАМЕРІ\nАБО ДВЕРЯХ:\nСПОЛУЧИ ДРОТИ\nОДНОГО КОЛЬОРУ";
+            }
+        }
+
+        protected override void OnShown(bool shown)
+        {
+            if (!shown && _board != null)
+            {
+                _board.Close();
+                _board.ResetSync();
+            }
+        }
+
+        /// <summary>Те саме, що тап по камері (індекс) або дверях (-1) — для автоводія й тестів.</summary>
+        public void TapTarget(int target) => StartHack(target);
+
+        /// <summary>Тап по цілі: хост видає головоломку. Під час блокування після провалу лише показуємо відлік.</summary>
+        private void StartHack(int target)
+        {
+            if (_board.LockLeft > 0.05f)
+            {
+                _board.ShowLocked();
+                return;
+            }
+
+            Send(HeistAction.HackStart(target));
         }
 
         protected override void OnStatic(RoleStatic data)
@@ -60,12 +104,14 @@ namespace Banda.HeistRuntime
                 cam.name = "Camera_" + i;
                 ((RectTransform)cam.transform).anchoredPosition = ToScheme(scheme.Cameras[i]);
                 int index = i;
-                cam.onClick.AddListener(() => Send(HeistAction.CameraOff(index)));
+                cam.onClick.AddListener(() => StartHack(index));
                 _cameras.Add(cam);
                 _cameraTimers.Add(cam.GetComponentInChildren<TMP_Text>(true));
             }
 
             ((RectTransform)_doorButton.transform).anchoredPosition = ToScheme(scheme.Door.Center);
+            _board.Close();
+            _board.ResetSync();
         }
 
         protected override void OnSnapshot(RoleSnapshot snapshot)
@@ -90,6 +136,11 @@ namespace Banda.HeistRuntime
             _feedStatus.text = anyOff ? "ВИМКНЕНО" : "НАЖИВО";
             _feedStatus.color = anyOff ? Palette.Danger : Palette.Safe;
             _alertLabel.gameObject.SetActive(view.Alert);
+            _board.Sync(view);
+            if (_hint != null)
+            {
+                _hint.text = _board.IsOpen ? "ТЯГНИ ДРІТ ВІД\nШТЕКЕРА ДО ГНІЗДА\nТОГО Ж КОЛЬОРУ" : "ТАП ПО КАМЕРІ\nАБО ДВЕРЯХ:\nСПОЛУЧИ ДРОТИ\nОДНОГО КОЛЬОРУ";
+            }
         }
 
         private void Update()

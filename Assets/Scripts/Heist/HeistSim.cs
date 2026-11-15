@@ -28,6 +28,15 @@ namespace Banda.Heist
         public const float AlarmSafeMistake = 10f;
         public const float AlarmAlertLevel = 50f;
         public const float BusyWindow = 2.5f;
+        // Головоломка Хакера (крок 9.1). Штраф за хибний розвʼязок: блокування нових спроб + трохи тривоги.
+        // Лише блокування було б безкарним, коли поруч ніхто не загрожує; лише тривога — спамом навмання за 1–2 с.
+        // Тож хибний розвʼязок коштує обох; перевищення часу — лише коротке блокування (не помилка, а повільність).
+        public const int HackWiresCamera = 4;
+        public const int HackWiresDoor = 5;
+        public const float HackTimeLimit = 15f;
+        public const float HackLockWrong = 5f;
+        public const float HackLockTimeout = 2f;
+        public const float AlarmHackWrong = 6f;
         public const int ComboRange = 40; // цифри на диску сейфа: 0..39
         public const int ComboLength = 3;
 
@@ -42,11 +51,21 @@ namespace Banda.Heist
         private readonly Dictionary<RoleId, float> _lastAction = new Dictionary<RoleId, float>();
         private int _guardTarget = 1;
         private float _elapsed;
+        private readonly Random _hackRng;
+        private bool _hackActive;
+        private int _hackId;
+        private int _hackTarget = -1;
+        private int[] _hackRight = Array.Empty<int>();
+        private float _hackTimeLeft;
+        private float _hackLock;
+        private int _hackResultSeq;
+        private HackResult _hackLast = HackResult.None;
 
         public HeistSim(HeistLevel level, int seed)
         {
             _level = level ?? throw new ArgumentNullException(nameof(level));
             Random rng = new Random(seed);
+            _hackRng = new Random(unchecked(seed * 31 + 7919));
             Combo = new int[ComboLength];
             for (int i = 0; i < ComboLength; i++)
             {
@@ -88,6 +107,14 @@ namespace Banda.Heist
 
         public float CameraOffLeft(int index) => _camerasOff[index];
 
+        public bool HackActive => _hackActive;
+        public int HackTarget => _hackTarget;
+        public float HackLockLeft => _hackLock;
+        public HackResult HackLastResult => _hackLast;
+
+        /// <summary>Кольори правих гнізд поточної головоломки (копія; порожній, коли головоломки нема).</summary>
+        public int[] HackRight => (int[])_hackRight.Clone();
+
         public void Tick(float delta)
         {
             if (IsFinished)
@@ -102,6 +129,7 @@ namespace Banda.Heist
                 _camerasOff[i] = MathF.Max(_camerasOff[i] - delta, 0f);
             }
 
+            TickHack(delta);
             MoveGuard(delta);
             MoveShadow(delta);
             Detect(delta);
@@ -146,27 +174,150 @@ namespace Banda.Heist
         {
             switch (action.Kind)
             {
+                // Прямі «вимкни камеру / двері» — відхиляємо: тільки розвʼязана головоломка щось вимикає.
                 case HeistActionKind.CameraOff:
-                    if (action.Index < 0 || action.Index >= _camerasOff.Count)
-                    {
-                        return false;
-                    }
-
-                    _camerasOff[action.Index] = CameraOffTime;
-                    MarkBusy(RoleId.Hacker);
-                    return true;
                 case HeistActionKind.DoorToggle:
-                    // Не закриваємо двері на Тіні — інакше вона застрягне в стіні.
-                    if (DoorOpen && _level.Door.Grow(ShadowHalf).HasPoint(ShadowPos))
+                    return false;
+                case HeistActionKind.HackStart:
+                    return StartHack(action.Index);
+                case HeistActionKind.HackSolve:
+                    return SolveHack(action.Numbers ?? Array.Empty<int>());
+                case HeistActionKind.HackCancel:
+                    if (!_hackActive)
                     {
                         return false;
                     }
 
-                    DoorOpen = !DoorOpen;
-                    MarkBusy(RoleId.Hacker);
+                    _hackActive = false;
                     return true;
                 default:
                     return false;
+            }
+        }
+
+        private bool StartHack(int target)
+        {
+            bool isDoor = target == -1;
+            if (!isDoor && (target < 0 || target >= _camerasOff.Count))
+            {
+                return false;
+            }
+
+            // Двері не закриваємо на Тіні — інакше вона застрягне в стіні.
+            if (isDoor && DoorOpen && _level.Door.Grow(ShadowHalf).HasPoint(ShadowPos))
+            {
+                return false;
+            }
+
+            if (_hackLock > 0f)
+            {
+                return false;
+            }
+
+            int wires = isDoor ? HackWiresDoor : HackWiresCamera;
+            int[] right = new int[wires];
+            do
+            {
+                for (int i = 0; i < wires; i++)
+                {
+                    right[i] = i;
+                }
+
+                for (int i = wires - 1; i > 0; i--)
+                {
+                    int j = _hackRng.Next(0, i + 1);
+                    (right[i], right[j]) = (right[j], right[i]);
+                }
+            }
+            while (IsIdentity(right));
+
+            _hackActive = true;
+            _hackTarget = target;
+            _hackRight = right;
+            _hackTimeLeft = HackTimeLimit;
+            _hackId++;
+            MarkBusy(RoleId.Hacker);
+            return true;
+        }
+
+        private static bool IsIdentity(int[] right)
+        {
+            for (int i = 0; i < right.Length; i++)
+            {
+                if (right[i] != i)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        /// <summary>Перевірка розвʼязку: дріт i (колір i) має стояти в гнізді з кольором i. Вірить лише власним даним хоста.</summary>
+        private bool SolveHack(int[] sockets)
+        {
+            if (!_hackActive)
+            {
+                return false;
+            }
+
+            MarkBusy(RoleId.Hacker);
+            bool correct = sockets.Length == _hackRight.Length;
+            for (int i = 0; correct && i < sockets.Length; i++)
+            {
+                correct = sockets[i] >= 0 && sockets[i] < _hackRight.Length && _hackRight[sockets[i]] == i;
+            }
+
+            _hackActive = false;
+            if (!correct)
+            {
+                FinishHack(HackResult.Wrong);
+                _hackLock = HackLockWrong;
+                AddAlarm(AlarmHackWrong);
+                return true;
+            }
+
+            if (_hackTarget == -1)
+            {
+                if (DoorOpen && _level.Door.Grow(ShadowHalf).HasPoint(ShadowPos))
+                {
+                    // Тінь устигла стати в дверях, поки йшла головоломка: двері не закриваємо, штрафу нема.
+                    FinishHack(HackResult.TimedOut);
+                    return true;
+                }
+
+                DoorOpen = !DoorOpen;
+            }
+            else
+            {
+                _camerasOff[_hackTarget] = CameraOffTime;
+            }
+
+            FinishHack(HackResult.Solved);
+            return true;
+        }
+
+        private void FinishHack(HackResult result)
+        {
+            _hackLast = result;
+            _hackResultSeq++;
+        }
+
+        private void TickHack(float delta)
+        {
+            _hackLock = MathF.Max(_hackLock - delta, 0f);
+            if (!_hackActive)
+            {
+                return;
+            }
+
+            _hackTimeLeft -= delta;
+            if (_hackTimeLeft <= 0f)
+            {
+                _hackActive = false;
+                _hackTimeLeft = 0f;
+                FinishHack(HackResult.TimedOut);
+                _hackLock = HackLockTimeout;
             }
         }
 
@@ -495,6 +646,14 @@ namespace Banda.Heist
                         Guard = GuardPos,
                         GuardFacing = GuardFacing,
                         Alert = Alert,
+                        HackActive = _hackActive,
+                        HackId = _hackId,
+                        HackTarget = _hackTarget,
+                        HackRight = _hackActive ? (int[])_hackRight.Clone() : Array.Empty<int>(),
+                        HackTimeLeft = _hackActive ? _hackTimeLeft : 0f,
+                        HackLockLeft = _hackLock,
+                        HackResultSeq = _hackResultSeq,
+                        HackLastResult = _hackLast,
                     };
                 case RoleId.Shadow:
                     return BuildShadowView();

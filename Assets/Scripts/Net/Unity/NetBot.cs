@@ -278,10 +278,27 @@ namespace Banda.Net
             yield return Wait(1.5f);
             Check("2. Хакер отримує лише дані своєї ролі (без комбінації й позиції Тіні)", probe.RolesSeen.Count == 1 && probe.RolesSeen.Contains(RoleId.Hacker));
 
-            // 6: камера вимикається після дії Хакера.
+            // 6: камера вимикається лише розвʼязаною головоломкою з дротами; хибний розвʼязок і пряма дія — ні.
             me.Transport.Send(HeistAction.CameraOff(0));
+            yield return Wait(0.6f);
+            Check("6. пряма дія CameraOff камеру не вимикає", probe.Snapshot.View is HackerView d0 && d0.CamerasOff[0] <= 0f);
+            me.Transport.Send(HeistAction.HackStart(0));
+            yield return Until(() => probe.Snapshot.View is HackerView hp && hp.HackActive && hp.HackRight.Length >= 4, 5f, "головоломка з дротами");
+            HackerView puzzle = probe.Snapshot.View as HackerView;
+            Check("6. хост видав головоломку з дротами лише Хакеру", puzzle != null && puzzle.HackActive && puzzle.HackRight.Length == HeistSim.HackWiresCamera);
+            int[] good = HackPuzzle.Solution(puzzle.HackRight);
+            int[] bad = (int[])good.Clone();
+            (bad[0], bad[1]) = (bad[1], bad[0]);
+            me.Transport.Send(HeistAction.HackSolve(bad));
+            yield return Until(() => probe.Snapshot.View is HackerView hw && hw.HackLastResult == HackResult.Wrong, 5f, "провал головоломки");
+            Check("6. хибний розвʼязок: камера працює, блокування й тривога", probe.Snapshot.View is HackerView hb && hb.CamerasOff[0] <= 0f && hb.HackLockLeft > 0f && probe.Snapshot.Shared.Alarm > 0f);
+            yield return Until(() => probe.Snapshot.View is HackerView hl && hl.HackLockLeft <= 0f, 8f, "кінець блокування");
+            me.Transport.Send(HeistAction.HackStart(0));
+            yield return Until(() => probe.Snapshot.View is HackerView hp2 && hp2.HackActive && hp2.HackId > puzzle.HackId, 5f, "друга головоломка");
+            HackerView second = probe.Snapshot.View as HackerView;
+            me.Transport.Send(HeistAction.HackSolve(HackPuzzle.Solution(second.HackRight)));
             yield return Until(() => probe.Snapshot.View is HackerView hv && hv.CamerasOff.Count > 0 && hv.CamerasOff[0] > 0f, 5f, "камера вимкнена");
-            Check("6. камера вимикається після дії Хакера", probe.Snapshot.View is HackerView v && v.CamerasOff[0] > 0f);
+            Check("6. камера вимикається після розвʼязаної головоломки", probe.Snapshot.View is HackerView v && v.CamerasOff[0] > 0f && v.HackLastResult == HackResult.Solved);
 
             // 6: помилка на сейфі піднімає тривогу (її робить бот зломщика); у спільному стані троє.
             HeistSim sim = host.Room.Session.Sim;

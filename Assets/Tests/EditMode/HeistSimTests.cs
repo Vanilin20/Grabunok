@@ -123,9 +123,210 @@ namespace Banda.Tests
             HeistSession session = NewSession();
             Assert.That(session.Submit("t-shadow", HeistAction.CameraOff(0)), Is.False, "Тінь не може вимкнути камеру");
             Assert.That(session.Sim.CameraOffLeft(0), Is.EqualTo(0f));
-            Assert.That(session.Submit("t-hacker", HeistAction.CameraOff(0)), Is.True);
-            Assert.That(session.Sim.CameraOffLeft(0), Is.GreaterThan(0f), "камера 0 вимкнулась після дії Хакера");
-            Assert.That(session.Submit("невідомий", HeistAction.DoorToggle()), Is.False);
+            Assert.That(session.Submit("t-hacker", HeistAction.CameraOff(0)), Is.False, "пряма дія без головоломки відхиляється");
+            Assert.That(session.Sim.CameraOffLeft(0), Is.EqualTo(0f));
+            Assert.That(session.Submit("t-hacker", HeistAction.HackStart(0)), Is.True);
+            Assert.That(session.Submit("t-hacker", HeistAction.HackSolve(HackPuzzle.Solution(session.Sim.HackRight))), Is.True);
+            Assert.That(session.Sim.CameraOffLeft(0), Is.GreaterThan(0f), "камера 0 вимкнулась після розвʼязаної головоломки");
+            Assert.That(session.Submit("невідомий", HeistAction.HackStart(-1)), Is.False);
+        }
+
+        // --- Головоломка Хакера (крок 9.1) ------------------------------------------------------
+
+        [Test]
+        public void Hack_DirectCameraOffAndDoorToggle_AreRejected()
+        {
+            HeistSim sim = NewSim();
+            Assert.That(sim.Apply(RoleId.Hacker, HeistAction.CameraOff(0)), Is.False);
+            Assert.That(sim.Apply(RoleId.Hacker, HeistAction.DoorToggle()), Is.False);
+            Assert.That(sim.CameraOffLeft(0), Is.EqualTo(0f));
+            Assert.That(sim.DoorOpen, Is.False);
+        }
+
+        [Test]
+        public void Hack_Start_IssuesNonTrivialPuzzleInHackerViewOnly()
+        {
+            HeistSim sim = NewSim();
+            Assert.That(sim.Apply(RoleId.Hacker, HeistAction.HackStart(0)), Is.True);
+            HackerView view = (HackerView)sim.ViewFor(RoleId.Hacker);
+            Assert.That(view.HackActive, Is.True);
+            Assert.That(view.HackTarget, Is.EqualTo(0));
+            Assert.That(view.HackRight.Length, Is.EqualTo(HeistSim.HackWiresCamera));
+            Assert.That(view.HackRight.OrderBy(x => x), Is.EqualTo(Enumerable.Range(0, HeistSim.HackWiresCamera)), "кожен колір рівно раз");
+            Assert.That(view.HackRight, Is.Not.EqualTo(Enumerable.Range(0, HeistSim.HackWiresCamera)), "не готовий розвʼязок");
+            Assert.That(view.HackTimeLeft, Is.EqualTo(HeistSim.HackTimeLimit).Within(0.01f));
+            Assert.That(((ShadowView)sim.ViewFor(RoleId.Shadow)).GetType().GetFields().Any(f => f.Name.StartsWith("Hack")), Is.False);
+            Assert.That(sim.Apply(RoleId.Hacker, HeistAction.HackStart(1)), Is.True, "нову можна взяти замість старої");
+            Assert.That(sim.Apply(RoleId.Hacker, HeistAction.HackStart(99)), Is.False, "камери 99 нема");
+            Assert.That(sim.Apply(RoleId.Hacker, HeistAction.HackStart(-1)), Is.True);
+            Assert.That(sim.HackRight.Length, Is.EqualTo(HeistSim.HackWiresDoor), "двері складніші за камеру");
+        }
+
+        [Test]
+        public void Hack_Puzzle_IsDeterministicPerSeed()
+        {
+            HeistSim a = NewSim(null, 5);
+            HeistSim b = NewSim(null, 5);
+            a.Apply(RoleId.Hacker, HeistAction.HackStart(0));
+            b.Apply(RoleId.Hacker, HeistAction.HackStart(0));
+            Assert.That(a.HackRight, Is.EqualTo(b.HackRight));
+        }
+
+        [Test]
+        public void Hack_CorrectSolution_TurnsCameraOffAndOpensDoor()
+        {
+            HeistSim sim = NewSim();
+            Assert.That(HackPuzzle.SolveNow(sim, 1), Is.True);
+            Assert.That(sim.CameraOffLeft(1), Is.GreaterThan(0f));
+            Assert.That(sim.CameraOffLeft(0), Is.EqualTo(0f), "інші камери працюють");
+            Assert.That(sim.HackActive, Is.False);
+            Assert.That(sim.HackLastResult, Is.EqualTo(HackResult.Solved));
+            Assert.That(sim.Alarm, Is.EqualTo(0f));
+            Assert.That(HackPuzzle.SolveNow(sim, -1), Is.True);
+            Assert.That(sim.DoorOpen, Is.True);
+        }
+
+        [Test]
+        public void Hack_WrongSolution_DoesNotSwitchOffAndPenalizes()
+        {
+            HeistSim sim = NewSim();
+            sim.Apply(RoleId.Hacker, HeistAction.HackStart(0));
+            int[] right = sim.HackRight;
+            int[] good = HackPuzzle.Solution(right);
+            int[] swapped = (int[])good.Clone();
+            (swapped[0], swapped[1]) = (swapped[1], swapped[0]);
+            sim.Apply(RoleId.Hacker, HeistAction.HackSolve(swapped));
+            Assert.That(sim.CameraOffLeft(0), Is.EqualTo(0f), "хибний розвʼязок камеру не вимикає");
+            Assert.That(sim.HackActive, Is.False);
+            Assert.That(sim.HackLastResult, Is.EqualTo(HackResult.Wrong));
+            Assert.That(sim.Alarm, Is.EqualTo(HeistSim.AlarmHackWrong).Within(0.01f), "штраф: тривога");
+            Assert.That(sim.HackLockLeft, Is.EqualTo(HeistSim.HackLockWrong).Within(0.01f));
+            Assert.That(sim.Apply(RoleId.Hacker, HeistAction.HackStart(0)), Is.False, "штраф: поки блокування, нову не дадуть");
+            Run(sim, HeistSim.HackLockWrong + 0.2f);
+            Assert.That(sim.Apply(RoleId.Hacker, HeistAction.HackStart(0)), Is.True, "після блокування знову можна");
+        }
+
+        [Test]
+        public void Hack_GarbageSolutions_AreWrongNotSuccess()
+        {
+            int[][] garbage =
+            {
+                new int[0],
+                new[] { 0, 0, 0, 0 },
+                new[] { -1, 1, 2, 3 },
+                new[] { 0, 1, 2, 99 },
+                new[] { 0, 1, 2, 3, 4 },
+                new[] { 0, 1 },
+            };
+            foreach (int[] g in garbage)
+            {
+                HeistSim sim = NewSim();
+                sim.Apply(RoleId.Hacker, HeistAction.HackStart(0));
+                if (HackPuzzle.Solution(sim.HackRight).SequenceEqual(g))
+                {
+                    continue;
+                }
+
+                sim.Apply(RoleId.Hacker, HeistAction.HackSolve(g));
+                Assert.That(sim.CameraOffLeft(0), Is.EqualTo(0f), string.Join(",", g));
+                Assert.That(sim.HackLastResult, Is.EqualTo(HackResult.Wrong));
+            }
+        }
+
+        [Test]
+        public void Hack_SolveWithoutPuzzle_IsRejected_AndOtherRolesCannotHack()
+        {
+            HeistSim sim = NewSim();
+            Assert.That(sim.Apply(RoleId.Hacker, HeistAction.HackSolve(0, 1, 2, 3)), Is.False, "розвʼязку без виданої головоломки не існує");
+            Assert.That(sim.Alarm, Is.EqualTo(0f));
+            Assert.That(sim.Apply(RoleId.Shadow, HeistAction.HackStart(0)), Is.False);
+            Assert.That(sim.Apply(RoleId.Safecracker, HeistAction.HackStart(0)), Is.False);
+            sim.Apply(RoleId.Hacker, HeistAction.HackStart(0));
+            Assert.That(sim.Apply(RoleId.Shadow, HeistAction.HackSolve(HackPuzzle.Solution(sim.HackRight))), Is.False, "чужий розвʼязок не вмикає камеру");
+            Assert.That(sim.Apply(RoleId.Safecracker, HeistAction.HackSolve(HackPuzzle.Solution(sim.HackRight))), Is.False);
+            Assert.That(sim.CameraOffLeft(0), Is.EqualTo(0f));
+            Assert.That(sim.HackActive, Is.True, "чужі спроби головоломку Хакера не чіпають");
+        }
+
+        [Test]
+        public void Hack_SolutionIsSingleUse_ReplayDoesNothing()
+        {
+            HeistSim sim = NewSim();
+            sim.Apply(RoleId.Hacker, HeistAction.HackStart(0));
+            int[] good = HackPuzzle.Solution(sim.HackRight);
+            Assert.That(sim.Apply(RoleId.Hacker, HeistAction.HackSolve(good)), Is.True);
+            Run(sim, HeistSim.CameraOffTime + 0.5f);
+            Assert.That(sim.CameraOffLeft(0), Is.EqualTo(0f));
+            Assert.That(sim.Apply(RoleId.Hacker, HeistAction.HackSolve(good)), Is.False, "повтор старого розвʼязку не працює");
+            Assert.That(sim.CameraOffLeft(0), Is.EqualTo(0f));
+        }
+
+        [Test]
+        public void Hack_OldSolutionDoesNotFitNewPuzzle()
+        {
+            // Розвʼязок від попередньої головоломки з тими самими номерами цілі хост не приймає, якщо гнізда інші.
+            for (int seed = 1; seed < 40; seed++)
+            {
+                HeistSim sim = NewSim(null, seed);
+                sim.Apply(RoleId.Hacker, HeistAction.HackStart(0));
+                int[] first = HackPuzzle.Solution(sim.HackRight);
+                sim.Apply(RoleId.Hacker, HeistAction.HackStart(0));
+                if (first.SequenceEqual(HackPuzzle.Solution(sim.HackRight)))
+                {
+                    continue;
+                }
+
+                sim.Apply(RoleId.Hacker, HeistAction.HackSolve(first));
+                Assert.That(sim.CameraOffLeft(0), Is.EqualTo(0f), "seed " + seed);
+                return;
+            }
+
+            Assert.Fail("не знайшлось двох різних головоломок");
+        }
+
+        [Test]
+        public void Hack_Timeout_LocksBrieflyWithoutAlarm()
+        {
+            HeistSim sim = NewSim();
+            sim.Apply(RoleId.Hacker, HeistAction.HackStart(0));
+            Run(sim, HeistSim.HackTimeLimit + 0.3f);
+            Assert.That(sim.HackActive, Is.False);
+            Assert.That(sim.HackLastResult, Is.EqualTo(HackResult.TimedOut));
+            Assert.That(sim.HackLockLeft, Is.GreaterThan(0f));
+            Assert.That(sim.Alarm, Is.EqualTo(0f), "повільність тривоги не піднімає");
+            Assert.That(sim.Apply(RoleId.Hacker, HeistAction.HackSolve(0, 1, 2, 3)), Is.False, "після закінчення часу розвʼязку не приймають");
+        }
+
+        [Test]
+        public void Hack_Cancel_HasNoPenalty()
+        {
+            HeistSim sim = NewSim();
+            sim.Apply(RoleId.Hacker, HeistAction.HackStart(0));
+            Assert.That(sim.Apply(RoleId.Hacker, HeistAction.HackCancel()), Is.True);
+            Assert.That(sim.HackActive, Is.False);
+            Assert.That(sim.Alarm, Is.EqualTo(0f));
+            Assert.That(sim.Apply(RoleId.Hacker, HeistAction.HackStart(0)), Is.True, "скасування не блокує");
+        }
+
+        [Test]
+        public void Hack_WireCodec_RoundTripsPuzzleAndActions()
+        {
+            HeistSim sim = NewSim();
+            sim.Apply(RoleId.Hacker, HeistAction.HackStart(1));
+            RoleSnapshot snap = new RoleSnapshot { View = sim.ViewFor(RoleId.Hacker) };
+            byte[] bytes = Banda.Net.WireCodec.Encode(Banda.Net.MsgType.Snapshot, w => Banda.Net.WireCodec.WriteSnapshot(w, snap));
+            Banda.Net.WireCodec.ReadType(bytes, out System.IO.BinaryReader r);
+            HackerView back = (HackerView)Banda.Net.WireCodec.ReadSnapshot(r).View;
+            Assert.That(back.HackActive, Is.True);
+            Assert.That(back.HackTarget, Is.EqualTo(1));
+            Assert.That(back.HackRight, Is.EqualTo(sim.HackRight));
+            Assert.That(back.HackId, Is.EqualTo(1));
+
+            byte[] act = Banda.Net.WireCodec.Encode(Banda.Net.MsgType.Action, w => Banda.Net.WireCodec.WriteAction(w, HeistAction.HackSolve(2, 0, 1, 3)));
+            Banda.Net.WireCodec.ReadType(act, out System.IO.BinaryReader ar);
+            HeistAction a = Banda.Net.WireCodec.ReadAction(ar);
+            Assert.That(a.Kind, Is.EqualTo(HeistActionKind.HackSolve));
+            Assert.That(a.Numbers, Is.EqualTo(new[] { 2, 0, 1, 3 }));
         }
 
         [Test]
@@ -150,7 +351,7 @@ namespace Banda.Tests
         public void Camera_SeesShadow_AlarmGrows30PerSecond()
         {
             HeistSim sim = NewSim();
-            sim.Apply(RoleId.Hacker, HeistAction.DoorToggle());
+            HackPuzzle.SolveNow(sim, -1);
             Vec2 cam = sim.Level.Cameras[0];
             WalkPath(sim, (3, 12), (16, 12));
             WalkTo(sim, cam + new Vec2(0f, 20f));
@@ -167,7 +368,7 @@ namespace Banda.Tests
             Vec2 cam = sim.Level.Cameras[0];
             WalkPath(sim, (3, 12), (16, 12));
             // Камера вимикається на 6 с — Хакер тисне, коли Тінь уже на підході.
-            sim.Apply(RoleId.Hacker, HeistAction.CameraOff(0));
+            HackPuzzle.SolveNow(sim, 0);
             WalkTo(sim, cam + new Vec2(0f, 20f), 3f);
             float before = sim.Alarm;
             sim.Tick(0.5f);
@@ -260,10 +461,10 @@ namespace Banda.Tests
         {
             HeistSim sim = NewSim();
             sim.Apply(RoleId.Safecracker, HeistAction.SafeTry(sim.Combo));
-            sim.Apply(RoleId.Hacker, HeistAction.DoorToggle());
+            HackPuzzle.SolveNow(sim, -1);
             // Вздовж вітрин → правий прохід → двері підсобки → до сейфа; втеча — задніми дверима b.
-            sim.Apply(RoleId.Hacker, HeistAction.CameraOff(0));
-            sim.Apply(RoleId.Hacker, HeistAction.CameraOff(1));
+            HackPuzzle.SolveNow(sim, 0);
+            HackPuzzle.SolveNow(sim, 1);
             WalkPath(sim, (3, 12), (16, 12), (16, 5.5f), (23, 5.5f), (23, 1));
             Assert.That(sim.Apply(RoleId.Shadow, HeistAction.Take()), Is.True, "Тінь бере здобич біля відчиненого сейфа");
             WalkPath(sim, (23, 5.5f), (24.4f, 5.5f), (24.4f, 7.8f));
@@ -290,14 +491,14 @@ namespace Banda.Tests
         {
             HeistSim sim = NewSim();
             Box door = sim.Level.Door;
-            Assert.That(sim.Apply(RoleId.Hacker, HeistAction.CameraOff(0)), Is.True);
+            Assert.That(HackPuzzle.SolveNow(sim, 0), Is.True);
             WalkPath(sim, (3, 12), (16, 12));
             WalkTo(sim, new Vec2(door.X - 6f, door.Center.Y));
             WalkTo(sim, new Vec2(door.Right + 8f, door.Center.Y), 2f);
             Assert.That(sim.ShadowPos.X, Is.LessThan(door.X), "зачинені двері не пропускають");
-            sim.Apply(RoleId.Hacker, HeistAction.DoorToggle());
+            HackPuzzle.SolveNow(sim, -1);
             WalkTo(sim, door.Center, 2f);
-            Assert.That(sim.Apply(RoleId.Hacker, HeistAction.DoorToggle()), Is.False, "двері не зачиняються на Тіні");
+            Assert.That(HackPuzzle.SolveNow(sim, -1), Is.False, "двері не зачиняються на Тіні");
             Assert.That(sim.DoorOpen, Is.True);
         }
 
@@ -329,7 +530,7 @@ namespace Banda.Tests
         {
             HeistSim sim = NewSim();
             Assert.That(sim.StatusFor(RoleId.Hacker), Is.EqualTo(PlayerStatus.Waiting));
-            sim.Apply(RoleId.Hacker, HeistAction.DoorToggle());
+            HackPuzzle.SolveNow(sim, -1);
             Assert.That(sim.StatusFor(RoleId.Hacker), Is.EqualTo(PlayerStatus.Busy));
             sim.Tick(HeistSim.BusyWindow + 0.1f);
             Assert.That(sim.StatusFor(RoleId.Hacker), Is.EqualTo(PlayerStatus.Waiting));
@@ -348,12 +549,14 @@ namespace Banda.Tests
             transport.SnapshotReceived += s => lastSnap = s;
             transport.Begin();
             Assert.That(lastStatic, Is.InstanceOf<ShadowStatic>());
-            transport.Send(HeistAction.CameraOff(0));
-            Assert.That(session.Sim.CameraOffLeft(0), Is.EqualTo(0f), "з екрана Тіні камеру не вимкнути");
+            transport.Send(HeistAction.HackStart(0));
+            Assert.That(session.Sim.HackActive, Is.False, "з екрана Тіні головоломку не почати");
             Assert.That(transport.SwitchRole(RoleId.Hacker), Is.True);
             Assert.That(lastStatic, Is.InstanceOf<HackerStatic>());
             Assert.That(lastSnap.View, Is.InstanceOf<HackerView>());
-            transport.Send(HeistAction.CameraOff(0));
+            transport.Send(HeistAction.HackStart(0));
+            Assert.That(session.Sim.HackActive, Is.True);
+            transport.Send(HeistAction.HackSolve(HackPuzzle.Solution(session.Sim.HackRight)));
             Assert.That(session.Sim.CameraOffLeft(0), Is.GreaterThan(0f));
             int snapshots = 0;
             transport.SnapshotReceived += _ => snapshots++;
