@@ -109,6 +109,15 @@ Unity.exe -batchmode -nographics -projectPath . -runTests -testPlatform EditMode
 - Налаштування імпорту арту (Point, без стиснення, 1 px = 1 одиниця, нормалі) — `BandaAssetSetup` (**Banda → 1. Налаштувати ассети**).
 - Генератори арту (`Assets/Scripts/ArtGen`, збірка лише для редактора) — інструмент, що створює PNG (**Banda → 3. Згенерувати арт справи**). Після генерації джерело правди — PNG у `Assets/Art/`; генератори не потрапляють у збірку гри.
 
+## Aseprite
+- Шлях: `D:\SteamLibrary\steamapps\common\Aseprite\Aseprite.exe` (пакетний режим: `-b`).
+- Спрайти зберігаємо як `.aseprite` у `Assets/Art/Source/` — з шарами й тегами анімацій (`idle_down`, `walk_down`, `idle_up`, `walk_up`, `idle_side`, `walk_side`; idle — свій для кожного напрямку: спокій + вдих). PNG-стрічки експортуються з них; руками PNG не правимо.
+- Палітра — `docs/art/palette.gpl`, імпортується в кожен файл.
+- Правки робимо Lua-скриптами в `tools/aseprite/` через `-b --script` (параметри — `--script-param ключ=значення`).
+- Іван може правити `.aseprite` руками в Aseprite; після цього Claude перезбирає експорт.
+- Персонажі (Тінь, Охоронець): `Assets/Art/Source/<id>.aseprite` → `bash tools/aseprite/export_characters.sh` → `Assets/Art/Characters/<id>_sheet.png` (8×4 кадри по 32 px: рядки вниз, праворуч = дзеркало профілю, вгору, ліворуч; стовпці idle, вдих, 6 кроків) і `<id>_halo.png` (маска силуету для rim).
+- Нова генерація (PixelLab тощо) заходить через `tools/art/assemble_walk.py` → шари → `tools/aseprite/import_character.lua` → `.aseprite`; ручні правки в `.aseprite` після цього ним не затираються без явного рішення.
+
 ## Відповідність термінів Godot → Unity
 Стандарти арту й світла вище написані мовою Godot і лишаються дослівно. У Unity вони означають:
 

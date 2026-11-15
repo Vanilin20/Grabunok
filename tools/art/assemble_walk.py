@@ -4,7 +4,9 @@
   Assets/Art/Characters/<id>_keys.png            — ключові пози, зведені до палітри (кадри 0 front, 1 back, 2 side — дивиться ліворуч)
   Assets/Art/Incoming/<id>_walk_<dir>_pixellab.png — 7 кадрів (0 — вхідна поза, 1..6 — ходьба), dir = front/back/side
 Вихід:
-  Assets/Art/Characters/<id>_sheet.png — рядки: вниз, праворуч, вгору, ліворуч; стовпці: idle, вдих, 6 кадрів ходьби
+  <out_dir>/<id>_body.png і <id>_flashlight.png — шари-стрічки для tools/aseprite/import_character.lua
+  (24 кадри: вниз ×8, вгору ×8, профіль-ліворуч ×8; у рядку: idle, вдих, 6 кадрів ходьби).
+  Стрічки для Unity експортуються з .aseprite: tools/aseprite/export_characters.sh
 
 Обробка:
   - колір кожного пікселя → найближчий з кольорів ключових поз (палітра персонажа, без нових тонів);
@@ -12,8 +14,9 @@
     PixelLab губить маску в частині кадрів;
   - спина: верх із ключової пози + ноги з ходьби анфас (у генерації ззаду ноги майже не рухаються);
   - праворуч = дзеркало профілю.
-Запуск: python -I tools/art/assemble_walk.py shadow
+Запуск: python -I tools/art/assemble_walk.py shadow [out_dir]
 """
+import os
 import sys
 from PIL import Image
 
@@ -234,33 +237,6 @@ def flashlight(frame: Image.Image, direction: str, gpl: dict) -> tuple:
     return lens
 
 
-def halo(sheet: Image.Image) -> Image.Image:
-    """Силует для rim з боку джерела: точна маска персонажа (білий), кадр у кадр зі стрічкою.
-    Малюється під персонажем зі зсувом 1 px до найближчого джерела — кольорова смужка видна лише з освітленого боку."""
-    src = sheet.load()
-    out = Image.new("RGBA", sheet.size, (0, 0, 0, 0))
-    px = out.load()
-    w, h = sheet.size
-    for y in range(h):
-        for x in range(w):
-            if src[x, y][3] >= 128:
-                px[x, y] = (255, 255, 255, 255)
-    return out
-
-
-def rim_right(frame: Image.Image, color: tuple) -> Image.Image:
-    """Піксель під правим контуром у кожному рядку — колір rim (контур лишається темним)."""
-    out = frame.copy()
-    px = out.load()
-    for y in range(CELL):
-        for x in range(CELL - 1, 0, -1):
-            if px[x, y][3] >= 128:
-                if px[x - 1, y][3] >= 128:
-                    px[x - 1, y] = color
-                break
-    return out
-
-
 CONFIG = {
     # keys: індекси front/back/side у <id>_keys.png (side дивиться ліворуч); back_src — окрема генерація виду ззаду.
     "shadow": {"keys": (0, 1, 2), "back_src": None, "side_replace": {3: 0}, "flashlight": False},
@@ -306,6 +282,7 @@ def main() -> None:
     down = [front_key, breath(front_key)] + front
     up = [back_key, breath(back_key)] + back
     left = [side_key, breath(side_key)] + [f.copy() for f in side]
+    body = {"down": [f.copy() for f in down], "up": [f.copy() for f in up], "left": [f.copy() for f in left]}
     if cfg["flashlight"]:
         lenses = {}
         for name, row in (("down", down), ("up", up), ("left", left)):
@@ -316,19 +293,33 @@ def main() -> None:
             ax = sum(p[0] for p in pts) / len(pts) + 0.5 - CELL / 2
             ay = CELL / 2 - (sum(p[1] for p in pts) / len(pts) + 0.5)
             print(f"lens {name}: ({ax:.1f}, {ay:.1f})")
-    right = [f.transpose(Image.FLIP_LEFT_RIGHT) for f in left]
 
-    rows = [down, right, up, left]
-    if cfg.get("rim"):
-        # Rim-світло праворуч (вітрини й неон за спиною): Тінь Unlit, тож кант запікається в спрайт.
-        rows = [[rim_right(f, gpl[cfg["rim"]]) for f in row] for row in rows]
-    sheet = Image.new("RGBA", (8 * CELL, 4 * CELL), (0, 0, 0, 0))
-    for r, row in enumerate(rows):
-        for c, fr in enumerate(row):
-            sheet.paste(fr, (c * CELL, r * CELL))
-    sheet.save(f"Assets/Art/Characters/{cid}_sheet.png")
-    halo(sheet).save(f"Assets/Art/Characters/{cid}_halo.png")
-    print(f"{cid}: palette {len(pal)}, sheet {sheet.size}")
+    # Вихід — шари для Aseprite (tools/aseprite/import_character.lua), а не готові стрічки:
+    # джерело правди — Assets/Art/Source/<id>.aseprite, стрічки експортуються з нього.
+    out_dir = sys.argv[2] if len(sys.argv) > 2 else "tools/aseprite/_import"
+    os.makedirs(out_dir, exist_ok=True)
+    order = ("down", "up", "left")
+    body_strip = Image.new("RGBA", (24 * CELL, CELL), (0, 0, 0, 0))
+    flash_strip = Image.new("RGBA", (24 * CELL, CELL), (0, 0, 0, 0))
+    final = {"down": down, "up": up, "left": left}
+    for r, name in enumerate(order):
+        for c in range(8):
+            before = body[name][c]
+            after = final[name][c]
+            body_strip.paste(before, ((r * 8 + c) * CELL, 0))
+            if cfg["flashlight"]:
+                # Шар ліхтарика: лише пікселі, які додав ліхтарик (корпус, лінза, контур).
+                layer = Image.new("RGBA", (CELL, CELL), (0, 0, 0, 0))
+                bp, ap, lp = before.load(), after.load(), layer.load()
+                for y in range(CELL):
+                    for x in range(CELL):
+                        if bp[x, y] != ap[x, y]:
+                            lp[x, y] = ap[x, y]
+                flash_strip.paste(layer, ((r * 8 + c) * CELL, 0))
+    body_strip.save(os.path.join(out_dir, f"{cid}_body.png"))
+    if cfg["flashlight"]:
+        flash_strip.save(os.path.join(out_dir, f"{cid}_flashlight.png"))
+    print(f"{cid}: palette {len(pal)}, шари в {out_dir}")
 
 
 if __name__ == "__main__":
