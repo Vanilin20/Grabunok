@@ -1,0 +1,16 @@
+{
+    "name": "Banda.Net.Core",
+    "rootNamespace": "Banda.Net",
+    "references": [
+        "Banda.Heist"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": true
+}

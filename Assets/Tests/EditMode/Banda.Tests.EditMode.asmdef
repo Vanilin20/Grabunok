@@ -3,6 +3,7 @@
     "rootNamespace": "Banda.Tests",
     "references": [
         "Banda.Heist",
+        "Banda.Net.Core",
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner"
     ],
