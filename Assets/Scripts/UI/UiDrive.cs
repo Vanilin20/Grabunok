@@ -36,7 +36,9 @@ namespace Banda.UI
             Application.runInBackground = true;
             GameObject go = new GameObject("UiDrive");
             UnityEngine.Object.DontDestroyOnLoad(go);
-            go.AddComponent<UiDriveRunner>().StartCoroutine(_role == "host" ? HostFlow() : ClientFlow());
+            UiDriveRunner runner = go.AddComponent<UiDriveRunner>();
+            runner.StartCoroutine(Watchdog());
+            runner.StartCoroutine(_role == "host" ? HostFlow() : ClientFlow());
         }
 
         private static string Arg(string[] args, string key)
@@ -88,6 +90,14 @@ namespace Banda.UI
             }
         }
 
+        /// <summary>Тест не має висіти вічно: якщо сценарій не закінчився за 3 хвилини (чи впав), вікно закривається з помилкою.</summary>
+        private static IEnumerator Watchdog()
+        {
+            yield return new WaitForSecondsRealtime(180f);
+            Log("ПРОБЛЕМА сценарій не закінчився за 3 хвилини");
+            Application.Quit(1);
+        }
+
         private static IEnumerator Quit()
         {
             Log(_problems == 0 ? "РЕЗУЛЬТАТ: OK" : "РЕЗУЛЬТАТ: проблем " + _problems);
@@ -112,7 +122,7 @@ namespace Banda.UI
             yield return new WaitForSecondsRealtime(0.6f);
             yield return Shot("h03_lobby_alone");
             state.RequestPickRole(RoleId.Hacker);
-            yield return Until(() => state.CanStart(), 70f, "банда готова (3 ролі)");
+            yield return Until(() => state.LobbyPlayers.Count >= 3 && state.CanStart(), 70f, "банда готова (3 гравці з ролями)");
             yield return new WaitForSecondsRealtime(0.5f);
             Verify("у лобі троє гравців із різними ролями", state.LobbyPlayers.Count == 3);
             yield return Shot("h04_lobby_full");
@@ -176,7 +186,15 @@ namespace Banda.UI
 
             // Обрив: гасимо NetworkManager клієнта, як зникла б мережа.
             Log("рву зв'язок");
-            Unity.Netcode.NetworkManager.Singleton.Shutdown();
+            if (Unity.Netcode.NetworkManager.Singleton != null)
+            {
+                Unity.Netcode.NetworkManager.Singleton.Shutdown();
+            }
+            else
+            {
+                Verify("є NetworkManager, який можна обірвати", false);
+            }
+
             yield return new WaitForSecondsRealtime(0.7f); // у Wi-Fi повернення швидке: обрив видно лише короткий час
             Verify("гра показує обрив", state.Net == NetStatus.Lost);
             yield return Shot("c06_lost");

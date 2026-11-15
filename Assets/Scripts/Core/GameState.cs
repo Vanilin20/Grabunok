@@ -495,11 +495,11 @@ namespace Banda.Core
 
         private IEnumerator ReconnectLoop()
         {
-            SetNet(NetStatus.Lost, "Зв'язок пропав. Повертаюсь у кімнату…");
+            SetNet(NetStatus.Lost, "Повертаюсь у кімнату…");
             yield return new WaitForSecondsRealtime(1.5f);
             for (int attempt = 1; attempt <= ReconnectAttempts; attempt++)
             {
-                SetNet(NetStatus.Lost, $"Зв'язок пропав. Повертаюсь у кімнату… спроба {attempt} з {ReconnectAttempts}");
+                SetNet(NetStatus.Lost, $"Повертаюсь у кімнату… спроба {attempt} з {ReconnectAttempts}");
                 _clientSession?.Reconnect();
                 yield return new WaitForSecondsRealtime(ReconnectInterval);
                 if (Net != NetStatus.Lost)
