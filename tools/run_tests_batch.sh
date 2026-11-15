@@ -8,7 +8,7 @@
 set -uo pipefail
 UNITY="${UNITY_EXE:-/c/Program Files/Unity/Hub/Editor/6000.3.7f1/Editor/Unity.exe}"
 SRC="$(pwd)"
-BATCH_DIR="${BATCH_DIR:-${TEMP:-/tmp}/banda_batch}"
+BATCH_DIR="${BATCH_DIR:-/d/Temp/banda_batch}"
 mkdir -p "$BATCH_DIR"
 # robocopy: коди 0–7 — успіх.
 for d in Assets Packages ProjectSettings docs; do

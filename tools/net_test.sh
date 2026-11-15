@@ -16,7 +16,7 @@ BOTARGS=()
 [ "$MODE" = relay ] && BOTARGS=(-botmode relay -botcode "$(printf %04d $((RANDOM % 10000)))")
 if [ "${1:-}" = "-b" ]; then
   UNITY="${UNITY_EXE:-/c/Program Files/Unity/Hub/Editor/6000.3.7f1/Editor/Unity.exe}"
-  BATCH_DIR="${BATCH_DIR:-${TEMP:-/tmp}/banda_batch}"
+  BATCH_DIR="${BATCH_DIR:-/d/Temp/banda_batch}"
   for d in Assets Packages ProjectSettings docs; do
     robocopy "$(cygpath -w "$(pwd)/$d")" "$(cygpath -w "$BATCH_DIR/$d")" //MIR //NFL //NDL //NJH //NJS //NP > /dev/null
     [ $? -ge 8 ] && { echo "robocopy $d: помилка"; exit 1; }
