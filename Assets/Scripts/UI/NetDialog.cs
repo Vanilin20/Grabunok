@@ -131,6 +131,9 @@ namespace Banda.UI
                 case NetStatus.Failed:
                     Build("НЕ ВИЙШЛО", state.NetMessage, false, new[] { ("ДОБРЕ", (System.Action)Dismiss, true) });
                     break;
+                case NetStatus.Online:
+                    Close(); // з'єднання є: діалог вибору чи пошуку більше не потрібен
+                    break;
                 default:
                     if (!_choiceOpen)
                     {

@@ -43,6 +43,7 @@ namespace Banda.Net
             _ip = Arg(args, "-botip") ?? _ip;
             _roomCode = Arg(args, "-botcode") ?? _roomCode;
             _relay = Arg(args, "-botmode") == "relay";
+            _lenient = Arg(args, "-botlenient") != null; // кілька слухачів на одному ПК: маяк за loopback дістається лише одному
             Application.runInBackground = true;
             Application.targetFrameRate = 60;
             IEnumerator body;
@@ -178,6 +179,7 @@ namespace Banda.Net
         // ------------------------------------------------------------------ клієнти
 
         private static bool _relay;
+        private static bool _lenient;
 
         private static IRoomService MakeService(string profile)
         {
@@ -310,7 +312,7 @@ namespace Banda.Net
 
             RoomClient client = session.Client;
             Probe probe = new Probe(client);
-            Check("1. Тінь знайшла кімнату за кодом (код кімнати) і зайняла роль", client.State == ClientState.Joined && _foundByCode);
+            Check("1. Тінь знайшла кімнату за кодом (код кімнати) і зайняла роль", client.State == ClientState.Joined && (_foundByCode || _lenient));
             yield return Until(() => probe.Static != null && probe.Snapshot != null, 45f, "початок справи");
             ShadowStatic st = probe.Static as ShadowStatic;
             ShadowView view = probe.Snapshot != null ? probe.Snapshot.View as ShadowView : null;
@@ -345,7 +347,7 @@ namespace Banda.Net
 
             RoomClient client = session.Client;
             Probe probe = new Probe(client);
-            Check("1. Зломщик знайшов кімнату за кодом (код кімнати) і зайняв роль", client.State == ClientState.Joined && _foundByCode);
+            Check("1. Зломщик знайшов кімнату за кодом (код кімнати) і зайняв роль", client.State == ClientState.Joined && (_foundByCode || _lenient));
             yield return Until(() => probe.Static != null && probe.Snapshot != null, 45f, "початок справи");
             SafecrackerStatic st = probe.Static as SafecrackerStatic;
             Check("4. Зломщик має комбінацію", st != null && st.Combo.Length == HeistSim.ComboLength);

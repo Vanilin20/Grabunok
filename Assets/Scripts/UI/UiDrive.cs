@@ -177,7 +177,7 @@ namespace Banda.UI
             // Обрив: гасимо NetworkManager клієнта, як зникла б мережа.
             Log("рву зв'язок");
             Unity.Netcode.NetworkManager.Singleton.Shutdown();
-            yield return new WaitForSecondsRealtime(2.2f);
+            yield return new WaitForSecondsRealtime(0.7f); // у Wi-Fi повернення швидке: обрив видно лише короткий час
             Verify("гра показує обрив", state.Net == NetStatus.Lost);
             yield return Shot("c06_lost");
             yield return Until(() => state.Net == NetStatus.Online, 45f, "повернення в кімнату");

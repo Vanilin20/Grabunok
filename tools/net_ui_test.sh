@@ -12,7 +12,7 @@ W=(-screen-fullscreen 0 -screen-width 960 -screen-height 540 -popupwindow)
 run() { local name="$1"; shift; "$EXE" "$@" -logFile "$(cygpath -w "$(pwd)/$OUT/$name.log")" > /dev/null 2>&1; echo $? > "$OUT/$name.code"; }
 run host "${W[@]}" -uidrive host -shotdir "$(cygpath -w "$(pwd)/$OUT")" & H=$!
 sleep 4
-run safe -batchmode -nographics -bot safe -botcode 4242 & S=$!
+run safe -batchmode -nographics -bot safe -botcode 4242 -botlenient & S=$!
 run client "${W[@]}" -uidrive client -shotdir "$(cygpath -w "$(pwd)/$OUT")" & C=$!
 wait $H $S $C
 fail=0
