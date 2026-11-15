@@ -128,8 +128,11 @@ namespace Banda.Net
             _nm = nm ?? throw new ArgumentNullException(nameof(nm));
             _nm.OnClientConnectedCallback += OnConnected;
             _nm.OnClientDisconnectCallback += OnDisconnected;
-            _nm.CustomMessagingManager.RegisterNamedMessageHandler(NgoFraming.MessageName, OnNamedMessage);
+            _nm.CustomMessagingManager?.RegisterNamedMessageHandler(NgoFraming.MessageName, OnNamedMessage);
         }
+
+        /// <summary>Підключення не вдалося ще до початку (StartClient повернув false): повідомити екран як звичайний розрив.</summary>
+        public void RaiseFailed() => Disconnected?.Invoke();
 
         public bool IsConnected => _connected && _nm != null && _nm.IsConnectedClient;
 

@@ -49,3 +49,4 @@ tools/artgen/obj/
 # Проміжні шари для імпорту в Aseprite (tools/aseprite/import_characters.sh)
 tools/aseprite/_import/
 Captures/tests_batch.xml
+Builds/
